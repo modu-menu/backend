@@ -25,7 +25,6 @@ public class User extends BaseTime {
     private String email;
     @NotBlank
     private String name;
-    @Enumerated(EnumType.STRING)
     @NotBlank
     private Gender gender; // 남성의 경우 "M", 여성의 경우 "F"
     @NotBlank
