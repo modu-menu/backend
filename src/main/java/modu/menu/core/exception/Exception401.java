@@ -3,13 +3,14 @@ package modu.menu.core.exception;
 
 import lombok.Getter;
 import modu.menu.core.response.ApiResponse;
+import modu.menu.core.response.ErrorMessage;
 import org.springframework.http.HttpStatus;
 
 
 @Getter
 public class Exception401 extends RuntimeException {
-    public Exception401(String message) {
-        super(message);
+    public Exception401(ErrorMessage message) {
+        super(message.getValue());
     }
 
     public ApiResponse<?> body() {
