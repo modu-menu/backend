@@ -47,3 +47,13 @@ springdoc: # ref: https://springdoc.org/#properties
     display-query-params-without-oauth2: true # json화 된 config 파일 대신 파라미터를 이용하여 swagger-ui에 접근하도록 함
   paths-to-match: # OpenAPI 3로 문서화할 api path 리스트
     - /api/**
+
+oauth2:
+  user:
+    kakao:
+      client-id: 2a2a821ddfebdb0b1ee1e056b51d2105 # 앱 REST API 키
+      client-secret: 1PTjnSQ9AYjiJ85AVhcO00qOJmdybjrK # 테스트용 Secret키
+      redirect-uri: https://localhost:8080/oauth/redirect # 인가 코드를 전달받을 서비스 서버의 URI
+  provider:
+    kakao:
+      token-uri: https://kauth.kakao.com/oauth/token
