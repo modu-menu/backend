@@ -29,9 +29,9 @@ class UserServiceTest {
     void join() {
         User user = User.builder()
                 .id(1L)
-                .ci("ci")
                 .email("test@test.com")
                 .name("이승민")
+                .nickname("닉네임")
                 .gender(Gender.MALE)
                 .age(26)
                 .phoneNumber("01012345678")
