@@ -13,7 +13,7 @@ public class JwtProvider {
 
     // 액세스 토큰 생성
     public static String createAccessToken(User user) {
-        return JWT.create()
+        return JwtProperties.TOKEN_PREFIX + JWT.create()
                 .withSubject(user.getName())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_ACCESS))
                 .withClaim("id", user.getId())
