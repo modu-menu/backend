@@ -5,15 +5,25 @@ import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class GenderAttributeConverter implements AttributeConverter<Gender, String> {
-    // Gender.MALE -> "M", Gender.FEMALE -> "F"
+    // Gender.MALE -> "M", Gender.FEMALE -> "F", Gender.UNKNOWN -> "-"
     @Override
     public String convertToDatabaseColumn(Gender attribute) {
-        return attribute.equals(Gender.MALE) ? "M" : "F";
+        if (attribute.equals(Gender.MALE)) {
+            return "M";
+        } else if (attribute.equals(Gender.FEMALE)) {
+            return "F";
+        }
+        return "-";
     }
 
-    // "M" -> Gender.MALE, "F" -> Gender.FEMALE
+    // "M" -> Gender.MALE, "F" -> Gender.FEMALE, "-" -> Gender.UNKNOWN
     @Override
     public Gender convertToEntityAttribute(String dbData) {
-        return dbData.equals("M") ? Gender.MALE : Gender.FEMALE;
+        if (dbData.equals("M")) {
+            return Gender.MALE;
+        } else if (dbData.equals("F")) {
+            return Gender.FEMALE;
+        }
+        return Gender.UNKNOWN;
     }
 }
