@@ -27,7 +27,7 @@ public class Review extends BaseTime {
     private Place place; // 리뷰 대상
     private Integer rating; // 평점
     private Integer participants; // 총 인원 수
-    private Boolean hasRoom; // 룸 여부
+    private HasRoom hasRoom; // 룸 여부
     @Column(length = 512)
     private String content;
     @ManyToMany
