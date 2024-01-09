@@ -30,6 +30,8 @@ public class Review extends BaseTime {
     private HasRoom hasRoom; // 룸 여부
     @Column(length = 512)
     private String content;
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus status;
     @ManyToMany
     @JoinTable(name = "review_vibe_tb")
     private List<Vibe> vibes = new ArrayList<>();
