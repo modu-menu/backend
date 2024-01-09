@@ -1,8 +1,6 @@
 package modu.menu.user.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import modu.menu.BaseTime;
 
@@ -28,4 +26,6 @@ public class User extends BaseTime {
     private LocalDate birthday;
     private String phoneNumber;
     private String profileImageUrl;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 }
