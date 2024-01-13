@@ -50,7 +50,7 @@ jobs:
           tags: ${{ env.DOCKER_HUB_REPOSITORY }}:latest
 
   docker-pull-and-run:
-    runs-on: [self-hosted, prod]
+    runs-on: [self-hosted, modu]
     if: ${{ needs.docker-build-and-push.result == 'success' }}
     needs: [ docker-build-and-push ]
     steps:
