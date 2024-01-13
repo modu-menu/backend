@@ -1,0 +1,11 @@
+# 사용할 JDK 버전을 명시한다.
+FROM openjdk:17-jdk
+
+# 빌드가 완료된 jar 파일의 위치를 환경변수로 등록한다.
+ARG JAR_FILE=build/libs/modu-menu-0.0.1-SNAPSHOT.jar
+
+# jar 파일을 이미지 내부에 설정한 이름으로 추가한다.
+ADD ${JAR_FILE} modu-menu.jar
+
+# 컨테이너가 실행될 때 반드시 실행할 명령어를 입력한다.(CMD와 달리 docker run 사용 시 추가 옵션으로 덮어씌우는 것이 불가능하다.)
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "-Duser.timezone=Asia/Seoul", "modu-menu.jar"]
