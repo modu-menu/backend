@@ -41,6 +41,7 @@ jobs:
       - name: Docker Image 빌드 후 Docker Hub에 push한다.
         uses: docker/build-push-action@v5
         with:
+          context: .
           file: ./DockerFile-prod
           push: true
           platforms: linux/amd64
