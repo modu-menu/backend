@@ -1,7 +1,6 @@
 package modu.menu.core.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import modu.menu.core.annotation.ErrorLog;
 import modu.menu.core.exception.*;
 import modu.menu.core.response.ApiResponse;
 import org.springframework.http.HttpStatus;
@@ -13,49 +12,49 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionAdvice {
 
-    @ErrorLog
     @ExceptionHandler(Exception400.class)
     public ResponseEntity<?> badRequest(Exception400 e) {
+        log.warn("400: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
     }
 
-    @ErrorLog
     @ExceptionHandler(Exception401.class)
     public ResponseEntity<?> unAuthorized(Exception401 e) {
+        log.warn("401: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
     }
 
-    @ErrorLog
     @ExceptionHandler(Exception403.class)
     public ResponseEntity<?> forbidden(Exception403 e) {
+        log.warn("403: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
     }
 
-    @ErrorLog
     @ExceptionHandler(Exception404.class)
     public ResponseEntity<?> notFound(Exception404 e) {
+        log.warn("404: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
     }
 
-    @ErrorLog
     @ExceptionHandler(Exception500.class)
     public ResponseEntity<?> serverError(Exception500 e) {
+        log.error("500: " + e);
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
     }
 
-    @ErrorLog
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> unknownServerError(Exception e) {
+        log.error("Unknown: " + e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(

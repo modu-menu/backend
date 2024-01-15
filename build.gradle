@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0-M1'
+    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -31,9 +31,10 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
-    implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui'
+    implementation group: 'com.auth0', name: 'java-jwt'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic'
 }
 
 tasks.named('test') {
