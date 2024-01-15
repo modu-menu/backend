@@ -22,7 +22,7 @@ public class ModuMenuApplication {
             public void addCorsMappings(CorsRegistry registry) {
                 registry
                         .addMapping("/**")
-                        .allowedOrigins("https://localhost:5000")
+                        .allowedOrigins("*")
                         .allowedMethods("*");
             }
         };
