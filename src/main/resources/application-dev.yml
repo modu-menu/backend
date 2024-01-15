@@ -17,9 +17,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    show-sql: true
     properties:
       hibernate:
+        show-sql: true
         format_sql: true
       default_batch_fetch_size: 100 # oneToMany 사용시 in 쿼리 자동으로 작성
     open-in-view: false # OSIV = false
