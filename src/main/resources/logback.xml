@@ -29,7 +29,7 @@
     </springProfile>
 
     <!-- log 파일 저장 위치 설정 -->
-    <property name="LOGS_PATH" value="./logs" />
+    <property name="LOG_PATH" value="./app/log" />
 
     <!-- 로그에 색상 적용 %clr(pattern){color} -->
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
@@ -51,13 +51,13 @@
     <!-- file -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- log 파일 저장 위치 설정 -->
-        <file>${LOGS_PATH}/modu-menu.log</file>
+        <file>${LOG_PATH}/modu-menu.log</file>
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
         <!-- 날짜를 기준으로 log 파일을 변경 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/modu-menu.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 아카이브 로그 파일 최대 저장 갯수, 초과시 오래된 파일부터 자동으로 삭제 -->
             <maxHistory>30</maxHistory>
             <!-- 아카이브 최대 크기, 초과시 오래된 파일부터 자동으로 삭제 -->
