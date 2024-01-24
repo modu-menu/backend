@@ -8,6 +8,7 @@ import modu.menu.core.exception.Exception400;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.oauth.repository.OauthRepository;
 import modu.menu.user.api.request.TempJoinRequest;
+import modu.menu.user.domain.Gender;
 import modu.menu.user.service.dto.TempJoinResultDto;
 import modu.menu.user.domain.User;
 import modu.menu.user.repository.UserRepository;
@@ -36,7 +37,7 @@ public class UserService {
                         .password(tempJoinRequest.getPassword())
                         .name(tempJoinRequest.getName())
                         .nickname(tempJoinRequest.getNickname())
-                        .gender(tempJoinRequest.getGender())
+                        .gender(tempJoinRequest.getGender().equals("M") ? Gender.MALE : Gender.FEMALE)
                         .age(tempJoinRequest.getAge())
                         .birthday(tempJoinRequest.getBirthdate())
                         .phoneNumber(tempJoinRequest.getPhoneNumber())
