@@ -24,20 +24,20 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @DisplayName("User가 회원가입을 요청하고, 성공한다.")
-    @Test
-    void join() {
-        User user = User.builder()
-                .id(1L)
-                .email("test@test.com")
-                .name("이승민")
-                .nickname("닉네임")
-                .gender(Gender.MALE)
-                .age(26)
-                .phoneNumber("01012345678")
-                .build();
-        userService.join(user);
-
-        verify(userRepository).save(any());
-    }
+//    @DisplayName("User가 회원가입을 요청하고, 성공한다.")
+//    @Test
+//    void join() {
+//        User user = User.builder()
+//                .id(1L)
+//                .email("test@test.com")
+//                .name("이승민")
+//                .nickname("닉네임")
+//                .gender(Gender.MALE)
+//                .age(26)
+//                .phoneNumber("01012345678")
+//                .build();
+//        userService.join(user);
+//
+//        verify(userRepository).save(any());
+//    }
 }

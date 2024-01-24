@@ -12,20 +12,18 @@ import java.util.Date;
 public class JwtProvider {
 
     // 액세스 토큰 생성
-    public static String createAccessToken(User user) {
+    public static String createAccessToken(Long id) {
         return JwtProperties.TOKEN_PREFIX + JWT.create()
-                .withSubject(user.getName())
+                .withSubject(String.valueOf(id))
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_ACCESS))
-                .withClaim("id", user.getId())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET_ACCESS));
     }
 
     // 리프레쉬 토큰 생성
-    public static String createRefreshToken(User user) {
+    public static String createRefreshToken(Long id) {
         return JWT.create()
-                .withSubject(user.getName())
+                .withSubject(String.valueOf(id))
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_REFRESH))
-                .withClaim("id", user.getId())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET_REFRESH));
     }
 

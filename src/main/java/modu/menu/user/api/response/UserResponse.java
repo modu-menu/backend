@@ -1,4 +1,4 @@
-package modu.menu.user.dto;
+package modu.menu.user.api.response;
 
 import lombok.Builder;
 import lombok.Getter;
