@@ -9,9 +9,9 @@ import modu.menu.core.response.ErrorMessage;
 import modu.menu.oauth.repository.OauthRepository;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.domain.Gender;
-import modu.menu.user.service.dto.TempJoinResultDto;
 import modu.menu.user.domain.User;
 import modu.menu.user.repository.UserRepository;
+import modu.menu.user.service.dto.TempJoinResultDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +27,9 @@ public class UserService {
 
     @Transactional
     public TempJoinResultDto tempJoin(TempJoinRequest tempJoinRequest) {
-        userRepository.findByEmail(tempJoinRequest.getEmail()).orElseThrow(
-                () -> new Exception400("email", ErrorMessage.DUPLICATE_EMAIL)
-        );
+        userRepository.findByEmail(tempJoinRequest.getEmail()).ifPresent(user -> {
+                    throw new Exception400("email", ErrorMessage.DUPLICATE_EMAIL);
+        });
 
         User user = userRepository.save(
                 User.builder()
