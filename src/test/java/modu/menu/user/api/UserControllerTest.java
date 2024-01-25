@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class UserControllerTest extends ControllerTestComponent {
 
-    @DisplayName("새로운 사용자를 등록한다.(임시)")
+    @DisplayName("새로운 회원을 등록한다.")
     @Test
     void crateUser() throws Exception {
         // given
@@ -30,7 +30,7 @@ class UserControllerTest extends ControllerTestComponent {
                 .build();
 
         // when
-        when(userService.join(any()))
+        when(userService.tempJoin(any()))
                 .thenReturn(TempJoinResultDto.builder()
                         .id(1L)
                         .name(tempJoinRequest.getName())

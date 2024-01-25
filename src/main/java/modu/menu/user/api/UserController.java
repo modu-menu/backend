@@ -44,7 +44,7 @@ public class UserController {
             @Valid @RequestBody TempJoinRequest tempJoinRequest,
             BindingResult bindingResult
     ) {
-        TempJoinResultDto response = userService.join(tempJoinRequest);
+        TempJoinResultDto response = userService.tempJoin(tempJoinRequest);
 
         return ResponseEntity.ok()
                 .header(JwtProperties.HEADER_ACCESS, response.getAccessToken())

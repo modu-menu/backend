@@ -26,7 +26,7 @@ public class UserService {
     private final OauthRepository oauthRepository;
 
     @Transactional
-    public TempJoinResultDto join(TempJoinRequest tempJoinRequest) {
+    public TempJoinResultDto tempJoin(TempJoinRequest tempJoinRequest) {
         userRepository.findByEmail(tempJoinRequest.getEmail()).orElseThrow(
                 () -> new Exception400("email", ErrorMessage.DUPLICATE_EMAIL)
         );
