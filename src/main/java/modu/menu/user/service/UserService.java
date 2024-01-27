@@ -10,6 +10,7 @@ import modu.menu.oauth.repository.OauthRepository;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
+import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.user.service.dto.TempJoinResultDto;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class UserService {
                         .age(tempJoinRequest.getAge())
                         .birthday(tempJoinRequest.getBirthdate())
                         .phoneNumber(tempJoinRequest.getPhoneNumber())
+                        .status(UserStatus.ACTIVE)
                         .build()
         );
 
