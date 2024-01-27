@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import modu.menu.core.exception.Exception401;
 import modu.menu.core.response.ErrorMessage;
+import modu.menu.user.domain.User;
+import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
@@ -44,11 +46,12 @@ public class JwtAuthenticationFilter implements Filter {
             DecodedJWT decodedJWT = JwtProvider.verifyAccessToken(accessTokenValue);
             Long userId = Long.parseLong(decodedJWT.getSubject());
 
-            userRepository.findById(userId).orElseThrow(
+            User user = userRepository.findById(userId).orElseThrow(
                     () -> new Exception401(ErrorMessage.NOT_EXIST_USER_TOKEN)
             );
+            if (!user.getStatus().equals(UserStatus.ACTIVE)) {
 
-            // TODO 회원 탈퇴 기능 추가 시 상태 값 검증 필요
+            }
 
         } catch (SignatureVerificationException e) { // 토큰 검증 실패 시
             log.error(ErrorMessage.TOKEN_VERIFICATION_FAIL + "");

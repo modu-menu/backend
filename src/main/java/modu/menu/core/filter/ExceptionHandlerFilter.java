@@ -1,17 +1,13 @@
 package modu.menu.core.filter;
 
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import modu.menu.core.exception.Exception401;
 import modu.menu.core.response.ApiResponse;
-import modu.menu.core.response.ErrorMessage;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,25 +24,23 @@ public class ExceptionHandlerFilter implements Filter {
 
         try {
             chain.doFilter(request, response);
-        } catch (SignatureVerificationException e) {
-            setErrorResponse(response, ErrorMessage.TOKEN_VERIFICATION_FAIL, e);
-        } catch (TokenExpiredException e) {
-            setErrorResponse(response, ErrorMessage.EXPIRED_TOKEN, e);
+        } catch (Exception401 e) {
+            setErrorResponse(response, e);
         }
     }
 
-    private void setErrorResponse(ServletResponse response, ErrorMessage message, Exception e) throws IOException {
+    private void setErrorResponse(ServletResponse response, Exception401 e) throws IOException {
 
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        resp.setStatus(401);
+        resp.setStatus(e.status().value());
         resp.setContentType("application/json; charset=utf-8");
 
         log.warn("401: " + e.getMessage());
         ApiResponse apiResponse = new ApiResponse(
                 401,
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                message.getValue()
+                e.getMessage()
         );
 
         String responseBody = objectMapper.writeValueAsString(apiResponse);
