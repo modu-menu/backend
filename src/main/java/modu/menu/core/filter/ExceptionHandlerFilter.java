@@ -3,8 +3,7 @@ package modu.menu.core.filter;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +19,15 @@ import java.io.PrintWriter;
 @Slf4j
 @RequiredArgsConstructor
 // 후순위 필터(JwtAuthenticationFilter)의 예외를 핸들링하기 위한 필터
-// 동일한 요청에 대해 한 번만 해당 필터를 거쳐가도록 OncePerRequestFilter 사용
-public class ExceptionHandlerFilter extends OncePerRequestFilter {
+public class ExceptionHandlerFilter implements Filter {
 
     private final ObjectMapper objectMapper;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
         try {
-            filterChain.doFilter(request, response);
+            chain.doFilter(request, response);
         } catch (SignatureVerificationException e) {
             setErrorResponse(response, ErrorMessage.TOKEN_VERIFICATION_FAIL, e);
         } catch (TokenExpiredException e) {
@@ -36,9 +35,12 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         }
     }
 
-    private void setErrorResponse(HttpServletResponse response, ErrorMessage message, Exception e) throws IOException {
-        response.setStatus(401);
-        response.setContentType("application/json; charset=utf-8");
+    private void setErrorResponse(ServletResponse response, ErrorMessage message, Exception e) throws IOException {
+
+        HttpServletResponse resp = (HttpServletResponse) response;
+
+        resp.setStatus(401);
+        resp.setContentType("application/json; charset=utf-8");
 
         log.warn("401: " + e.getMessage());
         ApiResponse apiResponse = new ApiResponse(
@@ -49,7 +51,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         String responseBody = objectMapper.writeValueAsString(apiResponse);
 
-        PrintWriter printWriter = response.getWriter();
+        PrintWriter printWriter = resp.getWriter();
         printWriter.println(responseBody);
         printWriter.flush();
         printWriter.close();
