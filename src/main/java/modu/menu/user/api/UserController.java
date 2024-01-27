@@ -4,9 +4,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.auth.jwt.JwtProperties;
 import modu.menu.user.api.request.TempJoinRequest;
+import modu.menu.user.api.request.TempLoginRequest;
 import modu.menu.user.api.response.TempJoinResponse;
+import modu.menu.user.api.response.TempLoginResponse;
 import modu.menu.user.service.dto.TempJoinResultDto;
 import modu.menu.user.service.UserService;
+import modu.menu.user.service.dto.TempLoginResultDto;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +59,25 @@ public class UserController {
                         .nickname(response.getNickname())
                         .profileImageUrl(response.getProfileImageUrl())
                         .build()
+                );
+    }
+
+    @PostMapping("/api/user/login")
+    public ResponseEntity<TempLoginResponse> tempLogin(
+            @Valid @RequestBody TempLoginRequest tempLoginRequest,
+            BindingResult bindingResult
+    ) {
+        TempLoginResultDto response = userService.tempLogin(tempLoginRequest);
+
+        return ResponseEntity.ok()
+                .header(JwtProperties.HEADER_ACCESS, response.getAccessToken())
+                .body(
+                        TempLoginResponse.builder()
+                                .id(response.getId())
+                                .name(response.getName())
+                                .nickname(response.getNickname())
+                                .profileImageUrl(response.getProfileImageUrl())
+                                .build()
                 );
     }
 }

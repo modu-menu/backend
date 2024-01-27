@@ -5,14 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.auth.oauth2.InMemoryProviderRepository;
 import modu.menu.core.exception.Exception400;
+import modu.menu.core.exception.Exception401;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.oauth.repository.OauthRepository;
 import modu.menu.user.api.request.TempJoinRequest;
+import modu.menu.user.api.request.TempLoginRequest;
 import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.user.service.dto.TempJoinResultDto;
+import modu.menu.user.service.dto.TempLoginResultDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +50,24 @@ public class UserService {
         );
 
         return TempJoinResultDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .profileImageUrl(user.getProfileImageUrl())
+                .accessToken(JwtProvider.createAccessToken(user.getId()))
+                .build();
+    }
+
+    public TempLoginResultDto tempLogin(TempLoginRequest tempLoginRequest) {
+        User user = userRepository.findByEmail(tempLoginRequest.getEmail()).orElseThrow(
+                () -> new Exception401(ErrorMessage.LOGIN_USER_WRONG_EMAIL)
+        );
+
+        if(!user.getPassword().equals(tempLoginRequest.getPassword())) {
+            throw new Exception401(ErrorMessage.LOGIN_USER_WRONG_PASSWORD);
+        }
+
+        return TempLoginResultDto.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .nickname(user.getNickname())
