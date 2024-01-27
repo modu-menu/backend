@@ -3,6 +3,7 @@ package modu.menu.user.service;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
+import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.user.service.dto.TempJoinResultDto;
 import org.junit.jupiter.api.DisplayName;
@@ -66,6 +67,7 @@ class UserServiceTest {
                 .birthday(LocalDate.now())
                 .password("password" + id)
                 .phoneNumber("01012345678")
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 }
