@@ -10,7 +10,6 @@ import modu.menu.user.api.response.TempLoginResponse;
 import modu.menu.user.service.dto.TempJoinResultDto;
 import modu.menu.user.service.UserService;
 import modu.menu.user.service.dto.TempLoginResultDto;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +50,7 @@ public class UserController {
         TempJoinResultDto response = userService.tempJoin(tempJoinRequest);
 
         return ResponseEntity.ok()
-                .header(JwtProperties.HEADER_ACCESS, response.getAccessToken())
+                .header(JwtProperties.ACCESS_HEADER, response.getAccessToken())
                 .body(
                         TempJoinResponse.builder()
                         .id(response.getId())
@@ -70,7 +69,7 @@ public class UserController {
         TempLoginResultDto response = userService.tempLogin(tempLoginRequest);
 
         return ResponseEntity.ok()
-                .header(JwtProperties.HEADER_ACCESS, response.getAccessToken())
+                .header(JwtProperties.ACCESS_HEADER, response.getAccessToken())
                 .body(
                         TempLoginResponse.builder()
                                 .id(response.getId())

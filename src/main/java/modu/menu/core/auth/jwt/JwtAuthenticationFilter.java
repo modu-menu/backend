@@ -13,7 +13,6 @@ import modu.menu.core.response.ErrorMessage;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -38,7 +37,7 @@ public class JwtAuthenticationFilter implements Filter {
             return;
         }
 
-        String accessToken = req.getHeader(JwtProperties.HEADER_ACCESS);
+        String accessToken = req.getHeader(JwtProperties.ACCESS_HEADER);
         String accessTokenValue = accessToken.replace(JwtProperties.TOKEN_PREFIX, "");
 
         // 토큰을 복호화한 뒤 .
