@@ -2,7 +2,7 @@ package modu.menu.user.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import modu.menu.core.auth.jwt.JwtProperties;
+import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.api.request.TempLoginRequest;
 import modu.menu.user.api.response.TempJoinResponse;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final JwtProvider jwtProvider;
 
 //    @GetMapping("/login/oauth/{provider}")
 //    public ResponseEntity<ApiResponse> login(
@@ -50,7 +51,7 @@ public class UserController {
         TempJoinResultDto response = userService.tempJoin(tempJoinRequest);
 
         return ResponseEntity.ok()
-                .header(JwtProperties.ACCESS_HEADER, response.getAccessToken())
+                .header(jwtProvider.ACCESS_HEADER, response.getAccessToken())
                 .body(
                         TempJoinResponse.builder()
                         .id(response.getId())
@@ -69,7 +70,7 @@ public class UserController {
         TempLoginResultDto response = userService.tempLogin(tempLoginRequest);
 
         return ResponseEntity.ok()
-                .header(JwtProperties.ACCESS_HEADER, response.getAccessToken())
+                .header(jwtProvider.ACCESS_HEADER, response.getAccessToken())
                 .body(
                         TempLoginResponse.builder()
                                 .id(response.getId())

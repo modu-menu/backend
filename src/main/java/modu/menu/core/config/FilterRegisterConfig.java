@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.auth.jwt.JwtAuthenticationFilter;
+import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.filter.ExceptionHandlerFilter;
 import modu.menu.core.filter.LoggerFilter;
 import modu.menu.user.repository.UserRepository;
@@ -17,9 +18,10 @@ public class FilterRegisterConfig {
 
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final JwtProvider jwtProvider;
 
     @Bean
-    public FilterRegistrationBean<?> loggerFilter() {
+    public FilterRegistrationBean loggerFilter() {
 
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 
@@ -31,7 +33,7 @@ public class FilterRegisterConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<?> exceptionHandlerFilter() {
+    public FilterRegistrationBean exceptionHandlerFilter() {
 
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 
@@ -43,11 +45,11 @@ public class FilterRegisterConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<?> jwtAuthenticationFilter() {
+    public FilterRegistrationBean jwtAuthenticationFilter() {
 
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 
-        filterRegistrationBean.setFilter(new JwtAuthenticationFilter(userRepository));
+        filterRegistrationBean.setFilter(new JwtAuthenticationFilter(userRepository, jwtProvider));
         filterRegistrationBean.setOrder(3);
         filterRegistrationBean.addUrlPatterns("/*");
 

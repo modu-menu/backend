@@ -1,10 +1,10 @@
 package modu.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.user.api.UserController;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.user.service.UserService;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,6 +22,9 @@ public abstract class ControllerTestComponent {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
+    @MockBean
+    protected JwtProvider jwtProvider;
 
     @MockBean
     protected UserService userService;

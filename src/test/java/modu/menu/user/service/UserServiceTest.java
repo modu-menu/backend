@@ -1,5 +1,6 @@
 package modu.menu.user.service;
 
+import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.api.request.TempLoginRequest;
 import modu.menu.user.domain.Gender;
@@ -32,7 +33,8 @@ class UserServiceTest {
     private UserService userService;
     @Mock
     private UserRepository userRepository;
-
+    @Mock
+    private JwtProvider jwtProvider;
 
     @DisplayName("회원 정보를 입력하면, 새로운 회원을 등록하고 해당 회원의 데이터를 반환한다.")
     @Test

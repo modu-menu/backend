@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 @Slf4j
-@Component
 // 요청과 응답을 로그에 기록한다.
 public class LoggerFilter implements Filter {
 
@@ -21,7 +20,7 @@ public class LoggerFilter implements Filter {
         // 비즈니스 로직 진입 전
         ContentCachingRequestWrapper req = new ContentCachingRequestWrapper((HttpServletRequest) request);
         ContentCachingResponseWrapper resp = new ContentCachingResponseWrapper((HttpServletResponse) response);
-        chain.doFilter((ServletRequest) req, (ServletResponse) resp);
+        chain.doFilter(request, response);
 
         // 비즈니스 로직 진입 후
         // request

@@ -28,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final InMemoryProviderRepository inMemoryProviderRepository;
     private final OauthRepository oauthRepository;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public TempJoinResultDto tempJoin(TempJoinRequest tempJoinRequest) {
@@ -54,7 +55,7 @@ public class UserService {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
-                .accessToken(JwtProvider.createAccessToken(user.getId()))
+                .accessToken(jwtProvider.createAccessToken(user.getId()))
                 .build();
     }
 
@@ -72,7 +73,7 @@ public class UserService {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
-                .accessToken(JwtProvider.createAccessToken(user.getId()))
+                .accessToken(jwtProvider.createAccessToken(user.getId()))
                 .build();
     }
 

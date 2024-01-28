@@ -21,6 +21,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter implements Filter {
 
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -37,12 +38,12 @@ public class JwtAuthenticationFilter implements Filter {
             return;
         }
 
-        String accessToken = req.getHeader(JwtProperties.ACCESS_HEADER);
-        String accessTokenValue = accessToken.replace(JwtProperties.TOKEN_PREFIX, "");
+        String accessToken = req.getHeader(jwtProvider.ACCESS_HEADER);
+        String accessTokenValue = accessToken.replace(jwtProvider.TOKEN_PREFIX, "");
 
         // 토큰을 복호화한 뒤 .
         try {
-            DecodedJWT decodedJWT = JwtProvider.verifyAccessToken(accessTokenValue);
+            DecodedJWT decodedJWT = jwtProvider.verifyAccessToken(accessTokenValue);
             Long userId = Long.parseLong(decodedJWT.getSubject());
 
             User user = userRepository.findById(userId).orElseThrow(
