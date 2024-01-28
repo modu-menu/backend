@@ -39,7 +39,7 @@ public class LoggerFilter implements Filter {
         String requestBody = req.getContentAsByteArray() + "";
         String requestURI = req.getRequestURI();
         String method = req.getMethod();
-        log.info(">>>>> uri: {}, method: {}, header: {}, body: {}", requestURI, method, headerValues, requestBody);
+        log.info(">>>>> uri: {}, method: {}, header: {}", requestURI, method, headerValues);
 
         // response
         StringBuilder responseHeaderValues = new StringBuilder();
@@ -53,7 +53,7 @@ public class LoggerFilter implements Filter {
                     .append("] ");
         });
         String responseBody = resp.getContentAsByteArray() + "";
-        log.info("<<<<< uri: {}, method: {}, header: {}, body: {}", requestURI, method, responseHeaderValues, responseBody);
+        log.info("<<<<< uri: {}, method: {}, header: {}", requestURI, method, responseHeaderValues);
 
         // 이게 있어야 response가 비어있는 채로 전달되지 않는다.
         resp.copyBodyToResponse();
