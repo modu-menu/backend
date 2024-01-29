@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter implements Filter {
         String accessToken = req.getHeader(jwtProvider.ACCESS_HEADER);
         String accessTokenValue = accessToken.replace(jwtProvider.TOKEN_PREFIX, "");
 
-        // 토큰을 복호화한 뒤 .
+        // 토큰을 복호화한 뒤 DB의 회원 데이터와 비교한다.
         try {
             DecodedJWT decodedJWT = jwtProvider.verifyAccessToken(accessTokenValue);
             Long userId = Long.parseLong(decodedJWT.getSubject());
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter implements Filter {
                     () -> new Exception401(ErrorMessage.NOT_EXIST_USER_TOKEN)
             );
             if (!user.getStatus().equals(UserStatus.ACTIVE)) {
-
+                throw new Exception401(ErrorMessage.NOT_ACTIVE_USER_TOKEN);
             }
 
         } catch (SignatureVerificationException e) { // 토큰 검증 실패 시
