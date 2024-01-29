@@ -33,7 +33,7 @@ public class UserService {
     @Transactional
     public TempJoinResultDto tempJoin(TempJoinRequest tempJoinRequest) {
         userRepository.findByEmail(tempJoinRequest.getEmail()).ifPresent(user -> {
-                    throw new Exception400("email", ErrorMessage.DUPLICATE_EMAIL);
+                    throw new Exception400("email", ErrorMessage.DUPLICATE_EMAIL.getValue());
         });
 
         User user = userRepository.save(

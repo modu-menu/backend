@@ -1,6 +1,8 @@
-[2024-01-28 19:55:25:1444] INFO  16336 --- [           main] modu.menu.ModuMenuApplication            : Starting ModuMenuApplication using Java 17.0.5 with PID 16336 (C:\fast_lab\modu-menu\out\production\classes started by hol13 in C:\fast_lab\modu-menu)
-[2024-01-28 19:55:25:1446] DEBUG 16336 --- [           main] modu.menu.ModuMenuApplication            : Running with Spring Boot v3.2.0, Spring v6.1.1
-[2024-01-28 19:55:25:1447] INFO  16336 --- [           main] modu.menu.ModuMenuApplication            : The following 1 profile is active: "prod"
-[2024-01-28 20:08:46:909] INFO  18000 --- [           main] modu.menu.ModuMenuApplication            : Starting ModuMenuApplication using Java 17.0.5 with PID 18000 (C:\fast_lab\modu-menu\out\production\classes started by hol13 in C:\fast_lab\modu-menu)
-[2024-01-28 20:08:46:911] DEBUG 18000 --- [           main] modu.menu.ModuMenuApplication            : Running with Spring Boot v3.2.0, Spring v6.1.1
-[2024-01-28 20:08:46:911] INFO  18000 --- [           main] modu.menu.ModuMenuApplication            : The following 1 profile is active: "prod"
+[2024-01-29 16:41:45:861] INFO  18392 --- [           main] modu.menu.ModuMenuApplication            : Starting ModuMenuApplication using Java 17.0.5 with PID 18392 (C:\fast_lab\modu-menu\out\production\classes started by hol13 in C:\fast_lab\modu-menu)
+[2024-01-29 16:41:45:865] DEBUG 18392 --- [           main] modu.menu.ModuMenuApplication            : Running with Spring Boot v3.2.0, Spring v6.1.1
+[2024-01-29 16:41:45:866] INFO  18392 --- [           main] modu.menu.ModuMenuApplication            : The following 1 profile is active: "prod"
+[2024-01-29 16:41:50:6062] INFO  18392 --- [           main] modu.menu.ModuMenuApplication            : Started ModuMenuApplication in 5.763 seconds (process running for 6.672)
+[2024-01-29 16:42:34:835] INFO  21184 --- [           main] modu.menu.ModuMenuApplication            : Starting ModuMenuApplication using Java 17.0.5 with PID 21184 (C:\fast_lab\modu-menu\out\production\classes started by hol13 in C:\fast_lab\modu-menu)
+[2024-01-29 16:42:34:837] DEBUG 21184 --- [           main] modu.menu.ModuMenuApplication            : Running with Spring Boot v3.2.0, Spring v6.1.1
+[2024-01-29 16:42:34:838] INFO  21184 --- [           main] modu.menu.ModuMenuApplication            : The following 1 profile is active: "prod"
+[2024-01-29 16:42:41:7404] INFO  21184 --- [           main] modu.menu.ModuMenuApplication            : Started ModuMenuApplication in 7.123 seconds (process running for 8.124)

@@ -67,9 +67,9 @@ public class JwtAuthenticationFilter implements Filter {
     private boolean needAuthentication(String method, String uri) {
         if (method.equals("post") && uri.equals("/api/user")
                 || method.equals("post") && uri.equals("/api/user/login")) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

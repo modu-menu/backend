@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 public class ApiCommonResponse<T> {
     @Schema(description = "HTTP 상태 코드", example = "200")
     private final int status;
-    @Schema(description = "성공 혹은 에러 메시지")
+    @Schema(description = "성공 메시지")
     private final String message;
-    @Schema(description = "Response Body")
+    @Schema(description = "응답 데이터")
     private T data;
 
     // 요청에 성공한 경우(응답할 데이터가 없음)

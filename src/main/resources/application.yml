@@ -1,10 +1,10 @@
 spring:
   profiles:
     active:
-      - test
+      - dev
 
 springdoc: # ref: https://springdoc.org/#properties
-  version: '@project.version@'
+  version: 0.0.1
   api-docs:
     path: /api-docs # spring boot 웹 애플리케이션의 api를 OpenAPI 3을 이용하여 json 형식화 한 것의 경로
   default-consumes-media-type: application/json # request media type의 기본값

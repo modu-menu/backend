@@ -13,10 +13,10 @@ public class Exception400 extends RuntimeException {
     private String key;
     private String value;
 
-    public Exception400(String key, ErrorMessage value) {
-        super(value.getValue());
+    public Exception400(String key, String value) {
+        super(value);
         this.key = key;
-        this.value = value.getValue();
+        this.value = value;
     }
 
     public ApiCommonResponse<?> body() {
