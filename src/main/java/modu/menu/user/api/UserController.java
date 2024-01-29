@@ -44,12 +44,7 @@ public class UserController {
             @Validated @RequestBody TempJoinRequest tempJoinRequest,
             BindingResult bindingResult
     ) {
-        if (bindingResult.hasErrors()) {
-            throw new Exception400(
-                    bindingResult.getFieldErrors().get(0).getField(),
-                    bindingResult.getFieldErrors().get(0).getDefaultMessage()
-            );
-        }
+        bindingResultResolver(bindingResult);
 
         TempJoinResultDto response = userService.tempJoin(tempJoinRequest);
 
@@ -77,12 +72,7 @@ public class UserController {
             @Validated @RequestBody TempLoginRequest tempLoginRequest,
             BindingResult bindingResult
     ) {
-        if (bindingResult.hasErrors()) {
-            throw new Exception400(
-                    bindingResult.getFieldErrors().get(0).getField(),
-                    bindingResult.getFieldErrors().get(0).getDefaultMessage()
-            );
-        }
+        bindingResultResolver(bindingResult);
 
         TempLoginResultDto response = userService.tempLogin(tempLoginRequest);
 
@@ -119,4 +109,14 @@ public class UserController {
 //                        .build())
 //                );
 //    }
+
+    // BindingResult에 에러가 있을 시(@Validated에 의해 유효성 검사를 통과하지 못한 Exception400을 던진다.
+    private void bindingResultResolver(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new Exception400(
+                    bindingResult.getFieldErrors().get(0).getField(),
+                    bindingResult.getFieldErrors().get(0).getDefaultMessage()
+            );
+        }
+    }
 }

@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter implements Filter {
         String requestUri = req.getRequestURI();
 
         // 토큰 인증을 필요로 하지 않는 요청들은 별도의 필터링 없이 통과시킨다.
-        if (!needAuthentication(requestMethod, requestUri)) {
+        if (!isCheckURI(requestMethod, requestUri)) {
             log.debug("토큰 인증을 생략합니다.");
             chain.doFilter(req, resp);
             return;
@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter implements Filter {
         }
     }
 
-    private boolean needAuthentication(String method, String uri) {
+    private boolean isCheckURI(String method, String uri) {
         if (method.equals("post") && uri.equals("/api/user")
                 || method.equals("post") && uri.equals("/api/user/login")) {
             return true;
