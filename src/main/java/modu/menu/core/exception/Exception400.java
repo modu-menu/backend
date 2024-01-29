@@ -1,9 +1,9 @@
 package modu.menu.core.exception;
 
 import lombok.Getter;
-import modu.menu.core.response.ApiCommonResponse;
+import modu.menu.core.response.ApiFailResponse;
+import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.core.response.ErrorData;
-import modu.menu.core.response.ErrorMessage;
 import org.springframework.http.HttpStatus;
 
 
@@ -19,8 +19,8 @@ public class Exception400 extends RuntimeException {
         this.value = value;
     }
 
-    public ApiCommonResponse<?> body() {
-        return new ApiCommonResponse<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), new ErrorData(key, value));
+    public ApiFailResponse body() {
+        return new ApiFailResponse(HttpStatus.BAD_REQUEST, key, value);
     }
 
     public HttpStatus status() {

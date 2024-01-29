@@ -1,14 +1,16 @@
 package modu.menu.user.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.exception.Exception400;
-import modu.menu.core.response.ApiCommonResponse;
+import modu.menu.core.response.ApiFailResponse;
+import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.api.request.TempLoginRequest;
 import modu.menu.user.api.response.TempJoinResponse;
@@ -34,11 +36,11 @@ public class UserController {
     @Operation(summary = "회원가입(임시)", description = "회원 정보를 이용해 가입합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원가입이 성공한 경우"),
-            @ApiResponse(responseCode = "400", description = "TempJoinRequest의 값이 형식에 맞지 않거나, 이미 가입된 이메일의 경우"),
-            @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우")
+            @ApiResponse(responseCode = "400", description = "TempJoinRequest의 값이 형식에 맞지 않거나, 이미 가입된 이메일의 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
     })
     @PostMapping("/api/user")
-    public ResponseEntity<ApiCommonResponse<TempJoinResponse>> tempJoin(
+    public ResponseEntity<ApiSuccessResponse<TempJoinResponse>> tempJoin(
             @Validated @RequestBody TempJoinRequest tempJoinRequest,
             BindingResult bindingResult
     ) {
@@ -54,7 +56,7 @@ public class UserController {
         return ResponseEntity.ok()
                 .header(jwtProvider.ACCESS_HEADER, response.getAccessToken())
                 .body(
-                        new ApiCommonResponse<>(TempJoinResponse.builder()
+                        new ApiSuccessResponse<>(TempJoinResponse.builder()
                                 .id(response.getId())
                                 .name(response.getName())
                                 .nickname(response.getNickname())
@@ -66,12 +68,12 @@ public class UserController {
     @Operation(summary = "로그인(임시)", description = "이메일과 비밀번호를 이용해 로그인합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원가입이 성공한 경우"),
-            @ApiResponse(responseCode = "400", description = "TempLoginRequest의 값이 형식에 맞지 않는 경우"),
-            @ApiResponse(responseCode = "401", description = "입력한 이메일 또는 비밀번호가 잘못된 경우"),
-            @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우")
+            @ApiResponse(responseCode = "400", description = "TempLoginRequest의 값이 형식에 맞지 않는 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "401", description = "입력한 이메일 또는 비밀번호가 잘못된 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
     })
     @PostMapping("/api/user/login")
-    public ResponseEntity<ApiCommonResponse<TempLoginResponse>> tempLogin(
+    public ResponseEntity<ApiSuccessResponse<TempLoginResponse>> tempLogin(
             @Validated @RequestBody TempLoginRequest tempLoginRequest,
             BindingResult bindingResult
     ) {
@@ -87,7 +89,7 @@ public class UserController {
         return ResponseEntity.ok()
                 .header(jwtProvider.ACCESS_HEADER, response.getAccessToken())
                 .body(
-                        new ApiCommonResponse<>(TempLoginResponse.builder()
+                        new ApiSuccessResponse<>(TempLoginResponse.builder()
                                 .id(response.getId())
                                 .name(response.getName())
                                 .nickname(response.getNickname())

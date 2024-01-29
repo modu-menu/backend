@@ -5,34 +5,27 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-@Schema(description = "공통 응답 DTO")
+@Schema(description = "성공 응답 DTO")
 @Getter
 @JsonPropertyOrder({"status", "message", "data"})
-public class ApiCommonResponse<T> {
+public class ApiSuccessResponse<T> {
     @Schema(description = "HTTP 상태 코드", example = "200")
-    private final int status;
-    @Schema(description = "성공 메시지")
-    private final String message;
+    private final Integer status;
+    @Schema(description = "HTTP 상태 메시지")
+    private final String reason;
     @Schema(description = "응답 데이터")
     private T data;
 
     // 요청에 성공한 경우(응답할 데이터가 없음)
-    public ApiCommonResponse() {
+    public ApiSuccessResponse() {
         this.status = HttpStatus.OK.value();
-        this.message = HttpStatus.OK.getReasonPhrase();
+        this.reason = HttpStatus.OK.getReasonPhrase();
     }
 
     // 요청에 성공한 경우(응답할 데이터가 있음)
-    public ApiCommonResponse(T data) {
+    public ApiSuccessResponse(T data) {
         this.status = HttpStatus.OK.value();
-        this.message = HttpStatus.OK.getReasonPhrase();
-        this.data = data;
-    }
-
-    // 요청에 실패한 경우
-    public ApiCommonResponse(int status, String message, T data) {
-        this.status = status;
-        this.message = message;
+        this.reason = HttpStatus.OK.getReasonPhrase();
         this.data = data;
     }
 }

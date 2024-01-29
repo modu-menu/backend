@@ -2,7 +2,7 @@ package modu.menu.core.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import modu.menu.core.exception.*;
-import modu.menu.core.response.ApiCommonResponse;
+import modu.menu.core.response.ApiFailResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,7 +21,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception401.class)
-    public ResponseEntity<?> unAuthorized(Exception401 e) {
+    public ResponseEntity<?> unauthorized(Exception401 e) {
         log.warn("401: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
@@ -46,7 +46,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception500.class)
     public ResponseEntity<?> serverError(Exception500 e) {
-        log.error("500: " + e);
+        log.error("500: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
@@ -54,12 +54,11 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> unknownServerError(Exception e) {
-        log.error("Unknown: " + e);
+        log.error("500: " + e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiCommonResponse<>(
-                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                .body(new ApiFailResponse(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         e.getMessage()
                 ));
     }
