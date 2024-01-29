@@ -53,23 +53,23 @@ public class JwtAuthenticationFilter implements Filter {
                 throw new Exception401(ErrorMessage.NOT_ACTIVE_USER_TOKEN);
             }
 
+            chain.doFilter(req, resp);
         } catch (SignatureVerificationException e) { // 토큰 검증 실패 시
             log.error(ErrorMessage.TOKEN_VERIFICATION_FAIL + "");
             throw new Exception401(ErrorMessage.TOKEN_VERIFICATION_FAIL);
         } catch (TokenExpiredException e) { // 만료된 토큰일 시
             log.error(ErrorMessage.EXPIRED_TOKEN + "");
             throw new Exception401(ErrorMessage.EXPIRED_TOKEN);
-        } finally {
-            chain.doFilter(req, resp);
         }
     }
 
+    // JWT 인증 체크를 적용할지 URI를 통해 판단한다.
     private boolean isCheckURI(String method, String uri) {
-        if (method.equals("post") && uri.equals("/api/user")
-                || method.equals("post") && uri.equals("/api/user/login")) {
-            return true;
+        if (method.equals("POST") && uri.equals("/api/user")
+                || method.equals("POST") && uri.equals("/api/user/login")) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 }
