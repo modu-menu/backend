@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import modu.menu.core.exception.Exception401;
-import modu.menu.core.response.ApiResponse;
+import modu.menu.core.response.ApiCommonResponse;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
@@ -37,13 +37,13 @@ public class ExceptionHandlerFilter implements Filter {
         resp.setContentType("application/json; charset=utf-8");
 
         log.warn("401: " + e.getMessage());
-        ApiResponse apiResponse = new ApiResponse(
+        ApiCommonResponse apiCommonResponse = new ApiCommonResponse(
                 401,
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                 e.getMessage()
         );
 
-        String responseBody = objectMapper.writeValueAsString(apiResponse);
+        String responseBody = objectMapper.writeValueAsString(apiCommonResponse);
 
         PrintWriter printWriter = resp.getWriter();
         printWriter.println(responseBody);

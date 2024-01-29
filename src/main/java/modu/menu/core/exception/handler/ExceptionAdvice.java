@@ -2,7 +2,7 @@ package modu.menu.core.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import modu.menu.core.exception.*;
-import modu.menu.core.response.ApiResponse;
+import modu.menu.core.response.ApiCommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -57,7 +57,7 @@ public class ExceptionAdvice {
         log.error("Unknown: " + e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(
+                .body(new ApiCommonResponse<>(
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                         e.getMessage()
