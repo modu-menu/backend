@@ -21,6 +21,11 @@ public class LoggerFilter implements Filter {
         ContentCachingResponseWrapper resp = new ContentCachingResponseWrapper((HttpServletResponse) response);
         chain.doFilter(request, response);
 
+        // Swagger 관련 API는 로그를 기록하지 않는다.
+        if (req.getRequestURI().startsWith("/api-docs") || req.getRequestURI().startsWith("/swagger-ui")) {
+            return;
+        }
+
         // 비즈니스 로직 진입 후
         // request
         Enumeration<String> headerNames = req.getHeaderNames();

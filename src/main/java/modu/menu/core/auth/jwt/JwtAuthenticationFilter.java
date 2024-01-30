@@ -65,7 +65,9 @@ public class JwtAuthenticationFilter implements Filter {
 
     // JWT 인증 체크를 적용할지 URI를 통해 판단한다.
     private boolean isCheckURI(String method, String uri) {
-        if (method.equals("POST") && uri.equals("/api/user")
+        if (uri.startsWith("/api-docs")
+                || uri.startsWith("/swagger-ui")
+                || method.equals("POST") && uri.equals("/api/user")
                 || method.equals("POST") && uri.equals("/api/user/login")) {
             return false;
         }
