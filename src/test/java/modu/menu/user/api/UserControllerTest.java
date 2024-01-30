@@ -25,7 +25,7 @@ class UserControllerTest extends ControllerTestComponent {
     void crateUser() throws Exception {
         // given
         TempJoinRequest tempJoinRequest = TempJoinRequest.builder()
-                .email("")
+                .email("test1234@naver.com")
                 .password("test1234")
                 .name("홍길동")
                 .nickname("test1234")
