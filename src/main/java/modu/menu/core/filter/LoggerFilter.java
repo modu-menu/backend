@@ -4,7 +4,6 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 @Slf4j
-@Component
 // 요청과 응답을 로그에 기록한다.
 public class LoggerFilter implements Filter {
 
@@ -21,7 +19,12 @@ public class LoggerFilter implements Filter {
         // 비즈니스 로직 진입 전
         ContentCachingRequestWrapper req = new ContentCachingRequestWrapper((HttpServletRequest) request);
         ContentCachingResponseWrapper resp = new ContentCachingResponseWrapper((HttpServletResponse) response);
-        chain.doFilter((ServletRequest) req, (ServletResponse) resp);
+        chain.doFilter(request, response);
+
+        // Swagger 관련 API는 로그를 기록하지 않는다.
+        if (req.getRequestURI().startsWith("/api-docs") || req.getRequestURI().startsWith("/swagger-ui")) {
+            return;
+        }
 
         // 비즈니스 로직 진입 후
         // request
@@ -40,7 +43,7 @@ public class LoggerFilter implements Filter {
         String requestBody = req.getContentAsByteArray() + "";
         String requestURI = req.getRequestURI();
         String method = req.getMethod();
-        log.info(">>>>> uri: {}, method: {}, header: {}, body: {}", requestURI, method, headerValues, requestBody);
+        log.info(">>>>> uri: {}, method: {}, header: {}", requestURI, method, headerValues);
 
         // response
         StringBuilder responseHeaderValues = new StringBuilder();
@@ -54,7 +57,7 @@ public class LoggerFilter implements Filter {
                     .append("] ");
         });
         String responseBody = resp.getContentAsByteArray() + "";
-        log.info("<<<<< uri: {}, method: {}, header: {}, body: {}", requestURI, method, responseHeaderValues, responseBody);
+        log.info("<<<<< uri: {}, method: {}, header: {}", requestURI, method, responseHeaderValues);
 
         // 이게 있어야 response가 비어있는 채로 전달되지 않는다.
         resp.copyBodyToResponse();

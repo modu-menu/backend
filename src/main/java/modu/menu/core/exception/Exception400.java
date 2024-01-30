@@ -1,9 +1,9 @@
 package modu.menu.core.exception;
 
 import lombok.Getter;
-import modu.menu.core.response.ApiResponse;
+import modu.menu.core.response.ApiFailResponse;
+import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.core.response.ErrorData;
-import modu.menu.core.response.ErrorMessage;
 import org.springframework.http.HttpStatus;
 
 
@@ -13,14 +13,14 @@ public class Exception400 extends RuntimeException {
     private String key;
     private String value;
 
-    public Exception400(String key, ErrorMessage value) {
-        super(value.getValue());
+    public Exception400(String key, String value) {
+        super(value);
         this.key = key;
-        this.value = value.getValue();
+        this.value = value;
     }
 
-    public ApiResponse<?> body() {
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), new ErrorData(key, value));
+    public ApiFailResponse body() {
+        return new ApiFailResponse(HttpStatus.BAD_REQUEST, key, value);
     }
 
     public HttpStatus status() {

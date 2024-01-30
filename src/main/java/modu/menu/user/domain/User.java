@@ -19,6 +19,7 @@ public class User extends BaseTime {
     private Long id;
     @Column(unique = true)
     private String email;
+    private String password;
     private String name;
     private String nickname;
     private Gender gender; // 남성의 경우 "M", 여성의 경우 "F", 모르는 경우 "-"
