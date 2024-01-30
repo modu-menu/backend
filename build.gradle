@@ -31,7 +31,8 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
+    testImplementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-api', version: '2.3.0'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     testImplementation group: 'ch.qos.logback', name: 'logback-classic'

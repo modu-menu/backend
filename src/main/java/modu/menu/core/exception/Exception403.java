@@ -1,7 +1,8 @@
 package modu.menu.core.exception;
 
 import lombok.Getter;
-import modu.menu.core.response.ApiResponse;
+import modu.menu.core.response.ApiFailResponse;
+import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.core.response.ErrorMessage;
 import org.springframework.http.HttpStatus;
 
@@ -12,8 +13,8 @@ public class Exception403 extends RuntimeException {
         super(message.getValue());
     }
 
-    public ApiResponse<?> body() {
-        return new ApiResponse<>(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase(), getMessage());
+    public ApiFailResponse body() {
+        return new ApiFailResponse(HttpStatus.FORBIDDEN, getMessage());
     }
 
     public HttpStatus status() {

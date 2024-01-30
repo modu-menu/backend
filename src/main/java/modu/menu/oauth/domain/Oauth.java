@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.user.domain.User;
-import modu.menu.user.dto.UserResponse;
+import modu.menu.user.api.response.UserResponse;
 
 @Builder
 @AllArgsConstructor
