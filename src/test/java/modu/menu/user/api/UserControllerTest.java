@@ -1,6 +1,5 @@
 package modu.menu.user.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import modu.menu.ControllerTestComponent;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.api.request.TempLoginRequest;
@@ -9,7 +8,8 @@ import modu.menu.user.service.dto.TempLoginResultDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultMatcher;
+
+import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -31,6 +31,7 @@ class UserControllerTest extends ControllerTestComponent {
                 .nickname("test1234")
                 .gender("M")
                 .age(15)
+                .birthdate(LocalDate.of(1997, 1, 1))
                 .phoneNumber("01012345678")
                 .build();
 

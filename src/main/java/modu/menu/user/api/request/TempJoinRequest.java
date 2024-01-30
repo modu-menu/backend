@@ -37,7 +37,7 @@ public class TempJoinRequest {
 
     @Schema(description = "성별", example = "M", allowableValues = {"M", "W"})
     @Pattern(
-            regexp = "^MW$",
+            regexp = "^[MW]$",
             message = "성별 값은 'M' 또는 'W'만 입력해주세요."
     )
     private String gender;
