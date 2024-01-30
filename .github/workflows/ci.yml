@@ -5,6 +5,8 @@ env:
   RESOURCE_PATH: ./src/main/resources/application-prod.yml
   RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
   RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+  ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
+  REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
 
 on:
   push:
@@ -33,6 +35,8 @@ jobs:
         env:
           spring.datasource.username: ${{ env.RDS_USERNAME }}
           spring.datasource.password: ${{ env.RDS_PASSWORD }}
+          jwt.access-secret: ${{ env.ACCESS_SECRET }}
+          jwt.refresh-secret: ${{ env.ACCESS_SECRET }}
 
       - name: Gradle 명령 실행을 위한 권한을 부여한다.
         run: chmod +x ./gradlew
