@@ -46,7 +46,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception500.class)
     public ResponseEntity<?> serverError(Exception500 e) {
-        log.error("500: " + e.getMessage());
+        log.error("500: " + e.getMessage(), e.getStackTrace()[0]);
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
@@ -54,7 +54,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> unknownServerError(Exception e) {
-        log.error("500: " + e);
+        log.error("500: " + e.getMessage(), e.getStackTrace()[0]);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiFailResponse(
