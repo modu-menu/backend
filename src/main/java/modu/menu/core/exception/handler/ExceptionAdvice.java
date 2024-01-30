@@ -46,7 +46,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception500.class)
     public ResponseEntity<?> serverError(Exception500 e) {
-        log.error("500: " + e.getMessage());
+        log.error("500: " + e);
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
