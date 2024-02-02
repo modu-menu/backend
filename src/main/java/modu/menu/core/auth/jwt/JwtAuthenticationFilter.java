@@ -53,6 +53,9 @@ public class JwtAuthenticationFilter implements Filter {
                 throw new Exception401(ErrorMessage.NOT_ACTIVE_USER_TOKEN);
             }
 
+            // 권한 체크에 사용할 수도 있으므로 회원 id를 request에 담는다.
+            req.setAttribute("userId", userId);
+
             chain.doFilter(req, resp);
         } catch (SignatureVerificationException e) { // 토큰 검증 실패 시
             log.error(ErrorMessage.TOKEN_VERIFICATION_FAIL + "");
