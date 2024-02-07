@@ -41,7 +41,7 @@ public class VoteController {
     public ResponseEntity<ApiSuccessResponse<VoteResultsResponse>> getVoteResult(
             @Positive @PathVariable Long voteId,
             BindingResult requestParambindingResult,
-            @RequestBody VoteResultRequest voteResultRequest,
+            @Validated @RequestBody VoteResultRequest voteResultRequest,
             BindingResult requestBodybindingResult
     ) {
         // TODO ConstraintViolationException, MethodArgumentNotValidException 처리하는 ExceptionHandler 작성
