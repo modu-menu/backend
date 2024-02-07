@@ -110,7 +110,7 @@ public class UserController {
 //                );
 //    }
 
-    // BindingResult에 에러가 있을 시(@Validated에 의해 유효성 검사를 통과하지 못한 Exception400을 던진다.
+    // BindingResult에 에러가 있을 시(@Validated에 의해 유효성 검사를 통과하지 못한 경우) Exception400을 던진다.
     private void bindingResultResolver(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new Exception400(

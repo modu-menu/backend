@@ -1,4 +1,4 @@
-package modu.menu.vibe;
+package modu.menu.vibe.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

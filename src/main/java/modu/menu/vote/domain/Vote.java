@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.user.domain.User;
+import modu.menu.voteItem.domain.VoteItem;
+
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -20,4 +23,6 @@ public class Vote extends BaseTime {
     private User user;
     @Enumerated(EnumType.STRING)
     private VoteStatus voteStatus;
+    @OneToMany(mappedBy = "vote")
+    private List<VoteItem> voteItems;
 }

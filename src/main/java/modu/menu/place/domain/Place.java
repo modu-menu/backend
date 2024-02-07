@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.food.domain.Food;
-import modu.menu.vibe.Vibe;
+import modu.menu.vibe.domain.Vibe;
+import modu.menu.voteItem.domain.VoteItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,15 @@ public class Place extends BaseTime {
     private String ph;
     private String businessHours;
     private String menu;
-    private Float latitude; // 위도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
-    private Float longitude; // 경도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
-    @ManyToMany
+    private Double latitude; // 위도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
+    private Double longitude; // 경도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
+    private String imageUrl;
+    @OneToMany(mappedBy = "place")
+    private List<VoteItem> voteItems;
+    @ManyToMany(mappedBy = "place")
     @JoinTable(name = "place_food_tb")
-    private List<Food> foods = new ArrayList<>();
-    @ManyToMany
+    private List<Food> foods;
+    @ManyToMany(mappedBy = "place")
     @JoinTable(name = "place_vibe_tb")
-    private List<Vibe> vibes = new ArrayList<>();
+    private List<Vibe> vibes;
 }
