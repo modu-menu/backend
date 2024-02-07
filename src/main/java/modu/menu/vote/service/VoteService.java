@@ -37,6 +37,7 @@ public class VoteService {
     private final VibeRepository vibeRepository;
     private final FoodRepository foodRepository;
 
+    // 투표 결과 조회
     public VoteResultsResponse getVoteResult(Long voteId, VoteResultRequest voteResultRequest) {
 
         // 투표 존재 여부를 확인한다.(fetch join을 활용해 응답에 필요한 연관 데이터까지 가져온다.)
