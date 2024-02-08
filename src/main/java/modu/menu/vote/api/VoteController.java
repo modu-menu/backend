@@ -39,28 +39,13 @@ public class VoteController {
     })
     @PostMapping("/api/vote/{voteId}/result")
     public ResponseEntity<ApiSuccessResponse<VoteResultsResponse>> getVoteResult(
-            @Positive @PathVariable Long voteId,
-            BindingResult requestParambindingResult,
-            @Validated @RequestBody VoteResultRequest voteResultRequest,
-            BindingResult requestBodybindingResult
+            @Positive(message = "voteId는 양수여야 합니다.") @PathVariable Long voteId,
+            @Validated @RequestBody VoteResultRequest voteResultRequest
     ) {
-        // TODO ConstraintViolationException, MethodArgumentNotValidException 처리하는 ExceptionHandler 작성
-        bindingResultResolver(requestParambindingResult);
-        bindingResultResolver(requestBodybindingResult);
 
         VoteResultsResponse response = voteService.getVoteResult(voteId, voteResultRequest);
 
         return ResponseEntity.ok()
                 .body(new ApiSuccessResponse<>(response));
-    }
-
-    // BindingResult에 에러가 있을 시(@Validated에 의해 유효성 검사를 통과하지 못한 경우) Exception400을 던진다.
-    private void bindingResultResolver(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new Exception400(
-                    bindingResult.getFieldErrors().get(0).getField(),
-                    bindingResult.getFieldErrors().get(0).getDefaultMessage()
-            );
-        }
     }
 }
