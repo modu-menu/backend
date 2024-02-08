@@ -28,18 +28,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("VoteController 단위테스트")
 @ActiveProfiles("test")
 @WebMvcTest(VoteController.class)
 public class VoteControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private VoteService voteService;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private ObjectMapper objectMapper;
+    @MockBean private VoteService voteService;
 
-    @DisplayName("투표 결과 조회를 요청하면 성공한다.")
+    @DisplayName("투표 결과를 조회하면 성공한다.")
     @Test
     void getVoteResult() throws Exception {
         // given
@@ -67,7 +65,7 @@ public class VoteControllerTest {
                 .andExpect(jsonPath("$.data").isMap());
     }
 
-    @DisplayName("투표 결과 조회를 요청할 때 위도는 필수이다.")
+    @DisplayName("투표 결과를 조회할 때 위도는 필수이다.")
     @Test
     void getVoteResultWithNoLatitude() throws Exception {
         // given
@@ -95,7 +93,7 @@ public class VoteControllerTest {
                 .andExpect(jsonPath("$.message").value("위도는 필수입니다."));
     }
 
-    @DisplayName("투표 결과 조회를 요청할 때 경도는 필수이다.")
+    @DisplayName("투표 결과를 조회할 때 경도는 필수이다.")
     @Test
     void getVoteResultWithNoLongitude() throws Exception {
         // given
@@ -123,7 +121,7 @@ public class VoteControllerTest {
                 .andExpect(jsonPath("$.message").value("경도는 필수입니다."));
     }
 
-    @DisplayName("투표 결과 조회를 요청할 때 위도는 양수이다.")
+    @DisplayName("투표 결과를 조회할 때 위도는 양수이다.")
     @Test
     void getVoteResultWithZeroLatitude() throws Exception {
         // given
@@ -152,7 +150,7 @@ public class VoteControllerTest {
                 .andExpect(jsonPath("$.message").value("위도는 양수여야 합니다."));
     }
 
-    @DisplayName("투표 결과 조회를 요청할 때 경도는 양수이다.")
+    @DisplayName("투표 결과를 조회할 때 경도는 양수이다.")
     @Test
     void getVoteResultWithZeroLongitude() throws Exception {
         // given
