@@ -39,7 +39,7 @@ public class VoteController {
     })
     @PostMapping("/api/vote/{voteId}/result")
     public ResponseEntity<ApiSuccessResponse<VoteResultsResponse>> getVoteResult(
-            @Positive(message = "voteId는 양수여야 합니다.") @PathVariable Long voteId,
+            @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
             @Validated @RequestBody VoteResultRequest voteResultRequest
     ) {
 
