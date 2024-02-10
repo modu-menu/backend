@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@DisplayName("UserService 단위테스트")
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
