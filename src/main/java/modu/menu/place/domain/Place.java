@@ -34,10 +34,4 @@ public class Place extends BaseTime {
     private String imageUrl;
     @OneToMany(mappedBy = "place")
     private List<VoteItem> voteItems;
-    @ManyToMany
-    @JoinTable(name = "place_food_tb")
-    private List<Food> foods;
-    @ManyToMany
-    @JoinTable(name = "place_vibe_tb")
-    private List<Vibe> vibes;
 }

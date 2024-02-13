@@ -32,7 +32,4 @@ public class Review extends BaseTime {
     private String content;
     @Enumerated(EnumType.STRING)
     private ReviewStatus status;
-    @ManyToMany
-    @JoinTable(name = "review_vibe_tb")
-    private List<Vibe> vibes;
 }
