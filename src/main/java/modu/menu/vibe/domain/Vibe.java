@@ -1,7 +1,10 @@
-package modu.menu.vibe;
+package modu.menu.vibe.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import modu.menu.placevibe.domain.PlaceVibe;
+
+import java.util.List;
 
 @Builder
 @AllArgsConstructor

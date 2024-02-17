@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Schema(description = "성공 응답 DTO")
 @Getter
-@JsonPropertyOrder({"status", "message", "data"})
+@JsonPropertyOrder({"status", "reason", "data"})
 public class ApiSuccessResponse<T> {
     @Schema(description = "HTTP 상태 코드", example = "200")
     private final Integer status;

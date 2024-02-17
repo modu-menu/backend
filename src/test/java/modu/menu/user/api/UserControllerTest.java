@@ -1,13 +1,21 @@
 package modu.menu.user.api;
 
-import modu.menu.ControllerTestComponent;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.api.request.TempLoginRequest;
+import modu.menu.user.repository.UserRepository;
+import modu.menu.user.service.UserService;
 import modu.menu.user.service.dto.TempJoinResultDto;
 import modu.menu.user.service.dto.TempLoginResultDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
@@ -17,8 +25,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("UserController 단위테스트")
+@ActiveProfiles("test")
+@WebMvcTest(UserController.class)
+public class UserControllerTest {
 
-class UserControllerTest extends ControllerTestComponent {
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @MockBean
+    private JwtProvider jwtProvider;
+    @MockBean
+    private UserService userService;
 
     @DisplayName("새로운 회원을 등록한다.")
     @Test

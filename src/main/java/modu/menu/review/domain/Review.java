@@ -5,7 +5,7 @@ import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.place.domain.Place;
 import modu.menu.user.domain.User;
-import modu.menu.vibe.Vibe;
+import modu.menu.vibe.domain.Vibe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,4 @@ public class Review extends BaseTime {
     private String content;
     @Enumerated(EnumType.STRING)
     private ReviewStatus status;
-    @ManyToMany
-    @JoinTable(name = "review_vibe_tb")
-    private List<Vibe> vibes = new ArrayList<>();
 }

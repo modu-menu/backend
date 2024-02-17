@@ -13,8 +13,4 @@ public class HealthCheckController {
         return "up";
     }
 
-    @GetMapping("/api/test")
-    public ResponseEntity<?> getResponseTest() {
-        return ResponseEntity.ok().body(new ApiSuccessResponse<>("test"));
-    }
 }

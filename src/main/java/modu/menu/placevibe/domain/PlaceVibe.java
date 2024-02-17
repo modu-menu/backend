@@ -1,31 +1,27 @@
-package modu.menu.voteItem.domain;
+package modu.menu.placevibe.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.place.domain.Place;
-import modu.menu.vote.domain.Vote;
+import modu.menu.vibe.domain.Vibe;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "vote_item_tb")
+@Table(name = "place_vibe_tb")
 @Entity
-public class VoteItem {
+public class PlaceVibe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    private Vote vote;
-    @ManyToOne(fetch = FetchType.LAZY)
     private Place place;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Vibe vibe;
 
     public void syncPlace(Place place) {
         this.place = place;
-    }
-
-    public void syncVote(Vote vote) {
-        this.vote = vote;
     }
 }
