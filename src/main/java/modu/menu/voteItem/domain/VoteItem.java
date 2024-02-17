@@ -20,4 +20,12 @@ public class VoteItem {
     private Vote vote;
     @ManyToOne(fetch = FetchType.LAZY)
     private Place place;
+
+    public void syncPlace(Place place) {
+        this.place = place;
+    }
+
+    public void syncVote(Vote vote) {
+        this.vote = vote;
+    }
 }

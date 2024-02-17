@@ -20,4 +20,8 @@ public class PlaceVibe {
     private Place place;
     @ManyToOne(fetch = FetchType.LAZY)
     private Vibe vibe;
+
+    public void syncPlace(Place place) {
+        this.place = place;
+    }
 }

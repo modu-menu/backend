@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.food.domain.Food;
+import modu.menu.placefood.domain.PlaceFood;
+import modu.menu.placevibe.domain.PlaceVibe;
 import modu.menu.vibe.domain.Vibe;
 import modu.menu.voteItem.domain.VoteItem;
 
@@ -33,5 +35,39 @@ public class Place extends BaseTime {
     private Double longitude; // 경도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
     private String imageUrl;
     @OneToMany(mappedBy = "place")
-    private List<VoteItem> voteItems;
+    private List<VoteItem> voteItems = new ArrayList<>();
+    @OneToMany(mappedBy = "place")
+    private List<PlaceFood> placeFoods = new ArrayList<>();
+    @OneToMany(mappedBy = "place")
+    private List<PlaceVibe> placeVibes = new ArrayList<>();
+
+    public void addVoteItem(VoteItem voteItem) {
+        voteItems.add(voteItem);
+        voteItem.syncPlace(this);
+    }
+
+    public void removeVoteItem(VoteItem voteItem) {
+        voteItems.remove(voteItem);
+        voteItem.syncPlace(null);
+    }
+
+    public void addPlaceFood(PlaceFood placeFood) {
+        placeFoods.add(placeFood);
+        placeFood.syncPlace(this);
+    }
+
+    public void removePlaceFood(PlaceFood placeFood) {
+        placeFoods.remove(placeFood);
+        placeFood.syncPlace(null);
+    }
+
+    public void addPlaceVibe(PlaceVibe placeVibe) {
+        placeVibes.add(placeVibe);
+        placeVibe.syncPlace(this);
+    }
+
+    public void removePlaceVibe(PlaceVibe placeVibe) {
+        placeVibes.remove(placeVibe);
+        placeVibe.syncPlace(null);
+    }
 }

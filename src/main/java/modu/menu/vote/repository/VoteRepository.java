@@ -12,10 +12,8 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     @Query("""
             select v
             from Vote v
-            join fetch VoteItem vi
-            join fetch Place p
-            join fetch Vibe vib
-            join fetch Food f
+            join fetch v.voteItems vi
+            join fetch vi.place p
             """)
-    public Optional<Vote> findVoteResultById(@Param("voteId") Long voteId);
+    Optional<Vote> findVoteResultById(@Param("voteId") Long voteId);
 }

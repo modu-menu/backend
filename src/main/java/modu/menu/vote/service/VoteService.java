@@ -9,6 +9,8 @@ import modu.menu.food.domain.Food;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
+import modu.menu.placefood.domain.PlaceFood;
+import modu.menu.placevibe.domain.PlaceVibe;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VibeDto;
@@ -71,10 +73,12 @@ public class VoteService {
 
                     return VoteResult.builder()
                             .name(place.getName())
-                            .food(place.getFoods().stream()
+                            .food(place.getPlaceFoods().stream()
+                                    .map(PlaceFood::getFood)
                                     .map(Food::getName)
                                     .collect(Collectors.joining()))
-                            .vibes(place.getVibes().stream()
+                            .vibes(place.getPlaceVibes().stream()
+                                    .map(PlaceVibe::getVibe)
                                     .map(vibe -> new VibeDto(vibe.getName()))
                                     .toList())
                             .address(place.getAddress())

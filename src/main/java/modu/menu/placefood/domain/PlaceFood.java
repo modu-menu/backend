@@ -20,4 +20,8 @@ public class PlaceFood {
     private Place place;
     @ManyToOne(fetch = FetchType.LAZY)
     private Food food;
+
+    public void syncPlace(Place place) {
+        this.place = place;
+    }
 }
