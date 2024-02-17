@@ -19,20 +19,20 @@ import java.time.LocalDate;
 public class TempJoinRequest {
 
     @Schema(description = "이메일", example = "hangang416@naver.com")
-    @NotBlank
-    @Email
+    @NotBlank(message = "이메일은 필수입니다.")
+    @Email(message = "이메일 형식을 지켜주세요.")
     private String email;
 
     @Schema(description = "비밀번호")
-    @NotBlank
+    @NotBlank(message = "비밀번호는 필수입니다.")
     private String password;
 
     @Schema(description = "이름")
-    @NotBlank
+    @NotBlank(message = "이름은 필수입니다.")
     private String name;
 
     @Schema(description = "닉네임")
-    @NotBlank
+    @NotBlank(message = "닉네임은 필수입니다.")
     private String nickname;
 
     @Schema(description = "성별", example = "M", allowableValues = {"M", "W"})
@@ -40,15 +40,16 @@ public class TempJoinRequest {
             regexp = "^[MW]$",
             message = "성별 값은 'M' 또는 'W'만 입력해주세요."
     )
+    @NotBlank(message = "성별은 필수입니다.")
     private String gender;
 
     @Schema(description = "연령", example = "25")
-    @NotNull
+    @NotNull(message = "연령은 필수입니다.")
     @PositiveOrZero
     private Integer age;
 
     @Schema(description = "생일", example = "1997-01-01")
-    @NotNull
+    @NotNull(message = "생일은 필수입니다.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
 
@@ -57,6 +58,7 @@ public class TempJoinRequest {
             regexp = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$",
             message = "유효하지 않은 휴대폰 번호 형식입니다."
     )
+    @NotBlank(message = "휴대폰 번호는 필수입니다.")
     private String phoneNumber;
 
 }

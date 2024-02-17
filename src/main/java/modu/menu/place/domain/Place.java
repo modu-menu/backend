@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.food.domain.Food;
-import modu.menu.vibe.Vibe;
+import modu.menu.placefood.domain.PlaceFood;
+import modu.menu.placevibe.domain.PlaceVibe;
+import modu.menu.vibe.domain.Vibe;
+import modu.menu.voteItem.domain.VoteItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +31,43 @@ public class Place extends BaseTime {
     private String ph;
     private String businessHours;
     private String menu;
-    private Float latitude; // 위도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
-    private Float longitude; // 경도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
-    @ManyToMany
-    @JoinTable(name = "place_food_tb")
-    private List<Food> foods = new ArrayList<>();
-    @ManyToMany
-    @JoinTable(name = "place_vibe_tb")
-    private List<Vibe> vibes = new ArrayList<>();
+    private Double latitude; // 위도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
+    private Double longitude; // 경도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
+    private String imageUrl;
+    @OneToMany(mappedBy = "place")
+    private List<VoteItem> voteItems = new ArrayList<>();
+    @OneToMany(mappedBy = "place")
+    private List<PlaceFood> placeFoods = new ArrayList<>();
+    @OneToMany(mappedBy = "place")
+    private List<PlaceVibe> placeVibes = new ArrayList<>();
+
+    public void addVoteItem(VoteItem voteItem) {
+        voteItems.add(voteItem);
+        voteItem.syncPlace(this);
+    }
+
+    public void removeVoteItem(VoteItem voteItem) {
+        voteItems.remove(voteItem);
+        voteItem.syncPlace(null);
+    }
+
+    public void addPlaceFood(PlaceFood placeFood) {
+        placeFoods.add(placeFood);
+        placeFood.syncPlace(this);
+    }
+
+    public void removePlaceFood(PlaceFood placeFood) {
+        placeFoods.remove(placeFood);
+        placeFood.syncPlace(null);
+    }
+
+    public void addPlaceVibe(PlaceVibe placeVibe) {
+        placeVibes.add(placeVibe);
+        placeVibe.syncPlace(this);
+    }
+
+    public void removePlaceVibe(PlaceVibe placeVibe) {
+        placeVibes.remove(placeVibe);
+        placeVibe.syncPlace(null);
+    }
 }
