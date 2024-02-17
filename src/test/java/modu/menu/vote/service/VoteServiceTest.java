@@ -1,11 +1,11 @@
 package modu.menu.vote.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.exception.Exception404;
+import modu.menu.core.response.ErrorMessage;
 import modu.menu.food.domain.Food;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
@@ -27,21 +27,21 @@ import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
 import modu.menu.voteItem.domain.VoteItem;
 import modu.menu.voteItem.repository.VoteItemRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("VoteService 단위테스트")
+@Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
 @SpringBootTest
 public class VoteServiceTest {
@@ -153,7 +153,7 @@ public class VoteServiceTest {
 
     @DisplayName("DB에 존재하는 투표의 ID로 조회를 요청해야 한다.")
     @Test
-    void getVoteResultWithNotExistVoteId() throws JsonProcessingException {
+    void getVoteResultWithNotExistVoteId() {
         // given
         Long voteId = 2L;
         VoteResultRequest voteResultRequest = VoteResultRequest.builder()
@@ -162,9 +162,9 @@ public class VoteServiceTest {
                 .build();
 
         // when & then
-        Assertions.assertThrows(Exception404.class, () -> {
-            voteService.getVoteResult(voteId, voteResultRequest);
-        });
+        assertThatThrownBy(() -> voteService.getVoteResult(voteId, voteResultRequest))
+                .isInstanceOf(Exception404.class)
+                .hasMessage(ErrorMessage.NOT_EXIST_VOTE.getValue());
     }
 
     private User createUser(String email) {
