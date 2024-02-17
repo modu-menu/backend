@@ -1,7 +1,11 @@
-package modu.menu.vote.repository;
+package modu.menu.vote.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
+import modu.menu.core.auth.jwt.JwtProvider;
+import modu.menu.core.exception.Exception404;
 import modu.menu.food.domain.Food;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
@@ -16,31 +20,34 @@ import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.repository.VibeRepository;
+import modu.menu.vote.api.request.VoteResultRequest;
+import modu.menu.vote.api.response.VoteResultsResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
+import modu.menu.vote.repository.VoteRepository;
 import modu.menu.voteItem.domain.VoteItem;
 import modu.menu.voteItem.repository.VoteItemRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
+import static org.assertj.core.api.Assertions.tuple;
 
-@DisplayName("VoteRepository 단위테스트")
+@DisplayName("VoteService 단위테스트")
 @ActiveProfiles("test")
-@DataJpaTest
-public class VoteRepositoryTest {
+@SpringBootTest
+public class VoteServiceTest {
 
     @Autowired
-    private VoteRepository voteRepository;
+    private VoteService voteService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -50,17 +57,23 @@ public class VoteRepositoryTest {
     @Autowired
     private PlaceVibeRepository placeVibeRepository;
     @Autowired
+    private PlaceFoodRepository placeFoodRepository;
+    @Autowired
     private FoodRepository foodRepository;
     @Autowired
-    private PlaceFoodRepository placeFoodRepository;
+    private VoteRepository voteRepository;
     @Autowired
     private VoteItemRepository voteItemRepository;
     @Autowired
     private ChoiceRepository choiceRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private JwtProvider jwtProvider;
 
-    @DisplayName("voteId를 통해 투표 및 연관 데이터를 조회한다.")
+    @DisplayName("투표 ID를 통해 투표 및 연관 데이터를 조회한다.")
     @Test
-    void findVoteResultById() {
+    void getVoteResult() {
         // given
         User user1 = createUser("hong1234@naver.com");
         User user2 = createUser("kim1234@naver.com");
@@ -106,16 +119,52 @@ public class VoteRepositoryTest {
         voteRepository.save(vote);
         voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
         choiceRepository.saveAll(List.of(choice1, choice2, choice3));
+
         Long voteId = 1L;
+        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
+                .latitude(37.655038011447)
+                .longitude(127.06694995614)
+                .build();
 
         // when
-        Optional<Vote> voteResult = voteRepository.findVoteResultById(voteId);
+        VoteResultsResponse voteResult = voteService.getVoteResult(voteId, voteResultRequest);
 
         // then
-        assertThat(voteResult).get()
-                .hasFieldOrPropertyWithValue("id", voteId)
-                .extracting("voteItems", COLLECTION)
-                .hasSize(3);
+        assertThat(voteResult.getResults()).isNotNull();
+        assertThat(voteResult.getResults())
+                .extracting("name", "food", "address", "distance", "img", "voteRating")
+                .containsExactlyInAnyOrder(
+                        tuple("타코벨", "멕시코", "address", "2.0km", "image", "33%"),
+                        tuple("이자카야모리", "멕시코", "address", "2.0km", "image", "33%"),
+                        tuple("서가앤쿡 노원역점", "한식", "address", "2.0km", "image", "33%")
+                );
+        assertThat(
+                voteResult.getResults().stream()
+                        .flatMap(v -> v.getVibes().stream())
+                        .toList()
+        )
+                .extracting("name")
+                .containsExactlyInAnyOrder(
+                        "시끌벅적해요",
+                        "조용해요",
+                        "분위기 좋아요"
+                );
+    }
+
+    @DisplayName("DB에 존재하는 투표의 ID로 조회를 요청해야 한다.")
+    @Test
+    void getVoteResultWithNotExistVoteId() throws JsonProcessingException {
+        // given
+        Long voteId = 2L;
+        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
+                .latitude(37.655038011447)
+                .longitude(127.06694995614)
+                .build();
+
+        // when & then
+        Assertions.assertThrows(Exception404.class, () -> {
+            voteService.getVoteResult(voteId, voteResultRequest);
+        });
     }
 
     private User createUser(String email) {
@@ -139,8 +188,8 @@ public class VoteRepositoryTest {
                 .ph("string")
                 .businessHours("hours")
                 .menu("메뉴")
-                .latitude(125.00000)
-                .longitude(14.12133)
+                .latitude(37.676051439616)
+                .longitude(127.05563369603)
                 .imageUrl("image")
                 .voteItems(new ArrayList<>())
                 .placeVibes(new ArrayList<>())

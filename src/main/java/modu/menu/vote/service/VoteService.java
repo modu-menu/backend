@@ -67,7 +67,7 @@ public class VoteService {
                             place.getLongitude(),
                             voteResultRequest.getLatitude(),
                             voteResultRequest.getLongitude()
-                    ) * 10);
+                    ) * 1000) / 1000;
 
                     int voteCount = voteCountMap.getOrDefault(v.getId(), 0);
 
