@@ -1,5 +1,9 @@
-# 사용할 JDK 버전을 명시한다.
-FROM openjdk:17-jdk
+# Ubuntu 기반 이미지 사용
+FROM ubuntu:22.04
+
+# 필요한 패키지를 설치한다.(JDK 17)
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk
 
 # 빌드가 완료된 jar 파일의 위치를 환경변수로 등록한다.
 ARG JAR_FILE=build/libs/modu-menu-0.0.1-SNAPSHOT.jar
