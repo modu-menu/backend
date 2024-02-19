@@ -82,7 +82,7 @@ public class VoteService {
                                     .map(vibe -> new VibeDto(vibe.getName()))
                                     .toList())
                             .address(place.getAddress())
-                            .distance(distance >= 1000.0 ? String.format("%.1f", distance) + "km" : Math.round(distance) + "m")
+                            .distance(distance >= 1000.0 ? String.format("%.1f", distance / 1000.0) + "km" : Math.round(distance) + "m")
                             .img(place.getImageUrl())
                             .voteRating(Math.round(voteCount * 100 / voterCount) + "%")
                             .build();
