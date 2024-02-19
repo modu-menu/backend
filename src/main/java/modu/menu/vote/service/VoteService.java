@@ -87,6 +87,13 @@ public class VoteService {
                             .voteRating(Math.round(voteCount * 100 / voterCount) + "%")
                             .build();
                 })
+                .sorted((voteResult1, voteResult2) -> {
+                    if (voteResult1.getVoteRating() == voteResult2.getVoteRating()) {
+                        return voteResult1.getName().compareTo(voteResult2.getName());
+                    }
+                    return Integer.parseInt(voteResult2.getVoteRating().replace("%" , ""))
+                            - Integer.parseInt(voteResult1.getVoteRating().replace("%" , ""));
+                })
                 .toList()
         );
     }
