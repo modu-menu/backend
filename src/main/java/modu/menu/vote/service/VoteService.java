@@ -62,12 +62,12 @@ public class VoteService {
         return new VoteResultsResponse(voteItems.stream()
                 .map(v -> {
                     Place place = v.getPlace();
-                    double distance = Math.round(CalculateDistanceUtil.calculateDistance(
+                    double distance = CalculateDistanceUtil.calculateDistance(
                             place.getLatitude(),
                             place.getLongitude(),
                             voteResultRequest.getLatitude(),
                             voteResultRequest.getLongitude()
-                    ) * 1000) / 1000;
+                    );
 
                     int voteCount = voteCountMap.getOrDefault(v.getId(), 0);
 
@@ -82,7 +82,7 @@ public class VoteService {
                                     .map(vibe -> new VibeDto(vibe.getName()))
                                     .toList())
                             .address(place.getAddress())
-                            .distance(distance >= 1 ? distance + "km" : distance + "m")
+                            .distance(distance >= 1000.0 ? String.format("%.1f", distance) + "km" : Math.round(distance) + "m")
                             .img(place.getImageUrl())
                             .voteRating(Math.round(voteCount * 100 / voterCount) + "%")
                             .build();
