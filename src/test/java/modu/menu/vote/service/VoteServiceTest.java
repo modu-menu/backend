@@ -134,9 +134,9 @@ public class VoteServiceTest {
         assertThat(voteResult.getResults())
                 .extracting("name", "food", "address", "distance", "img", "voteRating")
                 .containsExactlyInAnyOrder(
-                        tuple("타코벨", "멕시코", "address", "2.0km", "image", "33%"),
-                        tuple("이자카야모리", "멕시코", "address", "2.0km", "image", "33%"),
-                        tuple("서가앤쿡 노원역점", "한식", "address", "2.0km", "image", "33%")
+                        tuple("타코벨", "멕시코", "address", "2.5km", "image", "33%"),
+                        tuple("이자카야모리", "멕시코", "address", "2.5km", "image", "33%"),
+                        tuple("서가앤쿡 노원역점", "한식", "address", "2.5km", "image", "33%")
                 );
         assertThat(
                 voteResult.getResults().stream()
