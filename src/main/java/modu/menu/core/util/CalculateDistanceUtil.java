@@ -48,6 +48,6 @@ public class CalculateDistanceUtil {
                 - B / 6 * cos2SigmaM * (-3 + 4 * Math.pow(sinSigma, 2)) * (-3 + 4 * Math.pow(cos2SigmaM, 2))));
 
         double distanceMt = SEMI_MINOR_AXIS_MT * A * (sigma - deltaSigma);
-        return distanceMt / 1000;
+        return distanceMt;
     }
 }

@@ -45,6 +45,7 @@
     </springProfile>
 
     <springProfile name="dev">
+        <property resource="application-dev.yml"/>
         <logger name="modu.menu" level="debug">
             <appender-ref ref="CONSOLE" />
         </logger>
@@ -57,6 +58,9 @@
     <springProfile name="prod">
         <property resource="application-prod.yml"/>
         <logger name="modu.menu" level="debug">
+            <appender-ref ref="CONSOLE" />
+        </logger>
+        <logger name="modu.menu" level="info">
             <appender-ref ref="FILE" />
         </logger>
     </springProfile>
