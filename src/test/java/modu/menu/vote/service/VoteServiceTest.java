@@ -106,7 +106,7 @@ public class VoteServiceTest {
         foodRepository.saveAll(List.of(food1, food2));
         placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
 
-        Vote vote = createVote(user1, VoteStatus.END);
+        Vote vote = createVote(VoteStatus.END);
         VoteItem voteItem1 = createVoteItem(vote, place1);
         VoteItem voteItem2 = createVoteItem(vote, place2);
         VoteItem voteItem3 = createVoteItem(vote, place3);
@@ -223,9 +223,8 @@ public class VoteServiceTest {
                 .build();
     }
 
-    private Vote createVote(User user, VoteStatus voteStatus) {
+    private Vote createVote(VoteStatus voteStatus) {
         return Vote.builder()
-                .user(user)
                 .voteStatus(voteStatus)
                 .voteItems(new ArrayList<>())
                 .build();
