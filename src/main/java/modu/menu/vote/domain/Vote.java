@@ -3,6 +3,7 @@ package modu.menu.vote.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
+import modu.menu.participant.domain.Participant;
 import modu.menu.user.domain.User;
 import modu.menu.voteItem.domain.VoteItem;
 
@@ -20,12 +21,22 @@ public class Vote extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
     @Enumerated(EnumType.STRING)
     private VoteStatus voteStatus;
     @OneToMany(mappedBy = "vote")
+    private List<Participant> participants = new ArrayList<>();
+    @OneToMany(mappedBy = "vote")
     private List<VoteItem> voteItems = new ArrayList<>();
+
+    public void addParticipant(Participant participant) {
+        participants.add(participant);
+        participant.syncVote(this);
+    }
+
+    public void removeParticipant(Participant participant) {
+        participants.remove(participant);
+        participant.syncVote(null);
+    }
 
     public void addVoteItem(VoteItem voteItem) {
         voteItems.add(voteItem);
