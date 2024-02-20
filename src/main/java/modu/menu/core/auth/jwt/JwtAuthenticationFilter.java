@@ -39,6 +39,9 @@ public class JwtAuthenticationFilter implements Filter {
         }
 
         String accessToken = req.getHeader(jwtProvider.ACCESS_HEADER);
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new Exception401(ErrorMessage.EMPTY_TOKEN);
+        }
         String accessTokenValue = accessToken.replace(jwtProvider.TOKEN_PREFIX, "");
 
         // 토큰을 복호화한 뒤 DB의 회원 데이터와 비교한다.
