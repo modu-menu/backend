@@ -1,10 +1,10 @@
 package modu.menu.vibe.domain;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 public enum VibeType {
 
     NOISY("시끌벅적해요"),
@@ -15,4 +15,9 @@ public enum VibeType {
     NICE_VIEW("뷰맛집이에요");
 
     private String title;
+
+    @JsonValue
+    public String getTitle() {
+        return title;
+    }
 }
