@@ -14,8 +14,8 @@ import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
-import modu.menu.user.service.dto.TempJoinResultDto;
-import modu.menu.user.service.dto.TempLoginResultDto;
+import modu.menu.user.service.dto.TempJoinServiceResponse;
+import modu.menu.user.service.dto.TempLoginServiceResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ public class UserService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public TempJoinResultDto tempJoin(TempJoinRequest tempJoinRequest) {
+    public TempJoinServiceResponse tempJoin(TempJoinRequest tempJoinRequest) {
         userRepository.findByEmail(tempJoinRequest.getEmail()).ifPresent(user -> {
                     throw new Exception400("email", ErrorMessage.DUPLICATE_EMAIL.getValue());
         });
@@ -50,7 +50,7 @@ public class UserService {
                         .build()
         );
 
-        return TempJoinResultDto.builder()
+        return TempJoinServiceResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .nickname(user.getNickname())
@@ -59,7 +59,7 @@ public class UserService {
                 .build();
     }
 
-    public TempLoginResultDto tempLogin(TempLoginRequest tempLoginRequest) {
+    public TempLoginServiceResponse tempLogin(TempLoginRequest tempLoginRequest) {
         User user = userRepository.findByEmail(tempLoginRequest.getEmail()).orElseThrow(
                 () -> new Exception401(ErrorMessage.LOGIN_USER_WRONG_EMAIL)
         );
@@ -68,7 +68,7 @@ public class UserService {
             throw new Exception401(ErrorMessage.LOGIN_USER_WRONG_PASSWORD);
         }
 
-        return TempLoginResultDto.builder()
+        return TempLoginServiceResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .nickname(user.getNickname())

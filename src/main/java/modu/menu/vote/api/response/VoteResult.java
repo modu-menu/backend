@@ -22,7 +22,7 @@ public class VoteResult {
     private String food;
 
     @Schema(description = "음식점 분위기 목록")
-    private List<VibeDto> vibes;
+    private List<VibeResponse> vibes;
 
     @Schema(description = "음식점 도로명 주소", example = "서울 서초구 서초대로74길 11 삼성전자 강남사옥 지하1층 B108호")
     private String address;

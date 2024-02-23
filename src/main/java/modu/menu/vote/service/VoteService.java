@@ -13,7 +13,7 @@ import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placevibe.domain.PlaceVibe;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.VoteResultRequest;
-import modu.menu.vote.api.response.VibeDto;
+import modu.menu.vote.api.response.VibeResponse;
 import modu.menu.vote.api.response.VoteResult;
 import modu.menu.vote.api.response.VoteResultsResponse;
 import modu.menu.vote.domain.Vote;
@@ -79,7 +79,7 @@ public class VoteService {
                                     .collect(Collectors.joining()))
                             .vibes(place.getPlaceVibes().stream()
                                     .map(PlaceVibe::getVibe)
-                                    .map(vibe -> new VibeDto(vibe.getName()))
+                                    .map(vibe -> new VibeResponse(vibe.getVibeType()))
                                     .toList())
                             .address(place.getAddress())
                             .distance(distance >= 1000.0 ? String.format("%.1f", distance / 1000.0) + "km" : Math.round(distance) + "m")

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.exception.Exception400;
@@ -44,7 +45,7 @@ public class VoteController {
     @PostMapping("/api/vote/{voteId}/result")
     public ResponseEntity<ApiSuccessResponse<VoteResultsResponse>> getVoteResult(
             @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
-            @Validated @RequestBody VoteResultRequest voteResultRequest
+            @Valid @RequestBody VoteResultRequest voteResultRequest
     ) {
 
         VoteResultsResponse response = voteService.getVoteResult(voteId, voteResultRequest);
