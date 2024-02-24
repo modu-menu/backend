@@ -7,8 +7,8 @@ import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
-import modu.menu.user.service.dto.TempJoinResultDto;
-import modu.menu.user.service.dto.TempLoginResultDto;
+import modu.menu.user.service.dto.TempJoinServiceResponse;
+import modu.menu.user.service.dto.TempLoginServiceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.awaitility.Awaitility.given;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -55,7 +54,7 @@ class UserServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(tempUser);
 
         // when
-        TempJoinResultDto tempJoinResultDto = userService.tempJoin(tempJoinRequest);
+        TempJoinServiceResponse tempJoinServiceResponse = userService.tempJoin(tempJoinRequest);
 
         // then
         verify(userRepository, times(1)).save(any(User.class));
@@ -73,7 +72,7 @@ class UserServiceTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(tempUser));
 
         // when
-        TempLoginResultDto tempLoginResultDto = userService.tempLogin(tempLoginRequest);
+        TempLoginServiceResponse tempLoginServiceResponse = userService.tempLogin(tempLoginRequest);
 
         // then
         verify(userRepository, times(1)).findByEmail(anyString());
