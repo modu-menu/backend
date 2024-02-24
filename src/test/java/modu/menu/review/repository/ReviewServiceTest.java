@@ -1,15 +1,21 @@
-package modu.menu.vote.repository;
+package modu.menu.review.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.choice.domain.Choice;
-import modu.menu.choice.repository.ChoiceRepository;
+import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.food.domain.Food;
-import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
-import modu.menu.placefood.repository.PlaceFoodRepository;
 import modu.menu.placevibe.domain.PlaceVibe;
 import modu.menu.placevibe.repository.PlaceVibeRepository;
+import modu.menu.review.api.request.CreateReviewRequest;
+import modu.menu.review.api.request.VibeRequest;
+import modu.menu.review.domain.HasRoom;
+import modu.menu.review.domain.Review;
+import modu.menu.review.service.ReviewService;
+import modu.menu.reviewvibe.domain.ReviewVibe;
+import modu.menu.reviewvibe.repository.ReviewVibeRepository;
 import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
@@ -17,51 +23,52 @@ import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
+import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.voteItem.domain.VoteItem;
-import modu.menu.voteItem.repository.VoteItemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
 
-@DisplayName("VoteRepository 단위테스트")
+@DisplayName("ReviewService 단위테스트")
+@Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
-@DataJpaTest
-public class VoteRepositoryTest {
+@SpringBootTest
+public class ReviewServiceTest {
 
     @Autowired
-    private VoteRepository voteRepository;
+    private ReviewService reviewService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private PlaceRepository placeRepository;
     @Autowired
+    private ReviewRepository reviewRepository;
+    @Autowired
+    private ReviewVibeRepository reviewVibeRepository;
+    @Autowired
     private VibeRepository vibeRepository;
     @Autowired
-    private PlaceVibeRepository placeVibeRepository;
+    private ObjectMapper objectMapper;
     @Autowired
-    private FoodRepository foodRepository;
-    @Autowired
-    private PlaceFoodRepository placeFoodRepository;
-    @Autowired
-    private VoteItemRepository voteItemRepository;
-    @Autowired
-    private ChoiceRepository choiceRepository;
+    private JwtProvider jwtProvider;
 
-    @DisplayName("voteId를 통해 투표 및 연관 데이터를 조회한다.")
+    @DisplayName("회원이 작성한 리뷰를 등록한다.")
     @Test
-    void findVoteResultById() {
+    void createReview() {
         // given
         User user1 = createUser("hong1234@naver.com");
         User user2 = createUser("kim1234@naver.com");
@@ -72,51 +79,27 @@ public class VoteRepositoryTest {
         Vibe vibe1 = createVibe(VibeType.NOISY);
         Vibe vibe2 = createVibe(VibeType.QUIET);
         Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
-        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
-        place1.addPlaceVibe(placeVibe1);
-        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
-        place2.addPlaceVibe(placeVibe2);
-        PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
-        place3.addPlaceVibe(placeVibe3);
+        Vibe vibe4 = createVibe(VibeType.MODERN);
+        Vibe vibe5 = createVibe(VibeType.NICE_VIEW);
+        Vibe vibe6 = createVibe(VibeType.TRENDY);
         userRepository.saveAll(List.of(user1, user2, user3));
         placeRepository.saveAll(List.of(place1, place2, place3));
-        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
-        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
+        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3, vibe4, vibe5, vibe6));
 
-        Food food1 = createFood("멕시코");
-        Food food2 = createFood("한식");
-        PlaceFood placeFood1 = createPlaceFood(place1, food1);
-        place1.addPlaceFood(placeFood1);
-        PlaceFood placeFood2 = createPlaceFood(place2, food1);
-        place2.addPlaceFood(placeFood2);
-        PlaceFood placeFood3 = createPlaceFood(place3, food2);
-        place3.addPlaceFood(placeFood3);
-        foodRepository.saveAll(List.of(food1, food2));
-        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
-
-        Vote vote = createVote(VoteStatus.END);
-        VoteItem voteItem1 = createVoteItem(vote, place1);
-        VoteItem voteItem2 = createVoteItem(vote, place2);
-        VoteItem voteItem3 = createVoteItem(vote, place3);
-        vote.addVoteItem(voteItem1);
-        vote.addVoteItem(voteItem2);
-        vote.addVoteItem(voteItem3);
-        Choice choice1 = createChoice(voteItem1, user1);
-        Choice choice2 = createChoice(voteItem2, user2);
-        Choice choice3 = createChoice(voteItem3, user3);
-        voteRepository.save(vote);
-        voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
-        choiceRepository.saveAll(List.of(choice1, choice2, choice3));
-        Long voteId = 1L;
+        Long userId = 1L;
+        Long placeId = 1L;
+        CreateReviewRequest createReviewRequest = CreateReviewRequest.builder()
+                .rating(1)
+                .vibes(List.of(new VibeRequest(VibeType.NOISY)))
+                .participants(3)
+                .hasRoom(HasRoom.NO)
+                .content("리뷰")
+                .build();
 
         // when
-        Optional<Vote> voteResult = voteRepository.findVoteResultById(voteId);
+        reviewService.createReview(userId, placeId, createReviewRequest);
 
         // then
-        assertThat(voteResult).get()
-                .hasFieldOrPropertyWithValue("id", voteId)
-                .extracting("voteItems", COLLECTION)
-                .hasSize(3);
     }
 
     private User createUser(String email) {
@@ -140,8 +123,8 @@ public class VoteRepositoryTest {
                 .ph("string")
                 .businessHours("hours")
                 .menu("메뉴")
-                .latitude(125.00000)
-                .longitude(14.12133)
+                .latitude(37.676051439616)
+                .longitude(127.05563369603)
                 .imageUrl("image")
                 .voteItems(new ArrayList<>())
                 .placeVibes(new ArrayList<>())

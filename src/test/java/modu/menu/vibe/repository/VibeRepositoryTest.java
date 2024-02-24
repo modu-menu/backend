@@ -42,8 +42,8 @@ public class VibeRepositoryTest {
 
         // then
         assertThat(vibeResult).get()
-                .hasFieldOrPropertyWithValue("id", 1L)
-                .hasFieldOrPropertyWithValue("vibeType", VibeType.NOISY);
+                .hasFieldOrPropertyWithValue("id", 4L)
+                .hasFieldOrPropertyWithValue("type", VibeType.NOISY);
     }
 
     private Vibe createVibe(VibeType type) {

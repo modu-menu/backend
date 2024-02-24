@@ -144,11 +144,11 @@ public class VoteServiceTest {
                         .flatMap(v -> v.getVibes().stream())
                         .toList()
         )
-                .extracting("name")
+                .extracting("type")
                 .containsExactlyInAnyOrder(
-                        "시끌벅적해요",
-                        "조용해요",
-                        "분위기 좋아요"
+                        VibeType.NOISY,
+                        VibeType.QUIET,
+                        VibeType.GOOD_SERVICE
                 );
     }
 
@@ -200,7 +200,7 @@ public class VoteServiceTest {
 
     private Vibe createVibe(VibeType type) {
         return Vibe.builder()
-                .vibeType(type)
+                .type(type)
                 .build();
     }
 

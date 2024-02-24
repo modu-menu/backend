@@ -79,7 +79,7 @@ public class VoteService {
                                     .collect(Collectors.joining()))
                             .vibes(place.getPlaceVibes().stream()
                                     .map(PlaceVibe::getVibe)
-                                    .map(vibe -> new VibeResponse(vibe.getVibeType()))
+                                    .map(vibe -> new VibeResponse(vibe.getType()))
                                     .toList())
                             .address(place.getAddress())
                             .distance(distance >= 1000.0 ? String.format("%.1f", distance / 1000.0) + "km" : Math.round(distance) + "m")
