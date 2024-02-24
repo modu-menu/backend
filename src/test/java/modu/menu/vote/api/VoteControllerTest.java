@@ -1,6 +1,7 @@
 package modu.menu.vote.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.vibe.domain.VibeType;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VibeResponse;
 import modu.menu.vote.api.response.VoteResult;
@@ -182,7 +183,7 @@ public class VoteControllerTest {
         return VoteResult.builder()
                 .name(name)
                 .food("멕시칸, 브라질")
-                .vibes(List.of(new VibeResponse("시끌벅적해요")))
+                .vibes(List.of(new VibeResponse(VibeType.NOISY)))
                 .address("서울 종로구 삼일대로")
                 .distance("10m")
                 .img("이미지 주소")

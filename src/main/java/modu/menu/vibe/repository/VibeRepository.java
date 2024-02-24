@@ -15,5 +15,5 @@ public interface VibeRepository extends JpaRepository<Vibe, Long> {
             from Vibe v
             where v.vibeType = :type
             """)
-    Optional<Vibe> findByVibeType(@Param("vibeType") VibeType type);
+    Optional<Vibe> findByVibeType(@Param("type") VibeType type);
 }

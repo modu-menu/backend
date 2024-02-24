@@ -15,6 +15,7 @@ import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.domain.Vibe;
+import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
@@ -68,9 +69,9 @@ public class VoteRepositoryTest {
         Place place1 = createPlace("타코벨");
         Place place2 = createPlace("이자카야모리");
         Place place3 = createPlace("서가앤쿡 노원역점");
-        Vibe vibe1 = createVibe("시끌벅적해요");
-        Vibe vibe2 = createVibe("조용해요");
-        Vibe vibe3 = createVibe("분위기 좋아요");
+        Vibe vibe1 = createVibe(VibeType.NOISY);
+        Vibe vibe2 = createVibe(VibeType.QUIET);
+        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
         PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
         place1.addPlaceVibe(placeVibe1);
         PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
@@ -148,9 +149,9 @@ public class VoteRepositoryTest {
                 .build();
     }
 
-    private Vibe createVibe(String name) {
+    private Vibe createVibe(VibeType type) {
         return Vibe.builder()
-                .name(name)
+                .vibeType(type)
                 .build();
     }
 
