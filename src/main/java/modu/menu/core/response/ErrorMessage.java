@@ -4,8 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorMessage {
+
     ADD_REQUEST_BODY_ERROR("RestTemplate RequestBody 생성에 실패했습니다."),
     MAPPER_READ_TREE_ERROR("ObjectMapper readTree 실행에 실패했습니다."),
+    CANT_CONVERT_STRING_TO_ENUM("주어진 문자열을 적절한 Enum으로 변환할 수 없습니다."),
 
     // User
     DUPLICATE_EMAIL("중복된 이메일입니다."),
@@ -30,7 +32,7 @@ public enum ErrorMessage {
 
     private final String value;
 
-    private ErrorMessage(String value) {
+    ErrorMessage(String value) {
         this.value = value;
     }
 }

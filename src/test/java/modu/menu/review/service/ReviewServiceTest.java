@@ -81,9 +81,9 @@ public class ReviewServiceTest {
         Long placeId = 1L;
         CreateReviewRequest createReviewRequest = CreateReviewRequest.builder()
                 .rating(1)
-                .vibes(List.of(new VibeRequest(VibeType.NOISY)))
+                .vibes(List.of(new VibeRequest(VibeType.NOISY.name())))
                 .participants(3)
-                .hasRoom(HasRoom.NO)
+                .hasRoom(HasRoom.NO.name())
                 .content("리뷰")
                 .build();
 
