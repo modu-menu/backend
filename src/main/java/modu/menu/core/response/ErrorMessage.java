@@ -4,13 +4,16 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorMessage {
+
     ADD_REQUEST_BODY_ERROR("RestTemplate RequestBody 생성에 실패했습니다."),
     MAPPER_READ_TREE_ERROR("ObjectMapper readTree 실행에 실패했습니다."),
+    CANT_CONVERT_STRING_TO_ENUM("주어진 문자열을 적절한 Enum으로 변환할 수 없습니다."),
 
     // User
     DUPLICATE_EMAIL("중복된 이메일입니다."),
     NOT_EXIST_USER_TOKEN("존재하지 않는 회원의 토큰입니다."),
     NOT_ACTIVE_USER_TOKEN("탈퇴한 회원의 토큰입니다."),
+    EMPTY_TOKEN("토큰 값이 비어있거나 null입니다."),
     TOKEN_VERIFICATION_FAIL("토큰 검증에 실패했습니다."),
     EXPIRED_TOKEN("만료된 토큰입니다."),
     ADD_USER_DB_ERROR("회원 저장 도중 DB 에러가 발생했습니다."),
@@ -29,7 +32,7 @@ public enum ErrorMessage {
 
     private final String value;
 
-    private ErrorMessage(String value) {
+    ErrorMessage(String value) {
         this.value = value;
     }
 }

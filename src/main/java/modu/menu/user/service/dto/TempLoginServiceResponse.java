@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TempLoginResultDto {
+public class TempLoginServiceResponse {
 
     private Long id;
     private String name;

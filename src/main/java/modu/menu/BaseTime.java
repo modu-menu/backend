@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-// 모든 엔티티에서 상속 받아야 한다.
 public abstract class BaseTime {
 
     @CreatedDate

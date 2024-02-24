@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.user.api.request.TempJoinRequest;
 import modu.menu.user.api.request.TempLoginRequest;
-import modu.menu.user.repository.UserRepository;
 import modu.menu.user.service.UserService;
-import modu.menu.user.service.dto.TempJoinResultDto;
-import modu.menu.user.service.dto.TempLoginResultDto;
+import modu.menu.user.service.dto.TempJoinServiceResponse;
+import modu.menu.user.service.dto.TempLoginServiceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,7 @@ public class UserControllerTest {
 
         // when
         when(userService.tempJoin(any()))
-                .thenReturn(TempJoinResultDto.builder()
+                .thenReturn(TempJoinServiceResponse.builder()
                         .id(1L)
                         .name(tempJoinRequest.getName())
                         .nickname(tempJoinRequest.getNickname())
@@ -82,7 +81,7 @@ public class UserControllerTest {
 
         // when
         when(userService.tempLogin(any()))
-                .thenReturn(TempLoginResultDto.builder()
+                .thenReturn(TempLoginServiceResponse.builder()
                         .id(1L)
                         .name("홍길동")
                         .nickname("test1234")

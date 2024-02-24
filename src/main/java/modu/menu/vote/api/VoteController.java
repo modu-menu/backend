@@ -5,8 +5,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.exception.Exception400;
@@ -33,16 +35,18 @@ public class VoteController {
      * HTTPS로 통신하는 점을 이용해 RequestBody에 위치 데이터를 담아서 요청하도록 설계
      */
     @Operation(summary = "투표 결과 조회", description = "투표 결과를 조회합니다. 회원이라면 모두 조회 가능합니다.")
+    @SecurityRequirement(name = "Authorization")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회가 성공한 경우"),
             @ApiResponse(responseCode = "400", description = "VoteResultRequest 또는 PathVariable이 형식에 맞지 않을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "401", description = "토큰 인증이 실패한 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
             @ApiResponse(responseCode = "404", description = "조회하려는 투표 자체가 존재하지 않는 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
             @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
     })
     @PostMapping("/api/vote/{voteId}/result")
     public ResponseEntity<ApiSuccessResponse<VoteResultsResponse>> getVoteResult(
             @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
-            @Validated @RequestBody VoteResultRequest voteResultRequest
+            @Valid @RequestBody VoteResultRequest voteResultRequest
     ) {
 
         VoteResultsResponse response = voteService.getVoteResult(voteId, voteResultRequest);

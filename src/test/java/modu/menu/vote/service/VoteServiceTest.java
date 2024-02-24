@@ -19,6 +19,7 @@ import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.domain.Vibe;
+import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultsResponse;
@@ -40,7 +41,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("VoteService 단위테스트")
+@DisplayName("VoteService 통합테스트")
 @Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
 @SpringBootTest
@@ -81,9 +82,9 @@ public class VoteServiceTest {
         Place place1 = createPlace("타코벨");
         Place place2 = createPlace("이자카야모리");
         Place place3 = createPlace("서가앤쿡 노원역점");
-        Vibe vibe1 = createVibe("시끌벅적해요");
-        Vibe vibe2 = createVibe("조용해요");
-        Vibe vibe3 = createVibe("분위기 좋아요");
+        Vibe vibe1 = createVibe(VibeType.NOISY);
+        Vibe vibe2 = createVibe(VibeType.QUIET);
+        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
         PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
         place1.addPlaceVibe(placeVibe1);
         PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
@@ -106,7 +107,7 @@ public class VoteServiceTest {
         foodRepository.saveAll(List.of(food1, food2));
         placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
 
-        Vote vote = createVote(user1, VoteStatus.END);
+        Vote vote = createVote(VoteStatus.END);
         VoteItem voteItem1 = createVoteItem(vote, place1);
         VoteItem voteItem2 = createVoteItem(vote, place2);
         VoteItem voteItem3 = createVoteItem(vote, place3);
@@ -143,11 +144,11 @@ public class VoteServiceTest {
                         .flatMap(v -> v.getVibes().stream())
                         .toList()
         )
-                .extracting("name")
+                .extracting("type")
                 .containsExactlyInAnyOrder(
-                        "시끌벅적해요",
-                        "조용해요",
-                        "분위기 좋아요"
+                        VibeType.NOISY,
+                        VibeType.QUIET,
+                        VibeType.GOOD_SERVICE
                 );
     }
 
@@ -197,9 +198,9 @@ public class VoteServiceTest {
                 .build();
     }
 
-    private Vibe createVibe(String name) {
+    private Vibe createVibe(VibeType type) {
         return Vibe.builder()
-                .name(name)
+                .type(type)
                 .build();
     }
 
@@ -223,9 +224,8 @@ public class VoteServiceTest {
                 .build();
     }
 
-    private Vote createVote(User user, VoteStatus voteStatus) {
+    private Vote createVote(VoteStatus voteStatus) {
         return Vote.builder()
-                .user(user)
                 .voteStatus(voteStatus)
                 .voteItems(new ArrayList<>())
                 .build();

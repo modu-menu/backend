@@ -6,9 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.auth.jwt.JwtProvider;
-import modu.menu.core.exception.Exception400;
 import modu.menu.core.response.ApiFailResponse;
 import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.user.api.request.TempJoinRequest;
@@ -16,11 +16,9 @@ import modu.menu.user.api.request.TempLoginRequest;
 import modu.menu.user.api.response.TempJoinResponse;
 import modu.menu.user.api.response.TempLoginResponse;
 import modu.menu.user.service.UserService;
-import modu.menu.user.service.dto.TempJoinResultDto;
-import modu.menu.user.service.dto.TempLoginResultDto;
+import modu.menu.user.service.dto.TempJoinServiceResponse;
+import modu.menu.user.service.dto.TempLoginServiceResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,10 +39,10 @@ public class UserController {
     })
     @PostMapping("/api/user")
     public ResponseEntity<ApiSuccessResponse<TempJoinResponse>> tempJoin(
-            @Validated @RequestBody TempJoinRequest tempJoinRequest
+            @Valid @RequestBody TempJoinRequest tempJoinRequest
     ) {
 
-        TempJoinResultDto response = userService.tempJoin(tempJoinRequest);
+        TempJoinServiceResponse response = userService.tempJoin(tempJoinRequest);
 
         return ResponseEntity.ok()
                 .header(jwtProvider.ACCESS_HEADER, response.getAccessToken())
@@ -67,10 +65,10 @@ public class UserController {
     })
     @PostMapping("/api/user/login")
     public ResponseEntity<ApiSuccessResponse<TempLoginResponse>> tempLogin(
-            @Validated @RequestBody TempLoginRequest tempLoginRequest
+            @Valid @RequestBody TempLoginRequest tempLoginRequest
     ) {
 
-        TempLoginResultDto response = userService.tempLogin(tempLoginRequest);
+        TempLoginServiceResponse response = userService.tempLogin(tempLoginRequest);
 
         return ResponseEntity.ok()
                 .header(jwtProvider.ACCESS_HEADER, response.getAccessToken())
