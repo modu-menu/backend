@@ -1,4 +1,4 @@
-package modu.menu.review.repository;
+package modu.menu.review.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.choice.domain.Choice;
@@ -13,6 +13,7 @@ import modu.menu.review.api.request.CreateReviewRequest;
 import modu.menu.review.api.request.VibeRequest;
 import modu.menu.review.domain.HasRoom;
 import modu.menu.review.domain.Review;
+import modu.menu.review.repository.ReviewRepository;
 import modu.menu.review.service.ReviewService;
 import modu.menu.reviewvibe.domain.ReviewVibe;
 import modu.menu.reviewvibe.repository.ReviewVibeRepository;
