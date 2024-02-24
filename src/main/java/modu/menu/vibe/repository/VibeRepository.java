@@ -13,7 +13,7 @@ public interface VibeRepository extends JpaRepository<Vibe, Long> {
     @Query("""
             select v
             from Vibe v
-            where v.vibeType = :type
+            where v.type = :type
             """)
     Optional<Vibe> findByVibeType(@Param("type") VibeType type);
 }

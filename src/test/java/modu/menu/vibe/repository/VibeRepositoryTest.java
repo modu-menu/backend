@@ -1,4 +1,4 @@
-package modu.menu.review.repository;
+package modu.menu.vibe.repository;
 
 import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.domain.VibeType;
@@ -48,7 +48,7 @@ public class VibeRepositoryTest {
 
     private Vibe createVibe(VibeType type) {
         return Vibe.builder()
-                .vibeType(type)
+                .type(type)
                 .build();
     }
 }

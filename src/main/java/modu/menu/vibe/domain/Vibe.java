@@ -19,5 +19,5 @@ public class Vibe {
     private Long id;
     @Column(length = 30)
     @Enumerated(EnumType.STRING)
-    private VibeType vibeType;
+    private VibeType type;
 }
