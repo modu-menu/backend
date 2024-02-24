@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import modu.menu.core.annotation.EnumValidation;
 import modu.menu.review.domain.HasRoom;
-import modu.menu.vote.api.response.VibeResponse;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class CreateReviewRequest {
             enumClass = HasRoom.class,
             message = "'YES', 'NO, 'UNKNOWN'만 입력해주세요."
     )
-    private HasRoom hasRoom;
+    private String hasRoom;
 
     @Schema(description = "리뷰", example = "양 많고 사장님이 친절합니다.")
     @Size(max = 100, message = "100자 이내로 입력해주세요.")
