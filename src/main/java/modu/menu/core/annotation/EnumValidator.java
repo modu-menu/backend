@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EnumValidator implements ConstraintValidator<EnumValidation, Enum> {
+public class EnumValidator implements ConstraintValidator<EnumValidation, String> {
 
     private Set<String> enumNames;
 
@@ -19,7 +19,7 @@ public class EnumValidator implements ConstraintValidator<EnumValidation, Enum> 
     }
 
     @Override
-    public boolean isValid(Enum value, ConstraintValidatorContext context) {
+    public boolean isValid(String value, ConstraintValidatorContext context) {
         return enumNames.contains(value);
     }
 }
