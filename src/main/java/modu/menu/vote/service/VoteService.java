@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.core.exception.Exception404;
 import modu.menu.core.response.ErrorMessage;
-import modu.menu.core.util.CalculateDistanceUtil;
+import modu.menu.core.util.DistanceCalculator;
 import modu.menu.food.domain.Food;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.lang.Integer.parseInt;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -62,7 +64,7 @@ public class VoteService {
         return new VoteResultsResponse(voteItems.stream()
                 .map(v -> {
                     Place place = v.getPlace();
-                    double distance = CalculateDistanceUtil.calculateDistance(
+                    double distance = DistanceCalculator.calculateDistance(
                             place.getLatitude(),
                             place.getLongitude(),
                             voteResultRequest.getLatitude(),
@@ -84,15 +86,15 @@ public class VoteService {
                             .address(place.getAddress())
                             .distance(distance >= 1000.0 ? String.format("%.1f", distance / 1000.0) + "km" : Math.round(distance) + "m")
                             .img(place.getImageUrl())
-                            .voteRating(Math.round(voteCount * 100 / voterCount) + "%")
+                            .voteRating(Math.round(voteCount * 100.0 / voterCount) + "%")
                             .build();
                 })
                 .sorted((voteResult1, voteResult2) -> {
-                    if (voteResult1.getVoteRating() == voteResult2.getVoteRating()) {
+                    if (parseInt(voteResult2.getVoteRating().replace("%" , "")) == parseInt(voteResult1.getVoteRating().replace("%" , ""))) {
                         return voteResult1.getName().compareTo(voteResult2.getName());
                     }
-                    return Integer.parseInt(voteResult2.getVoteRating().replace("%" , ""))
-                            - Integer.parseInt(voteResult1.getVoteRating().replace("%" , ""));
+                    return parseInt(voteResult2.getVoteRating().replace("%" , ""))
+                            - parseInt(voteResult1.getVoteRating().replace("%" , ""));
                 })
                 .toList()
         );

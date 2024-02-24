@@ -158,7 +158,7 @@ public class ReviewControllerTest {
         Long userId = 1L;
         Long placeId = 1L;
         CreateReviewRequest createReviewRequest = CreateReviewRequest.builder()
-                .rating(6)
+                .rating(1)
                 .vibes(List.of())
                 .participants(3)
                 .hasRoom(HasRoom.NO.name())
