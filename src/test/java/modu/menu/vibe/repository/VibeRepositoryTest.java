@@ -1,9 +1,8 @@
 package modu.menu.vibe.repository;
 
+import jakarta.persistence.EntityManager;
 import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.domain.VibeType;
-import modu.menu.vibe.repository.VibeRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,13 +21,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class VibeRepositoryTest {
 
     @Autowired
+    private EntityManager entityManager;
+    @Autowired
     private VibeRepository vibeRepository;
 
     @BeforeEach
     void setUp() {
-        vibeRepository.saveAll(Stream.of(VibeType.values())
-                .map(this::createVibe)
-                .toList());
+        entityManager.createNativeQuery("ALTER TABLE vibe_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        vibeRepository.saveAll(List.of(
+                createVibe(VibeType.NOISY),
+                createVibe(VibeType.MODERN),
+                createVibe(VibeType.NICE_VIEW),
+                createVibe(VibeType.QUIET),
+                createVibe(VibeType.GOOD_SERVICE),
+                createVibe(VibeType.TRENDY)));
     }
 
     @DisplayName("VibeType을 통해 분위기를 조회한다.")
@@ -42,7 +48,7 @@ public class VibeRepositoryTest {
 
         // then
         assertThat(vibeResult).get()
-                .hasFieldOrPropertyWithValue("id", 4L)
+                .hasFieldOrPropertyWithValue("id", 1L)
                 .hasFieldOrPropertyWithValue("type", VibeType.NOISY);
     }
 
