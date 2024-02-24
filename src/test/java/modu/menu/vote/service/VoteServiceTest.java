@@ -41,7 +41,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("VoteService 단위테스트")
+@DisplayName("VoteService 통합테스트")
 @Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
 @SpringBootTest

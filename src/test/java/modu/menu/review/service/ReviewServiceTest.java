@@ -8,14 +8,10 @@ import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placevibe.domain.PlaceVibe;
-import modu.menu.placevibe.repository.PlaceVibeRepository;
 import modu.menu.review.api.request.CreateReviewRequest;
 import modu.menu.review.api.request.VibeRequest;
 import modu.menu.review.domain.HasRoom;
-import modu.menu.review.domain.Review;
 import modu.menu.review.repository.ReviewRepository;
-import modu.menu.review.service.ReviewService;
-import modu.menu.reviewvibe.domain.ReviewVibe;
 import modu.menu.reviewvibe.repository.ReviewVibeRepository;
 import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
@@ -24,14 +20,11 @@ import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
-import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.voteItem.domain.VoteItem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -41,10 +34,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
-
-@DisplayName("ReviewService 단위테스트")
+@DisplayName("ReviewService 통합테스트")
 @Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
 @SpringBootTest
