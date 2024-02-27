@@ -15,5 +15,6 @@ public class Food {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 30)
+    @Enumerated(EnumType.STRING)
     private String name;
 }
