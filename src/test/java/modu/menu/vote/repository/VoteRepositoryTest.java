@@ -3,6 +3,7 @@ package modu.menu.vote.repository;
 import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.food.domain.Food;
+import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
@@ -83,8 +84,8 @@ public class VoteRepositoryTest {
         vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
         placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
 
-        Food food1 = createFood("멕시코");
-        Food food2 = createFood("한식");
+        Food food1 = createFood(FoodType.LATIN);
+        Food food2 = createFood(FoodType.MEAT);
         PlaceFood placeFood1 = createPlaceFood(place1, food1);
         place1.addPlaceFood(placeFood1);
         PlaceFood placeFood2 = createPlaceFood(place2, food1);
@@ -162,9 +163,9 @@ public class VoteRepositoryTest {
                 .build();
     }
 
-    private Food createFood(String name) {
+    private Food createFood(FoodType type) {
         return Food.builder()
-                .name(name)
+                .type(type)
                 .build();
     }
 
