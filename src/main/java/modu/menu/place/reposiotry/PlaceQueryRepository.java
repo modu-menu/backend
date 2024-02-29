@@ -23,7 +23,13 @@ public class PlaceQueryRepository {
     private final int SIZE = 20;
 
     public Page<Place> findAll(Double latitude, Double longitude, Integer page) {
-        List<Place> places = entityManager.createQuery("select p from Place p join PlaceFood pf join fetch Food f join fetch Vibe v")
+        List<Place> places = entityManager.createQuery(
+                "select p " +
+                        "from Place p " +
+                        "join PlaceFood pf on pf.place.id = p.id " +
+                        "join PlaceVibe pv on pv.place.id = p.id " +
+                        "join fetch Food f on f.id = pf.food.id " +
+                        "join fetch Vibe v on v.id = pv.vibe.id")
                 .setFirstResult(page * SIZE) // 시작 번호
                 .setMaxResults(SIZE) // 페이지 당 요소 갯수
                 .getResultList();
@@ -32,7 +38,14 @@ public class PlaceQueryRepository {
     }
 
     public Page<Place> findByVibeTypes(Double latitude, Double longitude, Integer page, List<VibeType> vibes) {
-        List<Place> places = entityManager.createQuery("select p from Place p join PlaceFood pf join fetch Food f join fetch Vibe v where v.type in :vibes")
+        List<Place> places = entityManager.createQuery(
+                "select p " +
+                        "from Place p " +
+                        "join PlaceFood pf on pf.place.id = p.id " +
+                        "join PlaceVibe pv on pv.place.id = p.id " +
+                        "join fetch Food f on f.id = pf.food.id " +
+                        "join fetch Vibe v on v.id = pv.vibe.id " +
+                        "where v.type in :vibes")
                 .setParameter("vibes", vibes)
                 .setFirstResult(page * SIZE) // 시작 번호
                 .setMaxResults(SIZE) // 페이지 당 요소 갯수
@@ -42,7 +55,14 @@ public class PlaceQueryRepository {
     }
 
     public Page<Place> findByFoodTypes(Double latitude, Double longitude, Integer page, List<FoodType> foods) {
-        List<Place> places = entityManager.createQuery("select p from Place p join PlaceFood pf join fetch Food f join fetch Vibe v where f.type in :foods")
+        List<Place> places = entityManager.createQuery("" +
+                        "select p " +
+                        "from Place p " +
+                        "join PlaceFood pf on pf.place.id = p.id " +
+                        "join PlaceVibe pv on pv.place.id = p.id " +
+                        "join fetch Food f on f.id = pf.food.id " +
+                        "join fetch Vibe v on v.id = pv.vibe.id " +
+                        "where f.type in :foods")
                 .setParameter("foods", foods)
                 .setFirstResult(page * SIZE) // 시작 번호
                 .setMaxResults(SIZE) // 페이지 당 요소 갯수
@@ -52,7 +72,14 @@ public class PlaceQueryRepository {
     }
 
     public Page<Place> findByFoodTypesAndVibeTypes(Double latitude, Double longitude, Integer page, List<FoodType> foods, List<VibeType> vibes) {
-        List<Place> places = entityManager.createQuery("select p from Place p join PlaceFood pf join fetch Food f join fetch Vibe v where f.type in :foods and v.type in :vibes")
+        List<Place> places = entityManager.createQuery(
+                "select p " +
+                        "from Place p " +
+                        "join PlaceFood pf on pf.place.id = p.id " +
+                        "join PlaceVibe pv on pv.place.id = p.id " +
+                        "join fetch Food f on f.id = pf.food.id " +
+                        "join fetch Vibe v on v.id = pv.vibe.id " +
+                        "where f.type in :foods and v.type in :vibes")
                 .setParameter("foods", foods)
                 .setParameter("vibes", vibes)
                 .setFirstResult(page * SIZE) // 시작 번호
