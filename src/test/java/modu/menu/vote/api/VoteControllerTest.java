@@ -3,9 +3,8 @@ package modu.menu.vote.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vote.api.request.VoteResultRequest;
-import modu.menu.vote.api.response.VibeResponse;
-import modu.menu.vote.api.response.VoteResult;
-import modu.menu.vote.api.response.VoteResultsResponse;
+import modu.menu.vote.service.dto.VoteResultServiceResponse;
+import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,7 @@ public class VoteControllerTest {
 
         // when
         when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultsResponse(
+                .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
                                 createVoteResult("창고 43 강남점")))
@@ -76,7 +75,7 @@ public class VoteControllerTest {
 
         // when
         when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultsResponse(
+                .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
                                 createVoteResult("창고 43 강남점")))
@@ -104,7 +103,7 @@ public class VoteControllerTest {
 
         // when
         when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultsResponse(
+                .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
                                 createVoteResult("창고 43 강남점")))
@@ -133,7 +132,7 @@ public class VoteControllerTest {
 
         // when
         when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultsResponse(
+                .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
                                 createVoteResult("창고 43 강남점")))
@@ -162,7 +161,7 @@ public class VoteControllerTest {
 
         // when
         when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultsResponse(
+                .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
                                 createVoteResult("창고 43 강남점")))
@@ -179,11 +178,11 @@ public class VoteControllerTest {
                 .andExpect(jsonPath("$.message").value("경도는 양수여야 합니다."));
     }
 
-    private VoteResult createVoteResult(String name) {
-        return VoteResult.builder()
+    private VoteResultServiceResponse createVoteResult(String name) {
+        return VoteResultServiceResponse.builder()
                 .name(name)
                 .food("멕시칸, 브라질")
-                .vibes(List.of(new VibeResponse(VibeType.NOISY)))
+                .vibes(List.of(VibeType.NOISY))
                 .address("서울 종로구 삼일대로")
                 .distance("10m")
                 .img("이미지 주소")

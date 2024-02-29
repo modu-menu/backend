@@ -1,10 +1,11 @@
-package modu.menu.vote.api.response;
+package modu.menu.vote.service.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import modu.menu.vibe.domain.VibeType;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VoteResult {
+public class VoteResultServiceResponse {
 
     @Schema(description = "음식점 이름", example = "타코벨")
     private String name;
@@ -22,7 +23,7 @@ public class VoteResult {
     private String food;
 
     @Schema(description = "음식점 분위기 목록")
-    private List<VibeResponse> vibes;
+    private List<VibeType> vibes;
 
     @Schema(description = "음식점 도로명 주소", example = "서울 서초구 서초대로74길 11 삼성전자 강남사옥 지하1층 B108호")
     private String address;

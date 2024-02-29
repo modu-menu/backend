@@ -7,6 +7,7 @@ import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.exception.Exception404;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.food.domain.Food;
+import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
@@ -22,7 +23,7 @@ import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.VoteResultRequest;
-import modu.menu.vote.api.response.VoteResultsResponse;
+import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
@@ -96,8 +97,8 @@ public class VoteServiceTest {
         vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
         placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
 
-        Food food1 = createFood("멕시코");
-        Food food2 = createFood("한식");
+        Food food1 = createFood(FoodType.LATIN);
+        Food food2 = createFood(FoodType.MEAT);
         PlaceFood placeFood1 = createPlaceFood(place1, food1);
         place1.addPlaceFood(placeFood1);
         PlaceFood placeFood2 = createPlaceFood(place2, food1);
@@ -128,7 +129,7 @@ public class VoteServiceTest {
                 .build();
 
         // when
-        VoteResultsResponse voteResult = voteService.getVoteResult(voteId, voteResultRequest);
+        VoteResultResponse voteResult = voteService.getVoteResult(voteId, voteResultRequest);
 
         // then
         assertThat(voteResult.getResults()).isNotNull();
@@ -211,9 +212,9 @@ public class VoteServiceTest {
                 .build();
     }
 
-    private Food createFood(String name) {
+    private Food createFood(FoodType type) {
         return Food.builder()
-                .name(name)
+                .type(type)
                 .build();
     }
 

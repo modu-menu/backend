@@ -2,9 +2,9 @@ package modu.menu.vote.api.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import modu.menu.vote.service.dto.VoteResultServiceResponse;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VoteResultsResponse {
+public class VoteResultResponse {
 
     @Schema(description = "투표 결과 목록")
-    private List<VoteResult> results;
+    private List<VoteResultServiceResponse> results;
 }
