@@ -53,8 +53,8 @@ public class PlaceCustomPagingRepository {
     }
 
     public Page<Place> findByFoodTypes(Double latitude, Double longitude, Integer page, List<FoodType> foods) {
-        List<Place> places = entityManager.createQuery("" +
-                        "select p " +
+        List<Place> places = entityManager.createQuery(
+                "select p " +
                         "from Place p " +
                         "join PlaceFood pf on pf.place.id = p.id " +
                         "join PlaceVibe pv on pv.place.id = p.id " +
