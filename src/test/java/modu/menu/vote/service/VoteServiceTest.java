@@ -136,20 +136,20 @@ public class VoteServiceTest {
         assertThat(voteResult.getResults())
                 .extracting("name", "food", "address", "distance", "img", "voteRating")
                 .containsExactlyInAnyOrder(
-                        tuple("타코벨", "멕시코", "address", "2.5km", "image", "33%"),
-                        tuple("이자카야모리", "멕시코", "address", "2.5km", "image", "33%"),
-                        tuple("서가앤쿡 노원역점", "한식", "address", "2.5km", "image", "33%")
+                        tuple("타코벨", "멕시칸,브라질", "address", "2.5km", "image", "33%"),
+                        tuple("이자카야모리", "멕시칸,브라질", "address", "2.5km", "image", "33%"),
+                        tuple("서가앤쿡 노원역점", "육류,고기요리", "address", "2.5km", "image", "33%")
                 );
         assertThat(
                 voteResult.getResults().stream()
                         .flatMap(v -> v.getVibes().stream())
                         .toList()
         )
-                .extracting("type")
+                .extracting("title")
                 .containsExactlyInAnyOrder(
-                        VibeType.NOISY,
-                        VibeType.QUIET,
-                        VibeType.GOOD_SERVICE
+                        VibeType.NOISY.getTitle(),
+                        VibeType.QUIET.getTitle(),
+                        VibeType.GOOD_SERVICE.getTitle()
                 );
     }
 
