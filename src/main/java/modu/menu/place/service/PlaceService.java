@@ -6,7 +6,7 @@ import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
 import modu.menu.place.api.response.SearchPlaceResponse;
 import modu.menu.place.domain.Place;
-import modu.menu.place.reposiotry.PlaceQueryRepository;
+import modu.menu.place.reposiotry.PlaceCustomPagingRepository;
 import modu.menu.place.service.dto.SearchResultServiceResponse;
 import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placevibe.domain.PlaceVibe;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class PlaceService {
 
-    private final PlaceQueryRepository placeQueryRepository;
+    private final PlaceCustomPagingRepository placeQueryRepository;
 
     // 음식점 후보 검색
     public SearchPlaceResponse searchPlace(

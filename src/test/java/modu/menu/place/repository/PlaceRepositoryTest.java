@@ -6,7 +6,7 @@ import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
-import modu.menu.place.reposiotry.PlaceQueryRepository;
+import modu.menu.place.reposiotry.PlaceCustomPagingRepository;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placefood.repository.PlaceFoodRepository;
@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("PlaceRepository 단위테스트")
 @ActiveProfiles("test")
-@Import(PlaceQueryRepository.class)
+@Import(PlaceCustomPagingRepository.class)
 @DataJpaTest
 public class PlaceRepositoryTest {
 
@@ -47,7 +47,7 @@ public class PlaceRepositoryTest {
     @Autowired
     private PlaceRepository placeRepository;
     @Autowired
-    private PlaceQueryRepository placeQueryRepository;
+    private PlaceCustomPagingRepository placeCustomPagingRepository;
     @Autowired
     private VibeRepository vibeRepository;
     @Autowired
@@ -66,7 +66,7 @@ public class PlaceRepositoryTest {
         entityManager.createNativeQuery("ALTER TABLE food_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
     }
 
-    @DisplayName("현재 위도와 경도, 페이지 번호를 통해 페이징되어 가까운 거리 순으로 정렬된 모든 음식점 정보를 조회한다.")
+    @DisplayName("현재 위도와 경도, 페이지 번호를 통해 가까운 거리 순으로 정렬되어 페이징된 모든 음식점 정보를 조회한다.")
     @Test
     void findAll() {
         // given
@@ -102,7 +102,7 @@ public class PlaceRepositoryTest {
         Integer page = 0;
 
         // when
-        Page<Place> places = placeQueryRepository.findAll(latitude, longitude, page);
+        Page<Place> places = placeCustomPagingRepository.findAll(latitude, longitude, page);
 
         // then
         assertThat(places.getContent()).hasSize(3);
@@ -111,7 +111,7 @@ public class PlaceRepositoryTest {
         assertThat(places.getContent().get(2).getName()).isEqualTo("타코벨");
     }
 
-    @DisplayName("현재 위도와 경도, 페이지 번호, 분위기 조건들을 통해 페이징되어 가까운 거리 순으로 정렬된 모든 음식점 정보를 조회한다.")
+    @DisplayName("현재 위도와 경도, 페이지 번호, 분위기 조건들을 통해 가까운 거리 순으로 정렬되어 페이징된 모든 음식점 정보를 조회한다.")
     @Test
     void findAllByVibeTypes() {
         // given
@@ -148,14 +148,14 @@ public class PlaceRepositoryTest {
         List<VibeType> vibes = List.of(VibeType.NOISY);
 
         // when
-        Page<Place> places = placeQueryRepository.findByVibeTypes(latitude, longitude, page, vibes);
+        Page<Place> places = placeCustomPagingRepository.findByVibeTypes(latitude, longitude, page, vibes);
 
         // then
         assertThat(places.getContent()).hasSize(1);
         assertThat(places.getContent().get(0).getName()).isEqualTo("타코벨");
     }
 
-    @DisplayName("현재 위도와 경도, 페이지 번호, 음식 조건들을 통해 페이징되어 가까운 거리 순으로 정렬된 모든 음식점 정보를 조회한다.")
+    @DisplayName("현재 위도와 경도, 페이지 번호, 음식 조건들을 통해 가까운 거리 순으로 정렬되어 페이징된 모든 음식점 정보를 조회한다.")
     @Test
     void findAllByFoodTypes() {
         // given
@@ -192,7 +192,7 @@ public class PlaceRepositoryTest {
         List<FoodType> foods = List.of(FoodType.LATIN);
 
         // when
-        Page<Place> places = placeQueryRepository.findByFoodTypes(latitude, longitude, page, foods);
+        Page<Place> places = placeCustomPagingRepository.findByFoodTypes(latitude, longitude, page, foods);
 
         // then
         assertThat(places.getContent()).hasSize(2);
@@ -200,7 +200,7 @@ public class PlaceRepositoryTest {
         assertThat(places.getContent().get(1).getName()).isEqualTo("타코벨");
     }
 
-    @DisplayName("현재 위도와 경도, 페이지 번호, 분위기와 음식 조건들을 통해 페이징되어 가까운 거리 순으로 정렬된 모든 음식점 정보를 조회한다.")
+    @DisplayName("현재 위도와 경도, 페이지 번호, 분위기와 음식 조건들을 통해 가까운 거리 순으로 정렬되어 페이징된 모든 음식점 정보를 조회한다.")
     @Test
     void findByFoodTypesAndVibeTypes() {
         // given
@@ -238,7 +238,7 @@ public class PlaceRepositoryTest {
         List<VibeType> vibes = List.of(VibeType.NOISY);
 
         // when
-        Page<Place> places = placeQueryRepository.findByFoodTypesAndVibeTypes(latitude, longitude, page, foods, vibes);
+        Page<Place> places = placeCustomPagingRepository.findByFoodTypesAndVibeTypes(latitude, longitude, page, foods, vibes);
 
         // then
         assertThat(places.getContent()).hasSize(1);

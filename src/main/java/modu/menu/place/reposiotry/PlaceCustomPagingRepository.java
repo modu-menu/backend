@@ -14,10 +14,12 @@ import java.util.List;
 
 import static modu.menu.core.util.DistanceCalculator.calculateDistance;
 
-// 페이징 쿼리의 결과를 가까운 거리 순으로 정렬하고, 혹시라도 거리가 같은 경우엔 음식점명을 가나다 순으로 정렬한 뒤 페이지를 반환한다.
+// 현재 위치에서 모든 음식점을 대상으로 가까운 거리 순으로 정렬하고, 거리가 같은 경우엔 음식점명을 가나다 순으로 정렬한 뒤 페이지를 반환한다.
+// 따라서 페이징 쿼리를 실행하는 것이 아니라, 조건과 일치하는 모든 음식점을 일단 불러온 뒤에 정렬을 수행하고 페이징을 해야 한다.
+@SuppressWarnings("unchecked")
 @RequiredArgsConstructor
 @Repository
-public class PlaceQueryRepository {
+public class PlaceCustomPagingRepository {
 
     private final EntityManager entityManager;
     private final int SIZE = 20;
@@ -30,8 +32,6 @@ public class PlaceQueryRepository {
                         "join PlaceVibe pv on pv.place.id = p.id " +
                         "join fetch Food f on f.id = pf.food.id " +
                         "join fetch Vibe v on v.id = pv.vibe.id")
-                .setFirstResult(page * SIZE) // 시작 번호
-                .setMaxResults(SIZE) // 페이지 당 요소 갯수
                 .getResultList();
 
         return getTargetPage(latitude, longitude, page, places);
@@ -47,8 +47,6 @@ public class PlaceQueryRepository {
                         "join fetch Vibe v on v.id = pv.vibe.id " +
                         "where v.type in :vibes")
                 .setParameter("vibes", vibes)
-                .setFirstResult(page * SIZE) // 시작 번호
-                .setMaxResults(SIZE) // 페이지 당 요소 갯수
                 .getResultList();
 
         return getTargetPage(latitude, longitude, page, places);
@@ -64,8 +62,6 @@ public class PlaceQueryRepository {
                         "join fetch Vibe v on v.id = pv.vibe.id " +
                         "where f.type in :foods")
                 .setParameter("foods", foods)
-                .setFirstResult(page * SIZE) // 시작 번호
-                .setMaxResults(SIZE) // 페이지 당 요소 갯수
                 .getResultList();
 
         return getTargetPage(latitude, longitude, page, places);
@@ -82,8 +78,6 @@ public class PlaceQueryRepository {
                         "where f.type in :foods and v.type in :vibes")
                 .setParameter("foods", foods)
                 .setParameter("vibes", vibes)
-                .setFirstResult(page * SIZE) // 시작 번호
-                .setMaxResults(SIZE) // 페이지 당 요소 갯수
                 .getResultList();
 
         return getTargetPage(latitude, longitude, page, places);
@@ -106,9 +100,12 @@ public class PlaceQueryRepository {
                 })
                 .toList();
 
-        int start = page * SIZE;
+        // 페이지 번호가 음수인 경우는 컨트롤러에서 걸러내므로 여기서는 고려할 필요 없다.
+        // 다만 리스트의 크기가 page * SIZE보다 작은 경우를 고려해 아래와 같이 작성했다.
+        int start = Math.min(page * SIZE, places.size());
         int end = Math.min((page + 1) * SIZE, places.size());
 
+        // start가 0, end가 10일 경우 subList에 의해 전체 리스트의 0부터 9번째 요소까지 페이징한다.
         List<Place> pageContent = sortedPlaces.subList(start, end);
 
         return new PageImpl<>(pageContent, PageRequest.of(page, SIZE), places.size());
