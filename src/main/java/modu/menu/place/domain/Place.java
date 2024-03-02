@@ -3,10 +3,8 @@ package modu.menu.place.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
-import modu.menu.food.domain.Food;
 import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placevibe.domain.PlaceVibe;
-import modu.menu.vibe.domain.Vibe;
 import modu.menu.voteItem.domain.VoteItem;
 
 import java.util.ArrayList;
@@ -34,10 +32,13 @@ public class Place extends BaseTime {
     private Double latitude; // 위도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
     private Double longitude; // 경도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
     private String imageUrl;
+    @Builder.Default
     @OneToMany(mappedBy = "place")
     private List<VoteItem> voteItems = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "place")
     private List<PlaceFood> placeFoods = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "place")
     private List<PlaceVibe> placeVibes = new ArrayList<>();
 

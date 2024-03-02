@@ -16,5 +16,5 @@ public class Food {
     private Long id;
     @Column(length = 30)
     @Enumerated(EnumType.STRING)
-    private String name;
+    private FoodType type;
 }

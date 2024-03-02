@@ -8,8 +8,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = EnumValidator.class)
-@Target(ElementType.FIELD)
+@Constraint(validatedBy = {EnumValidator.class, EnumListValidator.class})
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumValidation {
 
@@ -20,4 +20,6 @@ public @interface EnumValidation {
     Class<? extends Payload>[] payload() default {};
 
     Class<? extends java.lang.Enum<?>> enumClass();
+
+    boolean ignoreCase() default true;
 }
