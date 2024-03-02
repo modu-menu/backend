@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.participant.domain.Participant;
-import modu.menu.user.domain.User;
 import modu.menu.voteItem.domain.VoteItem;
 
 import java.util.ArrayList;
@@ -23,8 +22,10 @@ public class Vote extends BaseTime {
     private Long id;
     @Enumerated(EnumType.STRING)
     private VoteStatus voteStatus;
+    @Builder.Default
     @OneToMany(mappedBy = "vote")
     private List<Participant> participants = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "vote")
     private List<VoteItem> voteItems = new ArrayList<>();
 

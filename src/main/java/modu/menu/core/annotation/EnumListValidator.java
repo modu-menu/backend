@@ -3,11 +3,12 @@ package modu.menu.core.annotation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EnumValidator implements ConstraintValidator<EnumValidation, String> {
+public class EnumListValidator implements ConstraintValidator<EnumValidation, List<String>> {
 
     private Set<String> enumNames;
 
@@ -19,11 +20,11 @@ public class EnumValidator implements ConstraintValidator<EnumValidation, String
     }
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+    public boolean isValid(List<String> values, ConstraintValidatorContext context) {
+        if (values == null) {
             return true;
         }
 
-        return enumNames.contains(value.toUpperCase());
+        return values.stream().map(String::toUpperCase).allMatch(enumNames::contains);
     }
 }

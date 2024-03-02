@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.choice.domain.Choice;
 import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.food.domain.Food;
+import modu.menu.food.domain.FoodType;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
@@ -38,7 +39,7 @@ import java.util.List;
 @Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
 @SpringBootTest
-public class ReviewServiceTest {
+class ReviewServiceTest {
 
     @Autowired
     private ReviewService reviewService;
@@ -136,9 +137,9 @@ public class ReviewServiceTest {
                 .build();
     }
 
-    private Food createFood(String name) {
+    private Food createFood(FoodType type) {
         return Food.builder()
-                .name(name)
+                .type(type)
                 .build();
     }
 

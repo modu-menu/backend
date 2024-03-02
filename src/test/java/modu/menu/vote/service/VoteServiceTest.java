@@ -7,6 +7,7 @@ import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.exception.Exception404;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.food.domain.Food;
+import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
@@ -22,7 +23,7 @@ import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.VoteResultRequest;
-import modu.menu.vote.api.response.VoteResultsResponse;
+import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
@@ -45,7 +46,7 @@ import static org.assertj.core.api.Assertions.*;
 @Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
 @SpringBootTest
-public class VoteServiceTest {
+class VoteServiceTest {
 
     @Autowired
     private VoteService voteService;
@@ -96,8 +97,8 @@ public class VoteServiceTest {
         vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
         placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
 
-        Food food1 = createFood("멕시코");
-        Food food2 = createFood("한식");
+        Food food1 = createFood(FoodType.LATIN);
+        Food food2 = createFood(FoodType.MEAT);
         PlaceFood placeFood1 = createPlaceFood(place1, food1);
         place1.addPlaceFood(placeFood1);
         PlaceFood placeFood2 = createPlaceFood(place2, food1);
@@ -128,27 +129,27 @@ public class VoteServiceTest {
                 .build();
 
         // when
-        VoteResultsResponse voteResult = voteService.getVoteResult(voteId, voteResultRequest);
+        VoteResultResponse voteResult = voteService.getVoteResult(voteId, voteResultRequest);
 
         // then
         assertThat(voteResult.getResults()).isNotNull();
         assertThat(voteResult.getResults())
                 .extracting("name", "food", "address", "distance", "img", "voteRating")
                 .containsExactlyInAnyOrder(
-                        tuple("타코벨", "멕시코", "address", "2.5km", "image", "33%"),
-                        tuple("이자카야모리", "멕시코", "address", "2.5km", "image", "33%"),
-                        tuple("서가앤쿡 노원역점", "한식", "address", "2.5km", "image", "33%")
+                        tuple("타코벨", "멕시칸,브라질", "address", "2.5km", "image", "33%"),
+                        tuple("이자카야모리", "멕시칸,브라질", "address", "2.5km", "image", "33%"),
+                        tuple("서가앤쿡 노원역점", "육류,고기요리", "address", "2.5km", "image", "33%")
                 );
         assertThat(
                 voteResult.getResults().stream()
                         .flatMap(v -> v.getVibes().stream())
                         .toList()
         )
-                .extracting("type")
+                .extracting("title")
                 .containsExactlyInAnyOrder(
-                        VibeType.NOISY,
-                        VibeType.QUIET,
-                        VibeType.GOOD_SERVICE
+                        VibeType.NOISY.getTitle(),
+                        VibeType.QUIET.getTitle(),
+                        VibeType.GOOD_SERVICE.getTitle()
                 );
     }
 
@@ -211,9 +212,9 @@ public class VoteServiceTest {
                 .build();
     }
 
-    private Food createFood(String name) {
+    private Food createFood(FoodType type) {
         return Food.builder()
-                .name(name)
+                .type(type)
                 .build();
     }
 

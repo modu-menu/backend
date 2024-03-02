@@ -74,7 +74,9 @@ public class JwtAuthenticationFilter implements Filter {
         if (uri.startsWith("/api-docs")
                 || uri.startsWith("/swagger-ui")
                 || method.equals("POST") && uri.equals("/api/user")
-                || method.equals("POST") && uri.equals("/api/user/login")) {
+                || method.equals("POST") && uri.equals("/api/user/login")
+                || method.equals("GET") && uri.equals("/api/health-check")
+                || method.equals("GET") && uri.startsWith("/api/place")) {
             return false;
         }
 

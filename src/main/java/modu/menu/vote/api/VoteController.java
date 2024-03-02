@@ -7,18 +7,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import modu.menu.core.exception.Exception400;
 import modu.menu.core.response.ApiFailResponse;
 import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.vote.api.request.VoteResultRequest;
-import modu.menu.vote.api.response.VoteResultsResponse;
+import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,12 +41,12 @@ public class VoteController {
             @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
     })
     @PostMapping("/api/vote/{voteId}/result")
-    public ResponseEntity<ApiSuccessResponse<VoteResultsResponse>> getVoteResult(
+    public ResponseEntity<ApiSuccessResponse<VoteResultResponse>> getVoteResult(
             @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
             @Valid @RequestBody VoteResultRequest voteResultRequest
     ) {
 
-        VoteResultsResponse response = voteService.getVoteResult(voteId, voteResultRequest);
+        VoteResultResponse response = voteService.getVoteResult(voteId, voteResultRequest);
 
         return ResponseEntity.ok()
                 .body(new ApiSuccessResponse<>(response));
