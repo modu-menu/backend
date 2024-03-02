@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @Import(PlaceCustomPagingRepository.class)
 @DataJpaTest
-public class PlaceRepositoryTest {
+class PlaceRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;

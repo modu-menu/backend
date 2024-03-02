@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.*;
 @Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
 @SpringBootTest
-public class VoteServiceTest {
+class VoteServiceTest {
 
     @Autowired
     private VoteService voteService;

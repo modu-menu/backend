@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql("classpath:db/teardown.sql")
 @ActiveProfiles("test")
 @SpringBootTest
-public class PlaceServiceTest {
+class PlaceServiceTest {
 
     @Autowired
     private ObjectMapper objectMapper;

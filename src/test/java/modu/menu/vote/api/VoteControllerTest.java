@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("VoteController 단위테스트")
 @ActiveProfiles("test")
 @WebMvcTest(VoteController.class)
-public class VoteControllerTest {
+class VoteControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

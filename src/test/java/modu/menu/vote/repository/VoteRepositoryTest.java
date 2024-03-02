@@ -39,7 +39,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 @DisplayName("VoteRepository 단위테스트")
 @ActiveProfiles("test")
 @DataJpaTest
-public class VoteRepositoryTest {
+class VoteRepositoryTest {
 
     @Autowired
     private VoteRepository voteRepository;
