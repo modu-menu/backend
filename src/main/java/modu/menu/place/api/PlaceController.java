@@ -1,11 +1,16 @@
 package modu.menu.place.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.annotation.EnumValidation;
+import modu.menu.core.response.ApiFailResponse;
 import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.food.domain.FoodType;
 import modu.menu.place.api.response.SearchPlaceResponse;
@@ -27,7 +32,15 @@ public class PlaceController {
 
     private final PlaceService placeService;
 
-    @Operation(summary = "음식점 후보 검색", description = "투표에 포함시킬 음식점 후보를 사용자의 입력 값을 바탕으로 검색합니다.")
+    @Operation(summary = "음식점 후보 검색", description = "투표에 포함시킬 음식점 후보를 사용자의 입력 값을 바탕으로 검색합니다.\n\n" +
+            "다음 Query String의 경우 대소문자를 구분하지 않습니다.\n\n" +
+            "food: MEAT(육류,고기요리), SEAFOOD(해물,생선요리), WESTERN_FOOD(양식), LATIN(멕시칸,브라질), INDOOR_BAR(실내 포장마차), FISHCAKE_BAR(오뎅바), WINE_BAR(와인바), COCKTAIL_BAR(칵테일바), IZAKAYA(일본식주점), HOF(호프,요리주점), FUSION(퓨전요리), CHICKEN(치킨)\n\n" +
+            "vibe: NOISY(시끌벅적해요), TRENDY(트렌디해요), GOOD_SERVICE(서비스가 좋아요), QUIET(조용해요), MODERN(모던해요), NICE_VIEW(뷰맛집이에요)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "검색이 성공한 경우"),
+            @ApiResponse(responseCode = "400", description = "Query String이 형식에 맞지 않을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
+    })
     @GetMapping("/api/place")
     public ResponseEntity<ApiSuccessResponse<SearchPlaceResponse>> searchPlace(
             @PositiveOrZero(message = "위도는 0 또는 양수여야 합니다.") @RequestParam(defaultValue = "37.505098") Double latitude,
