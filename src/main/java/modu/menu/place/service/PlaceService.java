@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class PlaceService {
 
-    private final PlaceCustomPagingRepository placeQueryRepository;
+    private final PlaceCustomPagingRepository placeCustomPagingRepository;
 
     // 음식점 후보 검색
     public SearchPlaceResponse searchPlace(
@@ -37,13 +37,13 @@ public class PlaceService {
 
         Page<Place> places;
         if (foods == null && vibes == null) {
-            places = placeQueryRepository.findAll(latitude, longitude, page);
+            places = placeCustomPagingRepository.findAll(latitude, longitude, page);
         } else if (foods == null) {
-            places = placeQueryRepository.findByVibeTypes(latitude, longitude, page, vibes);
+            places = placeCustomPagingRepository.findByVibeTypes(latitude, longitude, page, vibes);
         } else if (vibes == null) {
-            places = placeQueryRepository.findByFoodTypes(latitude, longitude, page, foods);
+            places = placeCustomPagingRepository.findByFoodTypes(latitude, longitude, page, foods);
         } else {
-            places = placeQueryRepository.findByFoodTypesAndVibeTypes(latitude, longitude, page, foods, vibes);
+            places = placeCustomPagingRepository.findByFoodTypesAndVibeTypes(latitude, longitude, page, foods, vibes);
         }
 
         if (places.isEmpty()) {
