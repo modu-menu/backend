@@ -32,7 +32,7 @@ public class PlaceController {
 
     private final PlaceService placeService;
 
-    @Operation(summary = "음식점 후보 검색", description = "투표에 포함시킬 음식점 후보를 사용자의 입력 값을 바탕으로 검색합니다.\n\n" +
+    @Operation(summary = "음식점 후보 검색", description = "투표에 포함시킬 음식점 후보를 사용자의 입력 값을 바탕으로 검색합니다. 조건을 만족하는 음식점이 없을 경우 null을 반환합니다.\n\n" +
             "다음 Query String의 경우 대소문자를 구분하지 않습니다.\n\n" +
             "food: MEAT(육류,고기요리), SEAFOOD(해물,생선요리), WESTERN_FOOD(양식), LATIN(멕시칸,브라질), INDOOR_BAR(실내 포장마차), FISHCAKE_BAR(오뎅바), WINE_BAR(와인바), COCKTAIL_BAR(칵테일바), IZAKAYA(일본식주점), HOF(호프,요리주점), FUSION(퓨전요리), CHICKEN(치킨)\n\n" +
             "vibe: NOISY(시끌벅적해요), TRENDY(트렌디해요), GOOD_SERVICE(서비스가 좋아요), QUIET(조용해요), MODERN(모던해요), NICE_VIEW(뷰맛집이에요)")
