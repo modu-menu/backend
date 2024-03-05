@@ -23,6 +23,7 @@ import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.voteItem.domain.VoteItem;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,13 +62,11 @@ class PlaceServiceTest {
     @Autowired
     private FoodRepository foodRepository;
 
-    @DisplayName("현재 위도와 경도, 페이지 번호를 통해 가까운 거리 순으로 정렬되어 페이징된 모든 음식점 정보를 조회한다.")
-    @Test
-    void searchPlace() {
-        // given
+    @BeforeEach
+    void setUp() {
         Place place1 = createPlaceByLatitudeAndLongitude("타코벨", 37.5251923, 127.027536);
-        Place place2 = createPlaceByLatitudeAndLongitude("이자카야모리", 37.6555775, 127.0631909);
-        Place place3 = createPlaceByLatitudeAndLongitude("서가앤쿡 노원역점", 37.6558247, 127.0634196);
+        Place place2 = createPlaceByLatitudeAndLongitude("맥도날드 상계DT점", 37.6723375, 127.0562151);
+        Place place3 = createPlaceByLatitudeAndLongitude("롯데시네마 수락산", 37.6737992, 127.0556511);
         Vibe vibe1 = createVibe(VibeType.NOISY);
         Vibe vibe2 = createVibe(VibeType.QUIET);
         Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
@@ -91,7 +90,12 @@ class PlaceServiceTest {
         place3.addPlaceFood(placeFood3);
         foodRepository.saveAll(List.of(food1, food2));
         placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
+    }
 
+    @DisplayName("현재 위도와 경도, 페이지 번호를 통해 가까운 거리 순으로 정렬되어 페이징된 모든 음식점 정보를 조회한다.")
+    @Test
+    void searchPlace() {
+        // given
         Double latitude = 37.6737992;
         Double longitude = 127.060022;
         Integer page = 0;
@@ -103,43 +107,16 @@ class PlaceServiceTest {
         assertThat(searchResult).isNotNull();
         assertThat(searchResult.getResults().get(0))
                 .extracting("name", "food", "address", "distance", "img")
-                .containsExactlyInAnyOrder("서가앤쿡 노원역점", "육류,고기요리", "address", "2.0km", "image");
+                .containsExactlyInAnyOrder("맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
         assertThat(searchResult.getResults().get(0).getVibes())
                 .extracting("title")
-                .containsExactlyInAnyOrder(VibeType.GOOD_SERVICE.getTitle());
+                .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
     }
 
     @DisplayName("음식점 후보를 검색할 때 페이지 번호가 페이징 결과 존재하지 않을 경우 null을 반환한다.")
     @Test
     void searchPlaceByExceededPageNumber() {
         // given
-        Place place1 = createPlaceByLatitudeAndLongitude("타코벨", 37.5251923, 127.027536);
-        Place place2 = createPlaceByLatitudeAndLongitude("이자카야모리", 37.6555775, 127.0631909);
-        Place place3 = createPlaceByLatitudeAndLongitude("서가앤쿡 노원역점", 37.6558247, 127.0634196);
-        Vibe vibe1 = createVibe(VibeType.NOISY);
-        Vibe vibe2 = createVibe(VibeType.QUIET);
-        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
-        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
-        place1.addPlaceVibe(placeVibe1);
-        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
-        place2.addPlaceVibe(placeVibe2);
-        PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
-        place3.addPlaceVibe(placeVibe3);
-        placeRepository.saveAll(List.of(place1, place2, place3));
-        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
-        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
-
-        Food food1 = createFood(FoodType.LATIN);
-        Food food2 = createFood(FoodType.MEAT);
-        PlaceFood placeFood1 = createPlaceFood(place1, food1);
-        place1.addPlaceFood(placeFood1);
-        PlaceFood placeFood2 = createPlaceFood(place2, food1);
-        place2.addPlaceFood(placeFood2);
-        PlaceFood placeFood3 = createPlaceFood(place3, food2);
-        place3.addPlaceFood(placeFood3);
-        foodRepository.saveAll(List.of(food1, food2));
-        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
-
         Double latitude = 37.6737992;
         Double longitude = 127.060022;
         Integer page = 4;
@@ -155,33 +132,6 @@ class PlaceServiceTest {
     @Test
     void searchPlaceByFoodTypes() {
         // given
-        Place place1 = createPlaceByLatitudeAndLongitude("타코벨", 37.5251923, 127.027536);
-        Place place2 = createPlaceByLatitudeAndLongitude("이자카야모리", 37.6555775, 127.0631909);
-        Place place3 = createPlaceByLatitudeAndLongitude("서가앤쿡 노원역점", 37.6558247, 127.0634196);
-        Vibe vibe1 = createVibe(VibeType.NOISY);
-        Vibe vibe2 = createVibe(VibeType.QUIET);
-        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
-        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
-        place1.addPlaceVibe(placeVibe1);
-        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
-        place2.addPlaceVibe(placeVibe2);
-        PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
-        place3.addPlaceVibe(placeVibe3);
-        placeRepository.saveAll(List.of(place1, place2, place3));
-        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
-        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
-
-        Food food1 = createFood(FoodType.LATIN);
-        Food food2 = createFood(FoodType.MEAT);
-        PlaceFood placeFood1 = createPlaceFood(place1, food1);
-        place1.addPlaceFood(placeFood1);
-        PlaceFood placeFood2 = createPlaceFood(place2, food1);
-        place2.addPlaceFood(placeFood2);
-        PlaceFood placeFood3 = createPlaceFood(place3, food2);
-        place3.addPlaceFood(placeFood3);
-        foodRepository.saveAll(List.of(food1, food2));
-        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
-
         Double latitude = 37.6737992;
         Double longitude = 127.060022;
         Integer page = 0;
@@ -193,7 +143,7 @@ class PlaceServiceTest {
         assertThat(searchResult).isNotNull();
         assertThat(searchResult.getResults().get(0))
                 .extracting("name", "food", "address", "distance", "img")
-                .containsExactlyInAnyOrder("이자카야모리", "멕시칸,브라질", "address", "2.0km", "image");
+                .containsExactlyInAnyOrder("맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
         assertThat(searchResult.getResults().get(0).getVibes())
                 .extracting("title")
                 .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
@@ -203,33 +153,6 @@ class PlaceServiceTest {
     @Test
     void searchPlaceByVibeTypes() {
         // given
-        Place place1 = createPlaceByLatitudeAndLongitude("타코벨", 37.5251923, 127.027536);
-        Place place2 = createPlaceByLatitudeAndLongitude("이자카야모리", 37.6555775, 127.0631909);
-        Place place3 = createPlaceByLatitudeAndLongitude("서가앤쿡 노원역점", 37.6558247, 127.0634196);
-        Vibe vibe1 = createVibe(VibeType.NOISY);
-        Vibe vibe2 = createVibe(VibeType.QUIET);
-        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
-        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
-        place1.addPlaceVibe(placeVibe1);
-        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
-        place2.addPlaceVibe(placeVibe2);
-        PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
-        place3.addPlaceVibe(placeVibe3);
-        placeRepository.saveAll(List.of(place1, place2, place3));
-        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
-        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
-
-        Food food1 = createFood(FoodType.LATIN);
-        Food food2 = createFood(FoodType.MEAT);
-        PlaceFood placeFood1 = createPlaceFood(place1, food1);
-        place1.addPlaceFood(placeFood1);
-        PlaceFood placeFood2 = createPlaceFood(place2, food1);
-        place2.addPlaceFood(placeFood2);
-        PlaceFood placeFood3 = createPlaceFood(place3, food2);
-        place3.addPlaceFood(placeFood3);
-        foodRepository.saveAll(List.of(food1, food2));
-        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
-
         Double latitude = 37.6737992;
         Double longitude = 127.060022;
         Integer page = 0;
@@ -241,7 +164,7 @@ class PlaceServiceTest {
         assertThat(searchResult).isNotNull();
         assertThat(searchResult.getResults().get(0))
                 .extracting("name", "food", "address", "distance", "img")
-                .containsExactlyInAnyOrder("이자카야모리", "멕시칸,브라질", "address", "2.0km", "image");
+                .containsExactlyInAnyOrder("맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
         assertThat(searchResult.getResults().get(0).getVibes())
                 .extracting("title")
                 .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
@@ -251,33 +174,6 @@ class PlaceServiceTest {
     @Test
     void searchPlaceByFoodTypesAndVibeTypes() {
         // given
-        Place place1 = createPlaceByLatitudeAndLongitude("타코벨", 37.5251923, 127.027536);
-        Place place2 = createPlaceByLatitudeAndLongitude("이자카야모리", 37.6555775, 127.0631909);
-        Place place3 = createPlaceByLatitudeAndLongitude("서가앤쿡 노원역점", 37.6558247, 127.0634196);
-        Vibe vibe1 = createVibe(VibeType.NOISY);
-        Vibe vibe2 = createVibe(VibeType.QUIET);
-        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
-        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
-        place1.addPlaceVibe(placeVibe1);
-        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
-        place2.addPlaceVibe(placeVibe2);
-        PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
-        place3.addPlaceVibe(placeVibe3);
-        placeRepository.saveAll(List.of(place1, place2, place3));
-        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
-        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
-
-        Food food1 = createFood(FoodType.LATIN);
-        Food food2 = createFood(FoodType.MEAT);
-        PlaceFood placeFood1 = createPlaceFood(place1, food1);
-        place1.addPlaceFood(placeFood1);
-        PlaceFood placeFood2 = createPlaceFood(place2, food1);
-        place2.addPlaceFood(placeFood2);
-        PlaceFood placeFood3 = createPlaceFood(place3, food2);
-        place3.addPlaceFood(placeFood3);
-        foodRepository.saveAll(List.of(food1, food2));
-        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
-
         Double latitude = 37.6737992;
         Double longitude = 127.060022;
         Integer page = 0;
@@ -289,7 +185,7 @@ class PlaceServiceTest {
         assertThat(searchResult).isNotNull();
         assertThat(searchResult.getResults().get(0))
                 .extracting("name", "food", "address", "distance", "img")
-                .containsExactlyInAnyOrder("이자카야모리", "멕시칸,브라질", "address", "2.0km", "image");
+                .containsExactlyInAnyOrder("맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
         assertThat(searchResult.getResults().get(0).getVibes())
                 .extracting("title")
                 .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
