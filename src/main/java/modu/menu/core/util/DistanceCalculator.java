@@ -47,7 +47,6 @@ public class DistanceCalculator {
         double deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * Math.pow(cos2SigmaM, 2))
                 - B / 6 * cos2SigmaM * (-3 + 4 * Math.pow(sinSigma, 2)) * (-3 + 4 * Math.pow(cos2SigmaM, 2))));
 
-        double distanceMt = SEMI_MINOR_AXIS_MT * A * (sigma - deltaSigma);
-        return distanceMt;
+        return SEMI_MINOR_AXIS_MT * A * (sigma - deltaSigma);
     }
 }
