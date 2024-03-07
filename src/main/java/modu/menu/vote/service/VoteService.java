@@ -5,20 +5,15 @@ import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.core.exception.Exception404;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.core.util.DistanceCalculator;
-import modu.menu.food.domain.Food;
-import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
-import modu.menu.placefood.domain.PlaceFood;
-import modu.menu.placevibe.domain.PlaceVibe;
-import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.VoteResultRequest;
-import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.repository.VoteRepository;
+import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import modu.menu.voteItem.domain.VoteItem;
 import modu.menu.voteItem.repository.VoteItemRepository;
 import org.springframework.stereotype.Service;
@@ -63,8 +58,8 @@ public class VoteService {
                 .sum();
 
         return new VoteResultResponse(voteItems.stream()
-                .map(v -> {
-                    Place place = v.getPlace();
+                .map(voteItem -> {
+                    Place place = voteItem.getPlace();
                     double distance = DistanceCalculator.calculateDistance(
                             place.getLatitude(),
                             place.getLongitude(),
@@ -72,18 +67,15 @@ public class VoteService {
                             voteResultRequest.getLongitude()
                     );
 
-                    int voteCount = voteCountMap.getOrDefault(v.getId(), 0);
+                    int voteCount = voteCountMap.getOrDefault(voteItem.getId(), 0);
 
                     return VoteResultServiceResponse.builder()
                             .name(place.getName())
                             .food(place.getPlaceFoods().stream()
-                                    .map(PlaceFood::getFood)
-                                    .map(Food::getType)
-                                    .map(FoodType::getDetail)
+                                    .map(placeFood -> placeFood.getFood().getType().getDetail())
                                     .collect(Collectors.joining()))
                             .vibes(place.getPlaceVibes().stream()
-                                    .map(PlaceVibe::getVibe)
-                                    .map(Vibe::getType)
+                                    .map(placeVibe -> placeVibe.getVibe().getType())
                                     .toList())
                             .address(place.getAddress())
                             .distance(distance >= 1000.0 ? String.format("%.1f", distance / 1000.0) + "km" : Math.round(distance) + "m")
@@ -92,11 +84,11 @@ public class VoteService {
                             .build();
                 })
                 .sorted((voteResultServiceResponse1, voteResultServiceResponse2) -> {
-                    if (parseInt(voteResultServiceResponse2.getVoteRating().replace("%" , "")) == parseInt(voteResultServiceResponse1.getVoteRating().replace("%" , ""))) {
+                    if (parseInt(voteResultServiceResponse2.getVoteRating().replace("%", "")) == parseInt(voteResultServiceResponse1.getVoteRating().replace("%", ""))) {
                         return voteResultServiceResponse1.getName().compareTo(voteResultServiceResponse2.getName());
                     }
-                    return parseInt(voteResultServiceResponse2.getVoteRating().replace("%" , ""))
-                            - parseInt(voteResultServiceResponse1.getVoteRating().replace("%" , ""));
+                    return parseInt(voteResultServiceResponse2.getVoteRating().replace("%", ""))
+                            - parseInt(voteResultServiceResponse1.getVoteRating().replace("%", ""));
                 })
                 .toList()
         );
