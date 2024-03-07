@@ -11,6 +11,7 @@ public enum ErrorMessage {
 
     // User
     DUPLICATE_EMAIL("중복된 이메일입니다."),
+    CANT_MATCH_TOKEN_WITH_PATH_VARIABLE("토큰과 Path Variable의 id가 일치하지 않습니다."),
     NOT_EXIST_USER_TOKEN("존재하지 않는 회원의 토큰입니다."),
     NOT_ACTIVE_USER_TOKEN("탈퇴한 회원의 토큰입니다."),
     EMPTY_TOKEN("토큰 값이 비어있거나 null입니다."),
