@@ -1,4 +1,4 @@
-package modu.menu.vote.repository;
+package modu.menu.review.repository;
 
 import jakarta.persistence.EntityManager;
 import modu.menu.choice.domain.Choice;
@@ -15,7 +15,6 @@ import modu.menu.placevibe.repository.PlaceVibeRepository;
 import modu.menu.review.domain.HasRoom;
 import modu.menu.review.domain.Review;
 import modu.menu.review.domain.ReviewStatus;
-import modu.menu.review.repository.ReviewRepository;
 import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
@@ -25,6 +24,7 @@ import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
+import modu.menu.vote.repository.VoteRepository;
 import modu.menu.voteItem.domain.VoteItem;
 import modu.menu.voteItem.repository.VoteItemRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,15 +37,13 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 
-@DisplayName("VoteRepository 단위테스트")
+@DisplayName("ReviewRepository 단위테스트")
 @ActiveProfiles("test")
 @DataJpaTest
-class VoteRepositoryTest {
+class ReviewRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
@@ -81,7 +79,13 @@ class VoteRepositoryTest {
         entityManager.createNativeQuery("ALTER TABLE place_food_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE vote_item_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE choice_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE review_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+    }
 
+    @DisplayName("placeId 목록과 userId, VoteStatus를 통해서 사용자가 참여한 투표에 포함된 음식점을 평가한 이력을 조회한다.")
+    @Test
+    void countByPlaceIdsUserIdAndVoteStatus() {
+        // given
         User user1 = createUser("hong1234@naver.com");
         User user2 = createUser("kim1234@naver.com");
         User user3 = createUser("new1234@naver.com");
@@ -139,39 +143,17 @@ class VoteRepositoryTest {
         Review review2 = createReview(user1, vote2, place2);
         vote2.addReview(review2);
         reviewRepository.saveAll(List.of(review1, review2));
-    }
 
-    @DisplayName("voteId를 통해 투표 및 연관 데이터를 조회한다.")
-    @Test
-    void findVoteResultById() {
-        // given
-        Long voteId = 1L;
-
-        // when
-        Optional<Vote> voteResult = voteRepository.findVoteResultById(voteId);
-
-        // then
-        assertThat(voteResult).get()
-                .hasFieldOrPropertyWithValue("id", voteId)
-                .extracting("voteItems", COLLECTION)
-                .hasSize(3);
-    }
-
-    @DisplayName("userId, VoteStatus를 통해 사용자가 참가한 투표의 목록을 조회한다.")
-    @Test
-    void findByUserIdAndVoteStatus() {
-        // given
         Long userId = 1L;
+        Long voteId = 1L;
         VoteStatus status = VoteStatus.END;
 
         // when
-        List<Vote> votes = voteRepository.findByUserIdAndVoteStatus(userId, status);
+        int count = reviewRepository.countByUserIdAndVoteIdAndVoteStatus(userId, voteId, status);
 
         // then
-        assertThat(votes)
-                .extracting("id")
-                .hasSize(1)
-                .containsExactlyInAnyOrder(1L);
+        assertThat(count)
+                .isEqualTo(1);
     }
 
     private User createUser(String email) {
