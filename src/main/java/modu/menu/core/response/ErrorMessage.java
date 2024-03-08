@@ -9,6 +9,9 @@ public enum ErrorMessage {
     MAPPER_READ_TREE_ERROR("ObjectMapper readTree 실행에 실패했습니다."),
     CANT_CONVERT_STRING_TO_ENUM("주어진 문자열을 적절한 Enum으로 변환할 수 없습니다."),
 
+    // Exception500
+    CHECK_STACK_TRACE("서버에서 처리하지 못한 예외입니다. 스택 트레이스를 확인하세요."),
+
     // User
     DUPLICATE_EMAIL("중복된 이메일입니다."),
     CANT_MATCH_TOKEN_WITH_PATH_VARIABLE("토큰과 Path Variable의 id가 일치하지 않습니다."),
