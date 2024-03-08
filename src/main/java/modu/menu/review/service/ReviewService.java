@@ -53,12 +53,23 @@ public class ReviewService {
         List<Vote> votes = voteRepository.findByUserIdAndVoteStatus(user.getId(), VoteStatus.END);
 
         // 투표 목록이 없다면 null을 반환한다.
-        if (votes == null || votes.isEmpty()) {
+        if (votes.isEmpty()) {
             return new CheckReviewNecessityResponse(false, null);
         }
 
-        // 각 투표의 선택지에 대해 득표율을 계산한다. 이때 득표율이 동일한 경우도 체크한다.
-        for (Vote vote : votes) {
+        // 회원이 작성한 리뷰가 없는 투표만 골라낸다.
+        List<Vote> votesDoNotHaveUserReview = votes.stream()
+                .filter(vote -> vote.getReviews().stream()
+                        .anyMatch(review -> !review.getUser().getId().equals(userId)))
+                .toList();
+
+        // 참가했던 투표에 리뷰를 전부 작성했으므로 null을 반환한다.
+        if (votesDoNotHaveUserReview.isEmpty()) {
+            return null;
+        }
+
+        // 회원이 작성한 리뷰가 없는 각 투표의 선택지에 대해 득표율을 계산한다. 이때 득표율이 동일한 경우도 체크한다.
+        for (Vote vote : votesDoNotHaveUserReview) {
             List<VoteItem> voteItems = vote.getVoteItems();
 
             Map<Long, Integer> voteCountMap = voteItems.stream()
@@ -89,13 +100,9 @@ public class ReviewService {
                     .toList();
 
             // case 1. 득표율이 동일한 항목들이 존재한다면
-            // case 1-1. 해당 항목들에 대해 리뷰가 있다면 DTO 대신 null을 반환한다.
             if (hasDuplicateTurnout(duplicatePlaces, calculatedPlaces)) {
-                if (reviewRepository.countByPlaceIdsUserIdAndVoteStatus(duplicatePlaces.stream().map(Place::getId).toList(), userId, VoteStatus.END) > 0) {
-                    return null;
-                }
 
-                // case 1-2. 해당 항목들에 대해 리뷰가 없다면 동일한 항목을 모두 응답 리스트에 포함시키고 isSameTurnout을 true로 설정한다.
+                // 동일한 항목을 모두 응답 리스트에 포함시키고 isSameTurnout을 true로 설정한다.
                 return new CheckReviewNecessityResponse(
                         true,
                         duplicatePlaces.stream()
@@ -113,12 +120,7 @@ public class ReviewService {
             }
 
             // case 2. 득표율이 동일한 항목들이 없다면
-            // case 2-1. 득표율이 가장 높은 항목에 대한 리뷰가 있다면 DTO 대신 null을 반환한다.
-            if (reviewRepository.countByPlaceIdsUserIdAndVoteStatus(duplicatePlaces.stream().map(Place::getId).toList(), userId, VoteStatus.END) > 0) {
-                return null;
-            }
-
-            // case 2-2. 득표율이 가장 높은 항목에 대한 리뷰가 없다면 그 항목만 응답 리스트에 포함시키고 isSameTurnout을 false로 설정한다.
+            // case 2-2. 득표율이 가장 높은 항목만 응답 리스트에 포함시키고 isSameTurnout을 false로 설정한다.
             return new CheckReviewNecessityResponse(
                     false,
                     List.of(calculatedPlaces.stream().findFirst().map(place -> IncompletePlaceServiceResponse.builder()
@@ -132,7 +134,7 @@ public class ReviewService {
                             .build()).orElseThrow())
             );
         }
-        
+
         return null;
     }
 
@@ -140,7 +142,7 @@ public class ReviewService {
     // 득표율이 동일한 항목이 있더라도 그 득표율이 선택지 중에서 가장 높지 않으면 의미가 없다.
     private boolean hasDuplicateTurnout(List<Place> duplicatePlaces, List<Place> calculatedPlaces) {
         return !duplicatePlaces.isEmpty()
-                && ((duplicatePlaces.get(0).getId() == calculatedPlaces.get(0).getId()) || (duplicatePlaces.get(0).getId() == calculatedPlaces.get(1).getId()));
+                && (duplicatePlaces.get(0).getId().equals(calculatedPlaces.get(0).getId()) || duplicatePlaces.get(0).getId().equals(calculatedPlaces.get(1).getId()));
     }
 
     // 리뷰 등록

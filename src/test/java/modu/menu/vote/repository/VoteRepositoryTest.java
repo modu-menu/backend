@@ -1,5 +1,6 @@
 package modu.menu.vote.repository;
 
+import jakarta.persistence.EntityManager;
 import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.food.domain.Food;
@@ -11,6 +12,10 @@ import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placefood.repository.PlaceFoodRepository;
 import modu.menu.placevibe.domain.PlaceVibe;
 import modu.menu.placevibe.repository.PlaceVibeRepository;
+import modu.menu.review.domain.HasRoom;
+import modu.menu.review.domain.Review;
+import modu.menu.review.domain.ReviewStatus;
+import modu.menu.review.repository.ReviewRepository;
 import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
@@ -22,6 +27,7 @@ import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.voteItem.domain.VoteItem;
 import modu.menu.voteItem.repository.VoteItemRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +48,8 @@ import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 class VoteRepositoryTest {
 
     @Autowired
+    private EntityManager entityManager;
+    @Autowired
     private VoteRepository voteRepository;
     @Autowired
     private UserRepository userRepository;
@@ -59,11 +67,21 @@ class VoteRepositoryTest {
     private VoteItemRepository voteItemRepository;
     @Autowired
     private ChoiceRepository choiceRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
-    @DisplayName("voteId를 통해 투표 및 연관 데이터를 조회한다.")
-    @Test
-    void findVoteResultById() {
-        // given
+    @BeforeEach
+    void setUp() {
+        entityManager.createNativeQuery("ALTER TABLE vote_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE place_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE vibe_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE place_vibe_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE food_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE place_food_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE vote_item_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE choice_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+
         User user1 = createUser("hong1234@naver.com");
         User user2 = createUser("kim1234@naver.com");
         User user3 = createUser("new1234@naver.com");
@@ -102,12 +120,31 @@ class VoteRepositoryTest {
         vote.addVoteItem(voteItem1);
         vote.addVoteItem(voteItem2);
         vote.addVoteItem(voteItem3);
+        Vote vote2 = createVote(VoteStatus.END);
+        VoteItem voteItem4 = createVoteItem(vote2, place1);
+        VoteItem voteItem5 = createVoteItem(vote2, place2);
+        VoteItem voteItem6 = createVoteItem(vote2, place3);
+        vote2.addVoteItem(voteItem4);
+        vote2.addVoteItem(voteItem5);
+        vote2.addVoteItem(voteItem6);
         Choice choice1 = createChoice(voteItem1, user1);
         Choice choice2 = createChoice(voteItem2, user2);
         Choice choice3 = createChoice(voteItem3, user3);
-        voteRepository.save(vote);
-        voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+        voteRepository.saveAll(List.of(vote, vote2));
+        voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3, voteItem4, voteItem5, voteItem6));
         choiceRepository.saveAll(List.of(choice1, choice2, choice3));
+
+        Review review1 = createReview(user1, vote, place1);
+        vote.addReview(review1);
+        Review review2 = createReview(user1, vote2, place2);
+        vote2.addReview(review2);
+        reviewRepository.saveAll(List.of(review1, review2));
+    }
+
+    @DisplayName("voteId를 통해 투표 및 연관 데이터를 조회한다.")
+    @Test
+    void findVoteResultById() {
+        // given
         Long voteId = 1L;
 
         // when
@@ -118,6 +155,23 @@ class VoteRepositoryTest {
                 .hasFieldOrPropertyWithValue("id", voteId)
                 .extracting("voteItems", COLLECTION)
                 .hasSize(3);
+    }
+
+    @DisplayName("userId, VoteStatus를 통해 사용자가 참가한 투표의 목록을 조회한다.")
+    @Test
+    void findByUserIdAndVoteStatus() {
+        // given
+        Long userId = 1L;
+        VoteStatus status = VoteStatus.END;
+
+        // when
+        List<Vote> votes = voteRepository.findByUserIdAndVoteStatus(userId, status);
+
+        // then
+        assertThat(votes)
+                .extracting("id")
+                .hasSize(1)
+                .containsExactlyInAnyOrder(1L);
     }
 
     private User createUser(String email) {
@@ -194,6 +248,19 @@ class VoteRepositoryTest {
         return Choice.builder()
                 .voteItem(voteItem)
                 .user(user)
+                .build();
+    }
+
+    private Review createReview(User user, Vote vote, Place place) {
+        return Review.builder()
+                .user(user)
+                .vote(vote)
+                .place(place)
+                .rating(3)
+                .participants(10)
+                .hasRoom(HasRoom.UNKNOWN)
+                .content("맛집!")
+                .status(ReviewStatus.ACTIVE)
                 .build();
     }
 }

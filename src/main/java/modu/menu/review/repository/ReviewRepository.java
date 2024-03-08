@@ -6,19 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("""
             select count(r)
             from Review r
-            join User u
-            join Choice c
-            join VoteItem vi
-            join Vote v
-            join Place p
-            where u.id = :userId and v.voteStatus = :voteStatus and p.id in :placeIds
+            join User u on u.id = r.user.id
+            join Vote v on v.id = r.vote.id
+            where u.id = :userId and v.id = :voteId and v.voteStatus = :voteStatus
             """)
-    int countByPlaceIdsUserIdAndVoteStatus(@Param("placeIds") List<Long> placeIds, @Param("userId") Long userId, @Param("voteStatus") VoteStatus voteStatus);
+    int countByUserIdAndVoteIdAndVoteStatus(@Param("userId") Long userId, @Param("voteId") Long voteId, @Param("voteStatus") VoteStatus voteStatus);
 }

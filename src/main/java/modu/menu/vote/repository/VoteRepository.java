@@ -15,15 +15,17 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             select v
             from Vote v
             join fetch v.voteItems
+            where v.id = :voteId
             """)
     Optional<Vote> findVoteResultById(@Param("voteId") Long voteId);
 
     @Query("""
-           select vi
-           from Vote v
-           join VoteItem vi
-           join Choice c
-           where c.user.id = :userId and v.voteStatus = :voteStatus
-           """)
+            select v
+            from Vote v
+            join VoteItem vi on vi.vote.id = v.id
+            join Choice c on c.voteItem.id = vi.id
+            join fetch Review r on r.vote.id = v.id
+            where c.user.id = :userId and v.voteStatus = :voteStatus
+            """)
     List<Vote> findByUserIdAndVoteStatus(@Param("userId") Long id, @Param("voteStatus") VoteStatus voteStatus);
 }
