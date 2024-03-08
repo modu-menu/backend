@@ -70,13 +70,15 @@ public class JwtAuthenticationFilter implements Filter {
         }
     }
 
-    // JWT 인증 체크를 적용할지 URI를 통해 판단한다.
+    // JWT 인증을 적용할지 URI를 통해 판단한다.
     private boolean isJwtURI(String method, String uri) {
         return !uri.startsWith("/api-docs")
                 && !uri.startsWith("/swagger-ui")
                 && !(method.equals("POST") && uri.equals("/api/user"))
                 && !(method.equals("POST") && uri.equals("/api/user/login"))
                 && !(method.equals("GET") && uri.equals("/api/health-check"))
+                && !(method.equals("GET") && uri.startsWith("/api/user") && uri.endsWith("/incomplete-place"))
+                && !(method.equals("GET") && uri.startsWith("/api/place") && uri.endsWith("/review"))
                 && !(method.equals("GET") && uri.startsWith("/api/place"));
     }
 }
