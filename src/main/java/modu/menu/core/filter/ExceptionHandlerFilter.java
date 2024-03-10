@@ -6,9 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import modu.menu.core.exception.Exception401;
+import modu.menu.core.exception.Exception500;
 import modu.menu.core.response.ApiFailResponse;
-import modu.menu.core.response.ApiSuccessResponse;
-import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,20 +25,43 @@ public class ExceptionHandlerFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } catch (Exception401 e) {
-            setErrorResponse(response, e);
+            throwErrorResponse(response, e);
+        } catch (Exception500 e) {
+            throwErrorResponse(response, e);
         }
     }
 
-    private void setErrorResponse(ServletResponse response, Exception401 e) throws IOException {
+    private void throwErrorResponse(ServletResponse response, Exception401 e) throws IOException {
 
         HttpServletResponse resp = (HttpServletResponse) response;
 
         resp.setStatus(e.status().value());
         resp.setContentType("application/json; charset=utf-8");
 
-        log.warn("401: " + e.getMessage());
+        log.warn("401: " + e.getMessage(), e);
         ApiFailResponse apiSuccessResponse = new ApiFailResponse(
-                HttpStatus.UNAUTHORIZED,
+                e.status(),
+                e.getMessage()
+        );
+
+        String responseBody = objectMapper.writeValueAsString(apiSuccessResponse);
+
+        PrintWriter printWriter = resp.getWriter();
+        printWriter.println(responseBody);
+        printWriter.flush();
+        printWriter.close();
+    }
+
+    private void throwErrorResponse(ServletResponse response, Exception500 e) throws IOException {
+
+        HttpServletResponse resp = (HttpServletResponse) response;
+
+        resp.setStatus(e.status().value());
+        resp.setContentType("application/json; charset=utf-8");
+
+        log.error("500: " + e.getMessage(), e);
+        ApiFailResponse apiSuccessResponse = new ApiFailResponse(
+                e.status(),
                 e.getMessage()
         );
 

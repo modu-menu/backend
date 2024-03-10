@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import modu.menu.core.exception.Exception401;
+import modu.menu.core.exception.Exception500;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
@@ -32,7 +33,7 @@ public class JwtAuthenticationFilter implements Filter {
         String requestUri = req.getRequestURI();
 
         // 토큰 인증을 필요로 하지 않는 요청들은 별도의 필터링 없이 통과시킨다.
-        if (!isCheckURI(requestMethod, requestUri)) {
+        if (!isJwtURI(requestMethod, requestUri)) {
             log.debug("토큰 인증을 생략합니다.");
             chain.doFilter(req, resp);
             return;
@@ -61,25 +62,23 @@ public class JwtAuthenticationFilter implements Filter {
 
             chain.doFilter(req, resp);
         } catch (SignatureVerificationException e) { // 토큰 검증 실패 시
-            log.error(ErrorMessage.TOKEN_VERIFICATION_FAIL + "");
             throw new Exception401(ErrorMessage.TOKEN_VERIFICATION_FAIL);
         } catch (TokenExpiredException e) { // 만료된 토큰일 시
-            log.error(ErrorMessage.EXPIRED_TOKEN + "");
             throw new Exception401(ErrorMessage.EXPIRED_TOKEN);
+        } catch (Exception e) {
+            throw new Exception500(ErrorMessage.CHECK_STACK_TRACE);
         }
     }
 
-    // JWT 인증 체크를 적용할지 URI를 통해 판단한다.
-    private boolean isCheckURI(String method, String uri) {
-        if (uri.startsWith("/api-docs")
-                || uri.startsWith("/swagger-ui")
-                || method.equals("POST") && uri.equals("/api/user")
-                || method.equals("POST") && uri.equals("/api/user/login")
-                || method.equals("GET") && uri.equals("/api/health-check")
-                || method.equals("GET") && uri.startsWith("/api/place")) {
-            return false;
-        }
-
-        return true;
+    // JWT 인증을 적용할지 URI를 통해 판단한다.
+    private boolean isJwtURI(String method, String uri) {
+        return !uri.startsWith("/api-docs")
+                && !uri.startsWith("/swagger-ui")
+                && !(method.equals("POST") && uri.equals("/api/user"))
+                && !(method.equals("POST") && uri.equals("/api/user/login"))
+                && !(method.equals("GET") && uri.equals("/api/health-check"))
+                && !(method.equals("GET") && uri.startsWith("/api/user") && uri.endsWith("/incomplete-place"))
+                && !(method.equals("GET") && uri.startsWith("/api/place") && uri.endsWith("/review"))
+                && !(method.equals("GET") && uri.startsWith("/api/place"));
     }
 }

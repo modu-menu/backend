@@ -5,10 +5,7 @@ import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.place.domain.Place;
 import modu.menu.user.domain.User;
-import modu.menu.vibe.domain.Vibe;
-
-import java.util.ArrayList;
-import java.util.List;
+import modu.menu.vote.domain.Vote;
 
 @Builder
 @AllArgsConstructor
@@ -24,6 +21,8 @@ public class Review extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user; // 리뷰어
     @ManyToOne(fetch = FetchType.LAZY)
+    private Vote vote;
+    @ManyToOne(fetch = FetchType.LAZY)
     private Place place; // 리뷰 대상
     private Integer rating; // 평점
     private Integer participants; // 총 인원 수
@@ -33,4 +32,8 @@ public class Review extends BaseTime {
     private String content;
     @Enumerated(EnumType.STRING)
     private ReviewStatus status;
+
+    public void syncVote(Vote vote) {
+        this.vote = vote;
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
 import modu.menu.participant.domain.Participant;
+import modu.menu.review.domain.Review;
 import modu.menu.voteItem.domain.VoteItem;
 
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ public class Vote extends BaseTime {
     @Builder.Default
     @OneToMany(mappedBy = "vote")
     private List<VoteItem> voteItems = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(mappedBy = "vote")
+    private List<Review> reviews = new ArrayList<>();
 
     public void addParticipant(Participant participant) {
         participants.add(participant);
@@ -47,5 +51,15 @@ public class Vote extends BaseTime {
     public void removeVoteItem(VoteItem voteItem) {
         voteItems.remove(voteItem);
         voteItem.syncVote(null);
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.syncVote(this);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.syncVote(null);
     }
 }
