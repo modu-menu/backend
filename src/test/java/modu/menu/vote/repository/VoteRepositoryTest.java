@@ -136,9 +136,7 @@ class VoteRepositoryTest {
 
         Review review1 = createReview(user1, vote, place1);
         vote.addReview(review1);
-        Review review2 = createReview(user1, vote2, place2);
-        vote2.addReview(review2);
-        reviewRepository.saveAll(List.of(review1, review2));
+        reviewRepository.save(review1);
     }
 
     @DisplayName("voteId를 통해 투표 및 연관 데이터를 조회한다.")
@@ -157,9 +155,9 @@ class VoteRepositoryTest {
                 .hasSize(3);
     }
 
-    @DisplayName("userId, VoteStatus를 통해 사용자가 참가한 투표의 목록을 조회한다.")
+    @DisplayName("userId, VoteStatus를 통해 종료된 투표들 중 회원이 참가했던 투표의 목록을 조회한다.")
     @Test
-    void findByUserIdAndVoteStatus() {
+    void findByVoteStatus() {
         // given
         Long userId = 1L;
         VoteStatus status = VoteStatus.END;
@@ -169,8 +167,8 @@ class VoteRepositoryTest {
 
         // then
         assertThat(votes)
-                .extracting("id")
                 .hasSize(1)
+                .extracting("id")
                 .containsExactlyInAnyOrder(1L);
     }
 
