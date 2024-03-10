@@ -3,8 +3,10 @@ package modu.menu.review.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.review.api.request.CreateReviewRequest;
 import modu.menu.review.api.request.VibeRequest;
+import modu.menu.review.api.response.CheckReviewNecessityResponse;
 import modu.menu.review.domain.HasRoom;
 import modu.menu.review.service.ReviewService;
+import modu.menu.review.service.dto.IncompletePlaceServiceResponse;
 import modu.menu.vibe.domain.VibeType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,8 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -35,6 +39,97 @@ class ReviewControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private ReviewService reviewService;
+
+    @DisplayName("리뷰가 필요한 음식점 목록을 조회하면 null을 반환한다.")
+    @Test
+    void checkReviewNecessityReturnNull() throws Exception {
+        // given
+        Long userId = 1L;
+        Long tokenUserId = 1L;
+
+        // when
+        when(reviewService.checkReviewNecessity(anyLong()))
+                .thenReturn(null);
+
+        // then
+        mockMvc.perform(get("/api/user/{userId}/incomplete-place", userId)
+                        .requestAttr("userId", tokenUserId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.reason").value("OK"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("리뷰가 필요한 음식점 목록을 조회하면 성공한다.")
+    @Test
+    void checkReviewNecessityReturnMap() throws Exception {
+        // given
+        Long userId = 1L;
+        Long tokenUserId = 1L;
+
+        // when
+        when(reviewService.checkReviewNecessity(anyLong()))
+                .thenReturn(new CheckReviewNecessityResponse(
+                        true,
+                        List.of(IncompletePlaceServiceResponse.builder()
+                                .id(1L)
+                                .name("타코벨")
+                                .food("멕시칸,브라질")
+                                .address("address")
+                                .img("image")
+                                .build()))
+                );
+
+        // then
+        mockMvc.perform(get("/api/user/{userId}/incomplete-place", userId)
+                        .requestAttr("userId", tokenUserId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.reason").value("OK"))
+                .andExpect(jsonPath("$.data").isMap());
+    }
+
+    @DisplayName("리뷰가 필요한 음식점 목록을 조회할 때 userId는 양수이다.")
+    @Test
+    void checkReviewNecessityWithZeroUserId() throws Exception {
+        // given
+        Long userId = 0L;
+        Long tokenUserId = 1L;
+
+        // when
+        when(reviewService.checkReviewNecessity(anyLong()))
+                .thenReturn(null);
+
+        // then
+        mockMvc.perform(get("/api/user/{userId}/incomplete-place", userId)
+                        .requestAttr("userId", tokenUserId))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.cause").exists())
+                .andExpect(jsonPath("$.message").value("userId는 양수여야 합니다."));
+    }
+
+    @DisplayName("리뷰가 필요한 음식점 목록을 조회할 때 userId와 tokenUserId는 같다.")
+    @Test
+    void checkReviewNecessityWithNotMatchUserIds() throws Exception {
+        // given
+        Long userId = 1L;
+        Long tokenUserId = 2L;
+
+        // when
+        when(reviewService.checkReviewNecessity(anyLong()))
+                .thenReturn(null);
+
+        // then
+        mockMvc.perform(get("/api/user/{userId}/incomplete-place", userId)
+                        .requestAttr("userId", tokenUserId))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.reason").value("Unauthorized"))
+                .andExpect(jsonPath("$.cause").isEmpty())
+                .andExpect(jsonPath("$.message").value("토큰과 Path Variable의 id가 일치하지 않습니다."));
+    }
 
     @DisplayName("리뷰를 등록하면 성공한다.")
     @Test
