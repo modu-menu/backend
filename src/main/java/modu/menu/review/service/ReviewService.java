@@ -50,11 +50,11 @@ public class ReviewService {
         User user = userRepository.findById(userId).get();
 
         // 종료된 투표들 중 회원이 참가했던 투표들을 찾는다.
-        List<Vote> votes = voteRepository.findByUserIdAndVoteStatus(user.getId(), VoteStatus.END);
+        List<Vote> votes = voteRepository.findByUserIdAndVoteStatus(userId, VoteStatus.END);
 
         // 투표 목록이 없다면 null을 반환한다.
         if (votes.isEmpty()) {
-            return new CheckReviewNecessityResponse(false, null);
+            return null;
         }
 
         // 회원이 작성한 리뷰가 없는 투표만 골라낸다.

@@ -24,8 +24,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             from Vote v
             join VoteItem vi on vi.vote.id = v.id
             join Choice c on c.voteItem.id = vi.id
-            join fetch Review r on r.vote.id = v.id
             where c.user.id = :userId and v.voteStatus = :voteStatus
             """)
-    List<Vote> findByUserIdAndVoteStatus(@Param("userId") Long id, @Param("voteStatus") VoteStatus voteStatus);
+    List<Vote> findByUserIdAndVoteStatus(@Param("userId") Long userId, @Param("voteStatus") VoteStatus voteStatus);
 }
