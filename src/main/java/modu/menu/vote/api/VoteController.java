@@ -17,7 +17,10 @@ import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "투표")
 @Validated
@@ -26,6 +29,26 @@ import org.springframework.web.bind.annotation.*;
 public class VoteController {
 
     private final VoteService voteService;
+
+    @Operation(summary = "투표 초대", description = "투표에 회원을 초대합니다.")
+    @SecurityRequirement(name = "Authorization")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "초대가 성공한 경우"),
+            @ApiResponse(responseCode = "400", description = "PathVariable이 형식에 맞지 않을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "401", description = "토큰 인증이 실패한 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "404", description = "조회하려는 투표 자체가 존재하지 않는 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
+    })
+    @PostMapping("/api/vote/{voteId}/user/{userId}")
+    public ResponseEntity<ApiSuccessResponse> invite(
+            @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
+            @Positive(message = "userId는 양수여야 합니다.") @PathVariable("userId") Long userId
+    ) {
+        voteService.invite(voteId, userId);
+
+        return ResponseEntity.ok()
+                .body(new ApiSuccessResponse<>());
+    }
 
     /**
      * 회원의 위도와 경도를 외부에 노출해선 안 된다고 판단하여
