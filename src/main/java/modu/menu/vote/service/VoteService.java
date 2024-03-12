@@ -54,6 +54,10 @@ public class VoteService {
                 () -> new Exception404(ErrorMessage.NOT_EXIST_VOTE)
         );
 
+        if (vote.getVoteStatus().equals(VoteStatus.END)) {
+            throw new Exception404(ErrorMessage.CANT_INVITE_TO_END_VOTE);
+        }
+
         // JWT 검증 시 존재 여부를 확인했으므로 바로 get으로 객체를 꺼낸다.
         User user = userRepository.findById(userId).get();
 
