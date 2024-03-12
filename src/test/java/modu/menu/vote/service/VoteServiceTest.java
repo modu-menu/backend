@@ -9,6 +9,9 @@ import modu.menu.core.response.ErrorMessage;
 import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
+import modu.menu.participant.domain.Participant;
+import modu.menu.participant.domain.VoteRole;
+import modu.menu.participant.repository.ParticipantRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
@@ -49,6 +52,10 @@ import static org.assertj.core.api.Assertions.*;
 class VoteServiceTest {
 
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private JwtProvider jwtProvider;
+    @Autowired
     private VoteService voteService;
     @Autowired
     private UserRepository userRepository;
@@ -69,9 +76,56 @@ class VoteServiceTest {
     @Autowired
     private ChoiceRepository choiceRepository;
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private JwtProvider jwtProvider;
+    private ParticipantRepository participantRepository;
+
+    @DisplayName("회원을 투표에 초대한다.")
+    @Test
+    void invite() {
+        // given
+        User user1 = createUser("gildong123@naver.com");
+        Vote vote1 = createVote(VoteStatus.ACTIVE);
+        userRepository.save(user1);
+        voteRepository.save(vote1);
+        Long userId = user1.getId();
+        Long voteId = vote1.getId();
+
+        // when
+        voteService.invite(voteId, userId);
+
+        // then
+    }
+
+    @DisplayName("존재하지 않는 투표에 회원을 초대할 수 없다.")
+    @Test
+    void inviteWithNotExistVote() {
+        // given
+        User user1 = createUser("gildong123@naver.com");
+        userRepository.save(user1);
+        Long userId = user1.getId();
+        Long voteId = 1L;
+
+        // when
+        assertThatThrownBy(() -> voteService.invite(voteId, userId))
+                .isInstanceOf(Exception404.class)
+                .hasMessage(ErrorMessage.NOT_EXIST_VOTE.getValue());
+    }
+
+    @DisplayName("종료된 투표에 회원을 초대할 수 없다.")
+    @Test
+    void inviteWithEndVote() {
+        // given
+        User user1 = createUser("gildong123@naver.com");
+        Vote vote1 = createVote(VoteStatus.END);
+        userRepository.save(user1);
+        voteRepository.save(vote1);
+        Long userId = user1.getId();
+        Long voteId = vote1.getId();
+
+        // when
+        assertThatThrownBy(() -> voteService.invite(voteId, userId))
+                .isInstanceOf(Exception404.class)
+                .hasMessage(ErrorMessage.CANT_INVITE_TO_END_VOTE.getValue());
+    }
 
     @DisplayName("투표 ID를 통해 투표 및 연관 데이터를 조회한다.")
     @Test
@@ -243,6 +297,14 @@ class VoteServiceTest {
         return Choice.builder()
                 .voteItem(voteItem)
                 .user(user)
+                .build();
+    }
+
+    private Participant createParticipant(User user, Vote vote, VoteRole voteRole) {
+        return Participant.builder()
+                .user(user)
+                .vote(vote)
+                .voteRole(voteRole)
                 .build();
     }
 }
