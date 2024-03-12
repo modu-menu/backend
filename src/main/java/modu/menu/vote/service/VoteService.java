@@ -64,13 +64,13 @@ public class VoteService {
 
         Optional<Participant> participantOptional = participantRepository.findByUserId(userId);
         if (participantOptional.isEmpty()) {
-            participantRepository.save(
-                    Participant.builder()
-                            .user(user)
-                            .vote(vote)
-                            .voteRole(VoteRole.PARTICIPANT)
-                            .build()
-            );
+            Participant participant = Participant.builder()
+                    .user(user)
+                    .vote(vote)
+                    .voteRole(VoteRole.PARTICIPANT)
+                    .build();
+            vote.addParticipant(participant);
+            participantRepository.save(participant);
         }
     }
 
