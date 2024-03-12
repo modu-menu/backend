@@ -40,7 +40,7 @@ public class VoteService {
     // 투표 결과 조회
     public VoteResultResponse getVoteResult(Long voteId, VoteResultRequest voteResultRequest) {
 
-        // 투표 존재 여부를 확인한다.(fetch join을 활용해 응답에 필요한 연관 데이터까지 가져온다.)
+        // 투표 존재 여부를 확인한다. fetch join을 이용해 선택지도 함께 가져온다.
         Vote vote = voteRepository.findVoteResultById(voteId).orElseThrow(
                 () -> new Exception404(ErrorMessage.NOT_EXIST_VOTE)
         );

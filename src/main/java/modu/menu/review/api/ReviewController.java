@@ -53,7 +53,7 @@ public class ReviewController {
                 .body(new ApiSuccessResponse<>(checkReviewNecessityResponse));
     }
 
-    @Operation(summary = "리뷰 등록", description = "투표로 결정된 음식점에 대한 리뷰를 등록합니다. 반드시 리뷰 필요 여부 확인 API가 먼저 호출되어야 합니다.")
+    @Operation(summary = "리뷰 등록", description = "투표로 결정된 음식점에 대한 리뷰를 등록합니다. 반드시 리뷰가 필요한 음식점 목록 조회 API가 먼저 호출되어야 합니다.")
     @SecurityRequirement(name = "Authorization")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "등록이 성공한 경우"),
@@ -71,6 +71,6 @@ public class ReviewController {
         reviewService.createReview(userId, placeId, createReviewRequest);
 
         return ResponseEntity.ok()
-                .body(new ApiSuccessResponse());
+                .body(new ApiSuccessResponse<>());
     }
 }
