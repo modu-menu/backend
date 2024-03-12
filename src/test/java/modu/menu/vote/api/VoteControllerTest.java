@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,9 +37,91 @@ class VoteControllerTest {
     @MockBean
     private VoteService voteService;
 
+    @DisplayName("투표에 회원을 초대하면 성공한다.")
+    @Test
+    void invite() throws Exception {
+        // given
+        Long voteId = 1L;
+        Long userId = 1L;
+        Long tokenUserId = 1L;
+
+        // when
+        doNothing().when(voteService).invite(anyLong(), anyLong());
+
+        // then
+        mockMvc.perform(post("/api/vote/{voteId}/user/{userId}", voteId, userId)
+                        .requestAttr("userId", tokenUserId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.reason").value("OK"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("투표에 회원을 초대할 때 voteId는 양수이다.")
+    @Test
+    void inviteWithZeroVoteId() throws Exception {
+        // given
+        Long voteId = 0L;
+        Long userId = 1L;
+        Long tokenUserId = 1L;
+
+        // when
+        doNothing().when(voteService).invite(anyLong(), anyLong());
+
+        // then
+        mockMvc.perform(post("/api/vote/{voteId}/user/{userId}", voteId, userId)
+                        .requestAttr("userId", tokenUserId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.cause").exists())
+                .andExpect(jsonPath("$.message").value("voteId는 양수여야 합니다."));
+    }
+
+    @DisplayName("투표에 회원을 초대할 때 userId는 양수이다.")
+    @Test
+    void inviteWithZeroUserId() throws Exception {
+        // given
+        Long voteId = 1L;
+        Long userId = 0L;
+        Long tokenUserId = 1L;
+
+        // when
+        doNothing().when(voteService).invite(anyLong(), anyLong());
+
+        // then
+        mockMvc.perform(post("/api/vote/{voteId}/user/{userId}", voteId, userId)
+                        .requestAttr("userId", tokenUserId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.cause").exists())
+                .andExpect(jsonPath("$.message").value("userId는 양수여야 합니다."));
+    }
+
+    @DisplayName("투표에 회원을 초대할 때 userId와 tokenUserId는 같아야 한다.")
+    @Test
+    void inviteCantMatchUserIdWithTokenUserId() throws Exception {
+        // given
+        Long voteId = 1L;
+        Long userId = 1L;
+        Long tokenUserId = 2L;
+
+        // when
+        doNothing().when(voteService).invite(anyLong(), anyLong());
+
+        // then
+        mockMvc.perform(post("/api/vote/{voteId}/user/{userId}", voteId, userId)
+                        .requestAttr("userId", tokenUserId))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.reason").value("Unauthorized"))
+                .andExpect(jsonPath("$.message").value("토큰과 Path Variable의 id가 일치하지 않습니다."));
+    }
+
     @DisplayName("투표 결과를 조회하면 성공한다.")
     @Test
-    void getVoteResult() throws Exception {
+    void getResult() throws Exception {
         // given
         Long voteId = 1L;
         VoteResultRequest voteResultRequest = VoteResultRequest.builder()
@@ -49,9 +132,9 @@ class VoteControllerTest {
         // when
         when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
-                        List.of(createVoteResult("타코벨"),
-                                createVoteResult("매드포갈릭 강남삼성타운점"),
-                                createVoteResult("창고 43 강남점")))
+                        List.of(createResult("타코벨"),
+                                createResult("매드포갈릭 강남삼성타운점"),
+                                createResult("창고 43 강남점")))
                 );
 
         // then
@@ -66,7 +149,7 @@ class VoteControllerTest {
 
     @DisplayName("투표 결과를 조회할 때 위도는 필수이다.")
     @Test
-    void getVoteResultWithNoLatitude() throws Exception {
+    void getResultWithNoLatitude() throws Exception {
         // given
         Long voteId = 1L;
         VoteResultRequest voteResultRequest = VoteResultRequest.builder()
@@ -76,9 +159,9 @@ class VoteControllerTest {
         // when
         when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
-                        List.of(createVoteResult("타코벨"),
-                                createVoteResult("매드포갈릭 강남삼성타운점"),
-                                createVoteResult("창고 43 강남점")))
+                        List.of(createResult("타코벨"),
+                                createResult("매드포갈릭 강남삼성타운점"),
+                                createResult("창고 43 강남점")))
                 );
 
         // then
@@ -94,7 +177,7 @@ class VoteControllerTest {
 
     @DisplayName("투표 결과를 조회할 때 경도는 필수이다.")
     @Test
-    void getVoteResultWithNoLongitude() throws Exception {
+    void getResultWithNoLongitude() throws Exception {
         // given
         Long voteId = 1L;
         VoteResultRequest voteResultRequest = VoteResultRequest.builder()
@@ -104,9 +187,9 @@ class VoteControllerTest {
         // when
         when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
-                        List.of(createVoteResult("타코벨"),
-                                createVoteResult("매드포갈릭 강남삼성타운점"),
-                                createVoteResult("창고 43 강남점")))
+                        List.of(createResult("타코벨"),
+                                createResult("매드포갈릭 강남삼성타운점"),
+                                createResult("창고 43 강남점")))
                 );
 
         // then
@@ -122,7 +205,7 @@ class VoteControllerTest {
 
     @DisplayName("투표 결과를 조회할 때 위도는 양수이다.")
     @Test
-    void getVoteResultWithZeroLatitude() throws Exception {
+    void getResultWithZeroLatitude() throws Exception {
         // given
         Long voteId = 1L;
         VoteResultRequest voteResultRequest = VoteResultRequest.builder()
@@ -133,9 +216,9 @@ class VoteControllerTest {
         // when
         when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
-                        List.of(createVoteResult("타코벨"),
-                                createVoteResult("매드포갈릭 강남삼성타운점"),
-                                createVoteResult("창고 43 강남점")))
+                        List.of(createResult("타코벨"),
+                                createResult("매드포갈릭 강남삼성타운점"),
+                                createResult("창고 43 강남점")))
                 );
 
         // then
@@ -151,7 +234,7 @@ class VoteControllerTest {
 
     @DisplayName("투표 결과를 조회할 때 경도는 양수이다.")
     @Test
-    void getVoteResultWithZeroLongitude() throws Exception {
+    void getResultWithZeroLongitude() throws Exception {
         // given
         Long voteId = 1L;
         VoteResultRequest voteResultRequest = VoteResultRequest.builder()
@@ -162,9 +245,9 @@ class VoteControllerTest {
         // when
         when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
-                        List.of(createVoteResult("타코벨"),
-                                createVoteResult("매드포갈릭 강남삼성타운점"),
-                                createVoteResult("창고 43 강남점")))
+                        List.of(createResult("타코벨"),
+                                createResult("매드포갈릭 강남삼성타운점"),
+                                createResult("창고 43 강남점")))
                 );
 
         // then
@@ -178,7 +261,7 @@ class VoteControllerTest {
                 .andExpect(jsonPath("$.message").value("경도는 양수여야 합니다."));
     }
 
-    private VoteResultServiceResponse createVoteResult(String name) {
+    private VoteResultServiceResponse createResult(String name) {
         return VoteResultServiceResponse.builder()
                 .name(name)
                 .food("멕시칸, 브라질")
