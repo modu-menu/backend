@@ -10,17 +10,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import modu.menu.core.exception.Exception401;
 import modu.menu.core.response.ApiFailResponse;
 import modu.menu.core.response.ApiSuccessResponse;
+import modu.menu.core.response.ErrorMessage;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "투표")
 @Validated
@@ -42,8 +41,13 @@ public class VoteController {
     @PostMapping("/api/vote/{voteId}/user/{userId}")
     public ResponseEntity<ApiSuccessResponse> invite(
             @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
-            @Positive(message = "userId는 양수여야 합니다.") @PathVariable("userId") Long userId
+            @Positive(message = "userId는 양수여야 합니다.") @PathVariable("userId") Long userId,
+            @RequestAttribute("userId") Long tokenUserId
     ) {
+        if (!userId.equals(tokenUserId)) {
+            throw new Exception401(ErrorMessage.CANT_MATCH_TOKEN_WITH_PATH_VARIABLE);
+        }
+
         voteService.invite(voteId, userId);
 
         return ResponseEntity.ok()
