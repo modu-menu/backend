@@ -6,12 +6,18 @@ import modu.menu.core.exception.Exception404;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.core.util.DistanceCalculator;
 import modu.menu.food.repository.FoodRepository;
+import modu.menu.participant.domain.Participant;
+import modu.menu.participant.domain.VoteRole;
+import modu.menu.participant.repository.ParticipantRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
+import modu.menu.user.domain.User;
+import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
+import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import modu.menu.voteItem.domain.VoteItem;
@@ -21,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.Integer.parseInt;
@@ -36,11 +43,41 @@ public class VoteService {
     private final PlaceRepository placeRepository;
     private final VibeRepository vibeRepository;
     private final FoodRepository foodRepository;
+    private final UserRepository userRepository;
+    private final ParticipantRepository participantRepository;
+
+    // 투표 초대
+    @Transactional
+    public void invite(Long voteId, Long userId) {
+
+        // 투표 존재 여부를 확인한다.
+        Vote vote = voteRepository.findById(voteId).orElseThrow(
+                () -> new Exception404(ErrorMessage.NOT_EXIST_VOTE)
+        );
+
+        if (vote.getVoteStatus().equals(VoteStatus.END)) {
+            throw new Exception404(ErrorMessage.CANT_INVITE_TO_END_VOTE);
+        }
+
+        // JWT 검증 시 존재 여부를 확인했으므로 바로 get으로 객체를 꺼낸다.
+        User user = userRepository.findById(userId).get();
+
+        Optional<Participant> participantOptional = participantRepository.findByUserId(userId);
+        if (participantOptional.isEmpty()) {
+            participantRepository.save(
+                    Participant.builder()
+                            .user(user)
+                            .vote(vote)
+                            .voteRole(VoteRole.PARTICIPANT)
+                            .build()
+            );
+        }
+    }
 
     // 투표 결과 조회
-    public VoteResultResponse getVoteResult(Long voteId, VoteResultRequest voteResultRequest) {
+    public VoteResultResponse getResult(Long voteId, VoteResultRequest voteResultRequest) {
 
-        // 투표 존재 여부를 확인한다.(fetch join을 활용해 응답에 필요한 연관 데이터까지 가져온다.)
+        // 투표 존재 여부를 확인한다. fetch join을 이용해 선택지도 함께 가져온다.
         Vote vote = voteRepository.findVoteResultById(voteId).orElseThrow(
                 () -> new Exception404(ErrorMessage.NOT_EXIST_VOTE)
         );
@@ -93,5 +130,4 @@ public class VoteService {
                 .toList()
         );
     }
-
 }
