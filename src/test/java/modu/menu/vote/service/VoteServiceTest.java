@@ -129,7 +129,7 @@ class VoteServiceTest {
                 .build();
 
         // when
-        VoteResultResponse voteResult = voteService.getVoteResult(voteId, voteResultRequest);
+        VoteResultResponse voteResult = voteService.getResult(voteId, voteResultRequest);
 
         // then
         assertThat(voteResult.getResults()).isNotNull();
@@ -164,7 +164,7 @@ class VoteServiceTest {
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> voteService.getVoteResult(voteId, voteResultRequest))
+        assertThatThrownBy(() -> voteService.getResult(voteId, voteResultRequest))
                 .isInstanceOf(Exception404.class)
                 .hasMessage(ErrorMessage.NOT_EXIST_VOTE.getValue());
     }

@@ -3,9 +3,9 @@ package modu.menu.vote.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vote.api.request.VoteResultRequest;
-import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
+import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ class VoteControllerTest {
                 .build();
 
         // when
-        when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
+        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
@@ -74,7 +74,7 @@ class VoteControllerTest {
                 .build();
 
         // when
-        when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
+        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
@@ -102,7 +102,7 @@ class VoteControllerTest {
                 .build();
 
         // when
-        when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
+        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
@@ -131,7 +131,7 @@ class VoteControllerTest {
                 .build();
 
         // when
-        when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
+        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),
@@ -160,7 +160,7 @@ class VoteControllerTest {
                 .build();
 
         // when
-        when(voteService.getVoteResult(anyLong(), any(VoteResultRequest.class)))
+        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
                 .thenReturn(new VoteResultResponse(
                         List.of(createVoteResult("타코벨"),
                                 createVoteResult("매드포갈릭 강남삼성타운점"),

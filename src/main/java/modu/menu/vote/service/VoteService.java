@@ -17,6 +17,7 @@ import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
+import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import modu.menu.voteItem.domain.VoteItem;
@@ -74,7 +75,7 @@ public class VoteService {
     }
 
     // 투표 결과 조회
-    public VoteResultResponse getVoteResult(Long voteId, VoteResultRequest voteResultRequest) {
+    public VoteResultResponse getResult(Long voteId, VoteResultRequest voteResultRequest) {
 
         // 투표 존재 여부를 확인한다. fetch join을 이용해 선택지도 함께 가져온다.
         Vote vote = voteRepository.findVoteResultById(voteId).orElseThrow(

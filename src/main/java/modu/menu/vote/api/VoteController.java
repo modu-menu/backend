@@ -64,12 +64,12 @@ public class VoteController {
             @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
     })
     @PostMapping("/api/vote/{voteId}/result")
-    public ResponseEntity<ApiSuccessResponse<VoteResultResponse>> getVoteResult(
+    public ResponseEntity<ApiSuccessResponse<VoteResultResponse>> getResult(
             @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
             @Valid @RequestBody VoteResultRequest voteResultRequest
     ) {
 
-        VoteResultResponse response = voteService.getVoteResult(voteId, voteResultRequest);
+        VoteResultResponse response = voteService.getResult(voteId, voteResultRequest);
 
         return ResponseEntity.ok()
                 .body(new ApiSuccessResponse<>(response));
