@@ -39,7 +39,7 @@ class PlaceServiceTest extends IntegrationTestSupporter {
     @Autowired
     private PlaceService placeService;
     @Autowired
-    private PlaceCustomPagingRepository placeQueryRepository;
+    private PlaceCustomPagingRepository placeCustomPagingRepository;
     @Autowired
     private PlaceRepository placeRepository;
     @Autowired

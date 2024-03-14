@@ -1,5 +1,6 @@
 package modu.menu;
 
+import jakarta.persistence.EntityManager;
 import modu.menu.core.auth.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,4 +14,7 @@ public abstract class IntegrationTestSupporter {
 
     @Autowired
     protected JwtProvider jwtProvider;
+
+    @Autowired
+    protected EntityManager entityManager;
 }
