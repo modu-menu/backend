@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ActiveProfiles("test")
-@SpringBootTest(
-        classes = GenderAttributeConverter.class
-)
+@SpringBootTest(classes = GenderAttributeConverter.class)
 class GenderAttributeConverterTest {
 
     @Autowired

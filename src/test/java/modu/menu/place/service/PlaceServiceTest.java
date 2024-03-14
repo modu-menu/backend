@@ -1,8 +1,7 @@
 package modu.menu.place.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.IntegrationTestSupporter;
 import modu.menu.choice.domain.Choice;
-import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
@@ -27,9 +26,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,15 +34,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("PlaceService 통합테스트")
-@Sql("classpath:db/teardown.sql")
-@ActiveProfiles("test")
-@SpringBootTest
-class PlaceServiceTest {
+class PlaceServiceTest extends IntegrationTestSupporter {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private JwtProvider jwtProvider;
     @Autowired
     private PlaceService placeService;
     @Autowired
