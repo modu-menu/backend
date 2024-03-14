@@ -1,6 +1,6 @@
 package modu.menu.vote.repository;
 
-import jakarta.persistence.EntityManager;
+import modu.menu.IntegrationTestSupporter;
 import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.food.domain.Food;
@@ -31,8 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,12 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 
 @DisplayName("VoteRepository 단위테스트")
-@ActiveProfiles("test")
-@DataJpaTest
-class VoteRepositoryTest {
+class VoteRepositoryTest extends IntegrationTestSupporter {
 
-    @Autowired
-    private EntityManager entityManager;
     @Autowired
     private VoteRepository voteRepository;
     @Autowired
@@ -72,16 +66,6 @@ class VoteRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        entityManager.createNativeQuery("ALTER TABLE vote_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE place_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE vibe_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE place_vibe_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE food_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE place_food_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE vote_item_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE choice_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-
         User user1 = createUser("hong1234@naver.com");
         User user2 = createUser("kim1234@naver.com");
         User user3 = createUser("new1234@naver.com");

@@ -1,9 +1,8 @@
 package modu.menu.vote.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.IntegrationTestSupporter;
 import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
-import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.exception.Exception404;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.food.domain.Food;
@@ -11,7 +10,6 @@ import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.participant.domain.Participant;
 import modu.menu.participant.domain.VoteRole;
-import modu.menu.participant.repository.ParticipantRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
@@ -35,9 +33,6 @@ import modu.menu.voteItem.repository.VoteItemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -46,15 +41,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("VoteService 통합테스트")
-@Sql("classpath:db/teardown.sql")
-@ActiveProfiles("test")
-@SpringBootTest
-class VoteServiceTest {
+class VoteServiceTest extends IntegrationTestSupporter {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private JwtProvider jwtProvider;
     @Autowired
     private VoteService voteService;
     @Autowired
@@ -75,8 +63,6 @@ class VoteServiceTest {
     private VoteItemRepository voteItemRepository;
     @Autowired
     private ChoiceRepository choiceRepository;
-    @Autowired
-    private ParticipantRepository participantRepository;
 
     @DisplayName("회원을 투표에 초대한다.")
     @Test

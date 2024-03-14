@@ -1,36 +1,21 @@
 package modu.menu.place.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.ControllerTestSupporter;
 import modu.menu.place.api.response.SearchPlaceResponse;
-import modu.menu.place.service.PlaceService;
 import modu.menu.place.service.dto.SearchResultServiceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @DisplayName("PlaceController 단위테스트")
-@ActiveProfiles("test")
-@WebMvcTest(PlaceController.class)
-public class PlaceControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private PlaceService placeService;
+class PlaceControllerTest extends ControllerTestSupporter {
 
     @DisplayName("음식점 후보를 검색하면 성공한다.")
     @Test
@@ -68,9 +53,9 @@ public class PlaceControllerTest {
 
         // then
         mockMvc.perform(get("/api/place")
-                .queryParam("latitude", String.valueOf(latitude))
-                .queryParam("longitude", String.valueOf(longitude))
-                .queryParam("page", String.valueOf(page)))
+                        .queryParam("latitude", String.valueOf(latitude))
+                        .queryParam("longitude", String.valueOf(longitude))
+                        .queryParam("page", String.valueOf(page)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.reason").value("OK"))
