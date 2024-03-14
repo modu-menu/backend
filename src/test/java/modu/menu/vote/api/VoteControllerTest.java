@@ -1,19 +1,13 @@
 package modu.menu.vote.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.ControllerTestSupporter;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
-import modu.menu.vote.service.VoteService;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
@@ -26,16 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("VoteController 단위테스트")
-@ActiveProfiles("test")
-@WebMvcTest(VoteController.class)
-class VoteControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private VoteService voteService;
+class VoteControllerTest extends ControllerTestSupporter {
 
     @DisplayName("투표에 회원을 초대하면 성공한다.")
     @Test
