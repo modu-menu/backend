@@ -16,6 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchResultServiceResponse {
 
+    @Schema(description = "음식점 ID", example = "1")
+    private Long id;
+
     @Schema(description = "음식점 이름", example = "타코벨")
     private String name;
 
