@@ -63,6 +63,7 @@ public class PlaceService {
                             );
 
                             return SearchResultServiceResponse.builder()
+                                    .id(place.getId())
                                     .name(place.getName())
                                     .food(place.getPlaceFoods().stream()
                                             .map(PlaceFood::getFood)

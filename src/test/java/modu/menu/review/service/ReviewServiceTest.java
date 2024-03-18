@@ -1,9 +1,8 @@
 package modu.menu.review.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.IntegrationTestSupporter;
 import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
-import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
@@ -36,9 +35,6 @@ import modu.menu.voteItem.repository.VoteItemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,15 +43,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("ReviewService 통합테스트")
-@Sql("classpath:db/teardown.sql")
-@ActiveProfiles("test")
-@SpringBootTest
-class ReviewServiceTest {
+class ReviewServiceTest extends IntegrationTestSupporter {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private JwtProvider jwtProvider;
     @Autowired
     private ReviewService reviewService;
     @Autowired
@@ -80,7 +69,6 @@ class ReviewServiceTest {
     private VoteItemRepository voteItemRepository;
     @Autowired
     private ChoiceRepository choiceRepository;
-
 
     @DisplayName("회원이 참여했던 투표에 모두 리뷰를 작성한 경우 null을 반환한다.")
     @Test
