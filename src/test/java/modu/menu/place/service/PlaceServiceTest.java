@@ -95,8 +95,8 @@ class PlaceServiceTest extends IntegrationTestSupporter {
         // then
         assertThat(searchResult).isNotNull();
         assertThat(searchResult.getResults().get(0))
-                .extracting("name", "food", "address", "distance", "img")
-                .containsExactlyInAnyOrder("맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
+                .extracting("id", "name", "food", "address", "distance", "img")
+                .containsExactlyInAnyOrder(2L, "맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
         assertThat(searchResult.getResults().get(0).getVibes())
                 .extracting("title")
                 .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
@@ -131,8 +131,8 @@ class PlaceServiceTest extends IntegrationTestSupporter {
         // then
         assertThat(searchResult).isNotNull();
         assertThat(searchResult.getResults().get(0))
-                .extracting("name", "food", "address", "distance", "img")
-                .containsExactlyInAnyOrder("맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
+                .extracting("id", "name", "food", "address", "distance", "img")
+                .containsExactlyInAnyOrder(2L, "맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
         assertThat(searchResult.getResults().get(0).getVibes())
                 .extracting("title")
                 .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
@@ -152,8 +152,8 @@ class PlaceServiceTest extends IntegrationTestSupporter {
         // then
         assertThat(searchResult).isNotNull();
         assertThat(searchResult.getResults().get(0))
-                .extracting("name", "food", "address", "distance", "img")
-                .containsExactlyInAnyOrder("맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
+                .extracting("id", "name", "food", "address", "distance", "img")
+                .containsExactlyInAnyOrder(2L, "맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
         assertThat(searchResult.getResults().get(0).getVibes())
                 .extracting("title")
                 .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
@@ -173,8 +173,8 @@ class PlaceServiceTest extends IntegrationTestSupporter {
         // then
         assertThat(searchResult).isNotNull();
         assertThat(searchResult.getResults().get(0))
-                .extracting("name", "food", "address", "distance", "img")
-                .containsExactlyInAnyOrder("맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
+                .extracting("id", "name", "food", "address", "distance", "img")
+                .containsExactlyInAnyOrder(2L, "맥도날드 상계DT점", "멕시칸,브라질", "address", "373m", "image");
         assertThat(searchResult.getResults().get(0).getVibes())
                 .extracting("title")
                 .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
