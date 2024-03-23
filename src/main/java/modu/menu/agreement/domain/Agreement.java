@@ -1,21 +1,22 @@
-package modu.menu.vibe.domain;
+package modu.menu.agreement.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import modu.menu.BaseTime;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "vibe_tb")
+@Table(name = "agreement_tb")
 @Entity
-public class Vibe {
+public class Agreement extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(length = 30)
-    @Enumerated(EnumType.STRING)
-    private VibeType type;
+
+    private String name;
+    private String content;
+    private Boolean isNecessary;
 }

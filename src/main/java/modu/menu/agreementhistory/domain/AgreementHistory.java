@@ -1,26 +1,26 @@
-package modu.menu.choice.domain;
+package modu.menu.agreementhistory.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
 import modu.menu.BaseTime;
+import modu.menu.agreement.domain.Agreement;
 import modu.menu.user.domain.User;
-import modu.menu.voteItem.domain.VoteItem;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "choice_tb")
+@Table(name = "agreement_tb")
 @Entity
-public class Choice extends BaseTime {
+public class AgreementHistory extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_item_id")
-    private VoteItem voteItem;
+    @JoinColumn(name = "agreement_id")
+    private Agreement agreement;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
