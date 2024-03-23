@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import modu.menu.core.auth.jwt.JwtAuthenticationFilter;
 import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.filter.ExceptionHandlerFilter;
-import modu.menu.core.filter.LoggerFilter;
+import modu.menu.core.filter.LoggingFilter;
 import modu.menu.user.repository.UserRepository;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class FilterRegisterConfig {
 
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 
-        filterRegistrationBean.setFilter(new LoggerFilter());
+        filterRegistrationBean.setFilter(new LoggingFilter());
         filterRegistrationBean.setOrder(1);
         filterRegistrationBean.addUrlPatterns("/*");
 

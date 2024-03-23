@@ -12,7 +12,7 @@ import java.util.Enumeration;
 
 @Slf4j
 // 요청과 응답을 로그에 기록한다.
-public class LoggerFilter implements Filter {
+public class LoggingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
