@@ -19,9 +19,11 @@ public class Participant extends BaseTime {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vote_id")
     private Vote vote;
 
     @Enumerated(EnumType.STRING)

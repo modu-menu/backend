@@ -17,8 +17,12 @@ public class Choice extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vote_item_id")
     private VoteItem voteItem;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 }

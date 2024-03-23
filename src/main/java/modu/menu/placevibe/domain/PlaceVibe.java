@@ -16,9 +16,13 @@ public class PlaceVibe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_id")
     private Place place;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vibe_id")
     private Vibe vibe;
 
     public void syncPlace(Place place) {

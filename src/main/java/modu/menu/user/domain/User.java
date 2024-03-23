@@ -20,6 +20,7 @@ public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String email;
     private String password;
     private String name;
@@ -29,6 +30,7 @@ public class User extends BaseTime {
     private LocalDate birthday;
     private String phoneNumber;
     private String profileImageUrl;
+
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 }
