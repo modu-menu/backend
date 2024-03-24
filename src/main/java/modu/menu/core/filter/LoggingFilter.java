@@ -4,19 +4,26 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Objects;
+import java.util.UUID;
 
-@Slf4j
 // 요청과 응답을 로그에 기록한다.
+@Slf4j
 public class LoggingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 비즈니스 로직 진입 전
+        // MDC에 요청을 구분하기 위한 UUID 추가, NginX에서 생성한 request id를 받아오고, 없을 경우 UUID를 생성해서 추가한다.
+        String requestId = ((HttpServletRequest) request).getHeader("X-requestID");
+        MDC.put("request_id", Objects.toString(requestId, UUID.randomUUID().toString()));
+
         ContentCachingRequestWrapper req = new ContentCachingRequestWrapper((HttpServletRequest) request);
         ContentCachingResponseWrapper resp = new ContentCachingResponseWrapper((HttpServletResponse) response);
         chain.doFilter(request, response);
@@ -43,7 +50,7 @@ public class LoggingFilter implements Filter {
         String requestBody = req.getContentAsByteArray() + "";
         String requestURI = req.getRequestURI();
         String method = req.getMethod();
-        log.info(">>>>> uri: {}, method: {}, header: {}", requestURI, method, headerValues);
+        log.info(">>>>> method: {}, uri: {}, header: {}, body: {}", method, requestURI, headerValues, requestBody);
 
         // response
         StringBuilder responseHeaderValues = new StringBuilder();
@@ -57,9 +64,11 @@ public class LoggingFilter implements Filter {
                     .append("] ");
         });
         String responseBody = resp.getContentAsByteArray() + "";
-        log.info("<<<<< uri: {}, method: {}, header: {}", requestURI, method, responseHeaderValues);
+        log.info("<<<<< method: {}, uri: {}, header: {}, body: {}", method, requestURI, responseHeaderValues, responseBody);
 
         // 이게 있어야 response가 비어있는 채로 전달되지 않는다.
         resp.copyBodyToResponse();
+
+        MDC.clear();
     }
 }
