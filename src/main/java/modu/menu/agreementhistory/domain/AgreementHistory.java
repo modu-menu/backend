@@ -10,7 +10,7 @@ import modu.menu.user.domain.User;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "agreement_tb")
+@Table(name = "agreement_history_tb")
 @Entity
 public class AgreementHistory extends BaseTime {
 
