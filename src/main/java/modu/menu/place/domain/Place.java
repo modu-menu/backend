@@ -21,23 +21,30 @@ public class Place extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(length = 100)
     private String name;
+
     @Column(length = 512)
     private String address;
+
     @Column(length = 30)
     private String ph;
+
     private String businessHours;
     private String menu;
     private Double latitude; // 위도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
     private Double longitude; // 경도, 소수점 다섯 번째 자리까지 사용할 경우 1m 단위까지 표현 가능
     private String imageUrl;
+
     @Builder.Default
     @OneToMany(mappedBy = "place")
     private List<VoteItem> voteItems = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(mappedBy = "place")
     private List<PlaceFood> placeFoods = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(mappedBy = "place")
     private List<PlaceVibe> placeVibes = new ArrayList<>();

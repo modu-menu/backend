@@ -16,9 +16,13 @@ public class VoteItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vote_id")
     private Vote vote;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_id")
     private Place place;
 
     public void syncPlace(Place place) {

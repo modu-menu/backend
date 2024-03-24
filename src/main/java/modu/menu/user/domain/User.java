@@ -10,14 +10,17 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "User_tb")
+@Table(name = "User_tb",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_email", columnNames = "email")
+        })
 @Entity
 public class User extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+
     private String email;
     private String password;
     private String name;
@@ -27,6 +30,7 @@ public class User extends BaseTime {
     private LocalDate birthday;
     private String phoneNumber;
     private String profileImageUrl;
+
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 }
