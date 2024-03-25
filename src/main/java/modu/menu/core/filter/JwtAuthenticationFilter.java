@@ -77,6 +77,7 @@ public class JwtAuthenticationFilter implements Filter {
                 && !(method.equals("POST") && uri.equals("/api/user"))
                 && !(method.equals("POST") && uri.equals("/api/user/login"))
                 && !(method.equals("GET") && uri.equals("/api/health-check"))
+                && !(method.equals("GET") && uri.startsWith("/api/vote-list"))
                 && !(method.equals("GET") && uri.startsWith("/api/place") && uri.endsWith("/review"))
                 && !(method.equals("GET") && uri.startsWith("/api/place"));
     }
