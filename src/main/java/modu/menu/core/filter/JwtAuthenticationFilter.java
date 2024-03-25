@@ -1,4 +1,4 @@
-package modu.menu.core.auth.jwt;
+package modu.menu.core.filter;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.exception.Exception401;
 import modu.menu.core.exception.Exception500;
 import modu.menu.core.response.ErrorMessage;
@@ -34,7 +35,6 @@ public class JwtAuthenticationFilter implements Filter {
 
         // 토큰 인증을 필요로 하지 않는 요청들은 별도의 필터링 없이 통과시킨다.
         if (!isJwtURI(requestMethod, requestUri)) {
-            log.debug("토큰 인증을 생략합니다.");
             chain.doFilter(req, resp);
             return;
         }

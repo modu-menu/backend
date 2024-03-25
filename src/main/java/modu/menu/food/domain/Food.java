@@ -14,6 +14,7 @@ public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(length = 30)
     @Enumerated(EnumType.STRING)
     private FoodType type;

@@ -1,6 +1,6 @@
 package modu.menu.review.repository;
 
-import jakarta.persistence.EntityManager;
+import modu.menu.IntegrationTestSupporter;
 import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.food.domain.Food;
@@ -27,12 +27,9 @@ import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
 import modu.menu.voteItem.domain.VoteItem;
 import modu.menu.voteItem.repository.VoteItemRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,46 +38,37 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("ReviewRepository 단위테스트")
-@ActiveProfiles("test")
-@DataJpaTest
-class ReviewRepositoryTest {
+class ReviewRepositoryTest extends IntegrationTestSupporter {
 
-    @Autowired
-    private EntityManager entityManager;
-    @Autowired
-    private VoteRepository voteRepository;
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PlaceRepository placeRepository;
+
     @Autowired
     private VibeRepository vibeRepository;
+
     @Autowired
     private PlaceVibeRepository placeVibeRepository;
+
     @Autowired
     private FoodRepository foodRepository;
+
     @Autowired
     private PlaceFoodRepository placeFoodRepository;
+
+    @Autowired
+    private VoteRepository voteRepository;
+
     @Autowired
     private VoteItemRepository voteItemRepository;
+
     @Autowired
     private ChoiceRepository choiceRepository;
+
     @Autowired
     private ReviewRepository reviewRepository;
-
-    @BeforeEach
-    void setUp() {
-        entityManager.createNativeQuery("ALTER TABLE vote_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE place_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE vibe_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE place_vibe_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE food_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE place_food_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE vote_item_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE choice_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE review_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
-    }
 
     @DisplayName("placeId 목록과 userId, VoteStatus를 통해서 사용자가 참여한 투표에 포함된 음식점을 평가한 이력을 조회한다.")
     @Test

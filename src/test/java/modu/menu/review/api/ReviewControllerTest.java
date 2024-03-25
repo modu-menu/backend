@@ -1,21 +1,15 @@
 package modu.menu.review.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import modu.menu.ControllerTestSupporter;
 import modu.menu.review.api.request.CreateReviewRequest;
 import modu.menu.review.api.request.VibeRequest;
 import modu.menu.review.api.response.CheckReviewNecessityResponse;
 import modu.menu.review.domain.HasRoom;
-import modu.menu.review.service.ReviewService;
 import modu.menu.review.service.dto.IncompletePlaceServiceResponse;
 import modu.menu.vibe.domain.VibeType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
@@ -29,16 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @DisplayName("ReviewController 단위테스트")
-@ActiveProfiles("test")
-@WebMvcTest(ReviewController.class)
-class ReviewControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private ReviewService reviewService;
+class ReviewControllerTest extends ControllerTestSupporter {
 
     @DisplayName("리뷰가 필요한 음식점 목록을 조회하면 null을 반환한다.")
     @Test

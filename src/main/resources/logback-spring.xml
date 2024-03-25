@@ -1,13 +1,15 @@
 <configuration>
     <!-- defaults.xml -->
-    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
 
     <!-- log 파일 저장 위치 설정 -->
-    <property name="LOG_PATH" value="./app/log" />
+    <property name="LOG_PATH" value="./app/log"/>
     <!-- console 로그 패턴 -->
-    <property name="CONSOLE_LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %clr(%-5level) %magenta(${PID:-}) --- [%thread] %cyan(%-40.40logger{36}) : %msg%n"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="[%X{request_id:-internal}] [%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %clr(%-5level) %magenta(${PID:-}) --- [%thread] %cyan(%-40.40logger{36}) : %msg%n"/>
     <!-- file 로그 패턴 -->
-    <property name="FILE_LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level ${PID:-} --- [%thread] %-40.40logger{36} : %msg%n"/>
+    <property name="FILE_LOG_PATTERN"
+              value="[%X{request_id:-internal}] [%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level ${PID:-} --- [%thread] %-40.40logger{36} : %msg%n"/>
 
     <!-- console -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -36,32 +38,32 @@
     <springProfile name="test">
         <property resource="application-test.yml"/>
         <logger name="modu.menu" level="debug">
-            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="CONSOLE"/>
         </logger>
         <!-- 쿼리 파라미터 출력 -->
         <logger name="org.hibernate.type.descriptor.sql" level="trace">
-            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
 
     <springProfile name="dev">
         <property resource="application-dev.yml"/>
         <logger name="modu.menu" level="debug">
-            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="CONSOLE"/>
         </logger>
         <!-- 쿼리 파라미터 출력 -->
         <logger name="org.hibernate.type.descriptor.sql" level="trace">
-            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
 
     <springProfile name="prod">
         <property resource="application-prod.yml"/>
         <logger name="modu.menu" level="debug">
-            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="CONSOLE"/>
         </logger>
         <logger name="modu.menu" level="info">
-            <appender-ref ref="FILE" />
+            <appender-ref ref="FILE"/>
         </logger>
     </springProfile>
 </configuration>
