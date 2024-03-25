@@ -32,7 +32,6 @@ public class FilterRegisterConfig {
         return filterRegistrationBean;
     }
 
-    @Bean
     public FilterRegistrationBean exceptionHandlerFilter() {
 
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
@@ -44,7 +43,6 @@ public class FilterRegisterConfig {
         return filterRegistrationBean;
     }
 
-    @Bean
     public FilterRegistrationBean jwtAuthenticationFilter() {
 
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
