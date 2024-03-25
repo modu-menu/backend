@@ -17,6 +17,7 @@ import modu.menu.core.response.ErrorMessage;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
+import modu.menu.vote.service.dto.VoteItemServiceResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -81,9 +82,15 @@ public class VoteController {
                 .body(new ApiSuccessResponse<>(response));
     }
 
-    @PostMapping("/api/vote-list")
-    public ResponseEntity<ApiSuccessResponse<List<VoteResultResponse>>> getList() {
-        List<VoteResultResponse> voteItemList = voteService.getVoteItemList(new Long[]{1L});
+    @Operation(summary = "투표 음식점 리스트 조회", description = "투표 음식점 리스트 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회가 성공한 경우"),
+            @ApiResponse(responseCode = "401", description = "토큰 인증이 실패한 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
+    })
+    @GetMapping("/api/vote-list")
+    public ResponseEntity<ApiSuccessResponse<List<List<VoteItemServiceResponse>>>> getList(Long[] itemId) {
+        List<List<VoteItemServiceResponse>> voteItemList = voteService.getVoteItemList(new Long[]{1L});
         return ResponseEntity.ok().body(new ApiSuccessResponse<>(voteItemList));
     }
 }

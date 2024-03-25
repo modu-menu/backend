@@ -22,6 +22,7 @@ import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
+import modu.menu.vote.service.dto.VoteItemServiceResponse;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import modu.menu.voteItem.domain.VoteItem;
 import modu.menu.voteItem.repository.VoteItemRepository;
@@ -140,11 +141,16 @@ public class VoteService {
 
     //투표 아이템 리스트
     @Transactional(readOnly = true)
-    public List<VoteResultResponse> getVoteItemList(Long[] itemIds) {
+    public List<List<VoteItemServiceResponse>> getVoteItemList(Long[] itemIds) {
         //음식점 존재 유무 확인
+//        for (Long itemId : itemIds) {
+//            placeRepository.findById(itemId).orElseThrow(() -> new Exception404(ErrorMessage.NOT_FOUND_RESTAURANTS));
+//        }
         List<Place> restaurantInfoList = Arrays.stream(itemIds).map(itemId -> placeRepository.findById(itemId).orElseThrow(() -> new Exception404(ErrorMessage.NOT_FOUND_RESTAURANTS))).toList();
-        List<VoteResultResponse> list = restaurantInfoList.stream().map(storeId -> (VoteResultResponse) placeQueryRepositoryImpl.findVoteItemList(storeId)).toList();
+        List<List<VoteItemServiceResponse>> list = restaurantInfoList.stream().map(storeId -> placeQueryRepositoryImpl.findVoteItemList(storeId)).toList();
+
         log.info("data={}", list);
+//        restaurantInfoList.stream().map(item -> )
         return list;
     }
 }

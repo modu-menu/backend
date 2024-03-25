@@ -39,10 +39,10 @@ public class PlaceQueryRepositoryImpl implements PlaceQueryRepository {
                         place.address
                 ))
                 .from(place)
-                .leftJoin(placeFood.place, place)
+                .leftJoin(place.placeFoods, placeFood)
                 .leftJoin(placeFood.food, food)
-                .leftJoin(placeVibe.place, placeFood.place)
-                .leftJoin(vibe, placeVibe.vibe)
+                .leftJoin(place.placeVibes, placeVibe)
+                .leftJoin(placeVibe.vibe, vibe)
                 .where(place.id.eq(content.getId()))
                 .fetch();
         return result;
