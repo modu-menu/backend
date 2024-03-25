@@ -7,7 +7,6 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import modu.menu.core.auth.jwt.JwtProvider;
 import modu.menu.core.exception.Exception401;
 import modu.menu.core.exception.Exception500;
@@ -18,7 +17,6 @@ import modu.menu.user.repository.UserRepository;
 
 import java.io.IOException;
 
-@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements Filter {
 
