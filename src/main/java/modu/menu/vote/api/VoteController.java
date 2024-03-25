@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "투표")
 @Validated
 @RequiredArgsConstructor
@@ -77,5 +79,11 @@ public class VoteController {
 
         return ResponseEntity.ok()
                 .body(new ApiSuccessResponse<>(response));
+    }
+
+    @PostMapping("/api/vote-list")
+    public ResponseEntity<ApiSuccessResponse<List<VoteResultResponse>>> getList() {
+        List<VoteResultResponse> voteItemList = voteService.getVoteItemList(new Long[]{1L});
+        return ResponseEntity.ok().body(new ApiSuccessResponse<>(voteItemList));
     }
 }

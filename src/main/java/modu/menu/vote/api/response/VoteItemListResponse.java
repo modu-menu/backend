@@ -4,17 +4,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import modu.menu.vote.service.dto.VoteResultServiceResponse;
+import modu.menu.vote.service.dto.VoteItemServiceResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Schema(description = "투표 결과 조회 DTO")
+@Schema(description = "투표 음식점 조회 DTO")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VoteResultResponse {
+public class VoteItemListResponse {
 
-    @Schema(description = "투표 결과 목록")
-    private List<VoteResultServiceResponse> results = new ArrayList<>();
+    @Schema(description = "투표함 음식점 목록")
+    private List<VoteItemServiceResponse> list = new ArrayList<>();
 }

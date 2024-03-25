@@ -27,9 +27,14 @@ public enum ErrorMessage {
     GET_KAKAO_TOKEN_ERROR("카카오 서버 문제로 인해 토큰 발급 요청에 실패했습니다."),
     GET_KAKAO_USER_ERROR("카카오 서버 문제로 인해 사용자 정보 요청에 실패했습니다."),
 
+    NOT_FOUND_RESTAURANTS("존재하지 않은 음식점입니다."),
+    NOT_FOUND_RESTAURANTS_VIBE("매장 분위기 정보가 존재하지 않습니다."),
+
     // Vote
     NOT_EXIST_VOTE("해당 ID와 일치하는 투표가 존재하지 않습니다."),
     CANT_INVITE_TO_END_VOTE("종료된 투표에는 초대할 수 없습니다.");
+
+
 
     // domainEx1
 

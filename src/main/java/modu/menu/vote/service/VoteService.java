@@ -1,6 +1,7 @@
 package modu.menu.vote.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.core.exception.Exception404;
 import modu.menu.core.response.ErrorMessage;
@@ -10,7 +11,9 @@ import modu.menu.participant.domain.Participant;
 import modu.menu.participant.domain.VoteRole;
 import modu.menu.participant.repository.ParticipantRepository;
 import modu.menu.place.domain.Place;
+import modu.menu.place.reposiotry.PlaceQueryRepository;
 import modu.menu.place.reposiotry.PlaceRepository;
+import modu.menu.placevibe.repository.PlaceVibeRepository;
 import modu.menu.user.domain.User;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.repository.VibeRepository;
@@ -25,6 +28,7 @@ import modu.menu.voteItem.repository.VoteItemRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +38,7 @@ import static java.lang.Integer.parseInt;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class VoteService {
 
@@ -41,6 +46,8 @@ public class VoteService {
     private final ChoiceRepository choiceRepository;
     private final VoteItemRepository voteItemRepository;
     private final PlaceRepository placeRepository;
+    private final PlaceQueryRepository placeQueryRepositoryImpl;
+    private final PlaceVibeRepository placeVibeRepository;
     private final VibeRepository vibeRepository;
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
@@ -129,5 +136,15 @@ public class VoteService {
                 })
                 .toList()
         );
+    }
+
+    //투표 아이템 리스트
+    @Transactional(readOnly = true)
+    public List<VoteResultResponse> getVoteItemList(Long[] itemIds) {
+        //음식점 존재 유무 확인
+        List<Place> restaurantInfoList = Arrays.stream(itemIds).map(itemId -> placeRepository.findById(itemId).orElseThrow(() -> new Exception404(ErrorMessage.NOT_FOUND_RESTAURANTS))).toList();
+        List<VoteResultResponse> list = restaurantInfoList.stream().map(storeId -> (VoteResultResponse) placeQueryRepositoryImpl.findVoteItemList(storeId)).toList();
+        log.info("data={}", list);
+        return list;
     }
 }
