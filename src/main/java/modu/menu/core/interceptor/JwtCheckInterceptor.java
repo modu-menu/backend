@@ -1,5 +1,7 @@
 package modu.menu.core.interceptor;
 
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,18 +30,24 @@ public class JwtCheckInterceptor implements HandlerInterceptor {
 
         String accessTokenValue = accessToken.replace(jwtProvider.TOKEN_PREFIX, "");
 
-        DecodedJWT decodedJWT = jwtProvider.verifyAccessToken(accessTokenValue);
-        Long userId = Long.parseLong(decodedJWT.getSubject());
+        try {
+            DecodedJWT decodedJWT = jwtProvider.verifyAccessToken(accessTokenValue);
+            Long userId = Long.parseLong(decodedJWT.getSubject());
 
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new Exception401(ErrorMessage.NOT_EXIST_USER_TOKEN)
-        );
-        if (!user.getStatus().equals(UserStatus.ACTIVE)) {
-            throw new Exception401(ErrorMessage.NOT_ACTIVE_USER_TOKEN);
+            User user = userRepository.findById(userId).orElseThrow(
+                    () -> new Exception401(ErrorMessage.NOT_EXIST_USER_TOKEN)
+            );
+            if (!user.getStatus().equals(UserStatus.ACTIVE)) {
+                throw new Exception401(ErrorMessage.NOT_ACTIVE_USER_TOKEN);
+            }
+
+            // 권한 체크에 사용할 수도 있으므로 회원 id를 request에 담는다.
+            request.setAttribute("userId", userId);
+        } catch (SignatureVerificationException e) {
+            throw new Exception401(ErrorMessage.TOKEN_VERIFICATION_FAIL);
+        } catch (TokenExpiredException e) {
+            throw new Exception401(ErrorMessage.EXPIRED_TOKEN);
         }
-
-        // 권한 체크에 사용할 수도 있으므로 회원 id를 request에 담는다.
-        request.setAttribute("userId", userId);
 
         return true;
     }
