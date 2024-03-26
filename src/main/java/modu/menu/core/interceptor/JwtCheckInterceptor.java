@@ -1,6 +1,6 @@
 package modu.menu.core.interceptor;
 
-import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,10 +43,10 @@ public class JwtCheckInterceptor implements HandlerInterceptor {
 
             // 권한 체크에 사용할 수도 있으므로 회원 id를 request에 담는다.
             request.setAttribute("userId", userId);
-        } catch (SignatureVerificationException e) {
-            throw new Exception401(ErrorMessage.TOKEN_VERIFICATION_FAIL);
         } catch (TokenExpiredException e) {
             throw new Exception401(ErrorMessage.EXPIRED_TOKEN);
+        } catch (JWTVerificationException e) {
+            throw new Exception401(ErrorMessage.TOKEN_VERIFICATION_FAIL);
         }
 
         return true;
