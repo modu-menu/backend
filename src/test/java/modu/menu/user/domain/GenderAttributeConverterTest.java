@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("GenderAttributeConverter 통합테스트")
+@DisplayName("GenderAttributeConverter 테스트")
 class GenderAttributeConverterTest extends IntegrationTestSupporter {
 
     @Autowired
