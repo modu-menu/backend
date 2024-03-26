@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiFailResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.warn("400: " + e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -30,7 +30,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException e) {
+    public ResponseEntity<ApiFailResponse> handleConstraintViolationException(ConstraintViolationException e) {
         log.warn("400: " + e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -38,7 +38,7 @@ public class ExceptionAdvice {
                         HttpStatus.BAD_REQUEST,
                         e.getConstraintViolations().stream()
                                 .map(ConstraintViolation::getInvalidValue)
-                                .map(o -> String.valueOf(o))
+                                .map(String::valueOf)
                                 .collect(Collectors.joining()),
                         e.getConstraintViolations().stream()
                                 .map(ConstraintViolation::getMessage)
@@ -47,7 +47,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception400.class)
-    public ResponseEntity<?> badRequest(Exception400 e) {
+    public ResponseEntity<ApiFailResponse> badRequest(Exception400 e) {
         log.warn("400: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
@@ -55,7 +55,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception401.class)
-    public ResponseEntity<?> unauthorized(Exception401 e) {
+    public ResponseEntity<ApiFailResponse> unauthorized(Exception401 e) {
         log.warn("401: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
@@ -63,7 +63,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception403.class)
-    public ResponseEntity<?> forbidden(Exception403 e) {
+    public ResponseEntity<ApiFailResponse> forbidden(Exception403 e) {
         log.warn("403: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
@@ -71,7 +71,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception404.class)
-    public ResponseEntity<?> notFound(Exception404 e) {
+    public ResponseEntity<ApiFailResponse> notFound(Exception404 e) {
         log.warn("404: " + e.getMessage());
         return ResponseEntity
                 .status(e.status())
@@ -79,7 +79,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception500.class)
-    public ResponseEntity<?> serverError(Exception500 e) {
+    public ResponseEntity<ApiFailResponse> serverError(Exception500 e) {
         log.error("500: " + e.getMessage(), e);
         return ResponseEntity
                 .status(e.status())
@@ -87,7 +87,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> unknownServerError(Exception e) {
+    public ResponseEntity<ApiFailResponse> unknownServerError(Exception e) {
         log.error("500: " + e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
