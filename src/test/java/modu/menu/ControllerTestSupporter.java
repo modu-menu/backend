@@ -2,17 +2,21 @@ package modu.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.core.auth.jwt.JwtProvider;
+import modu.menu.core.config.WebMvcConfig;
 import modu.menu.place.api.PlaceController;
 import modu.menu.place.service.PlaceService;
 import modu.menu.review.api.ReviewController;
 import modu.menu.review.service.ReviewService;
 import modu.menu.user.api.UserController;
+import modu.menu.user.repository.UserRepository;
 import modu.menu.user.service.UserService;
 import modu.menu.vote.api.VoteController;
 import modu.menu.vote.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,6 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
         VoteController.class,
         ReviewController.class,
         PlaceController.class
+}, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfig.class)
 })
 public abstract class ControllerTestSupporter {
 
@@ -45,4 +51,7 @@ public abstract class ControllerTestSupporter {
 
     @MockBean
     protected VoteService voteService;
+
+    @MockBean
+    protected UserRepository userRepository;
 }

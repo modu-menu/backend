@@ -3,7 +3,7 @@
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
 
     <!-- log 파일 저장 위치 설정 -->
-    <property name="LOG_PATH" value="./app/log"/>
+    <property name="LOG_PATH" value="./log"/>
     <!-- console 로그 패턴 -->
     <property name="CONSOLE_LOG_PATTERN"
               value="[%X{request_id:-internal}] [%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %clr(%-5level) %magenta(${PID:-}) --- [%thread] %cyan(%-40.40logger{36}) : %msg%n"/>
