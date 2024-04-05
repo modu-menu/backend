@@ -4,8 +4,11 @@ server:
     encoding:
       charset: utf-8
       force: true
+  shutdown: graceful
 
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: "17s"
   datasource:
     url: jdbc:mysql://modu-menu-db.c9s4i8io2u83.ap-northeast-2.rds.amazonaws.com:3306/modu_menu_db?useSSL=false # MySQL 8.x부터 useSSL=false 추가 필요
     driver-class-name: com.mysql.cj.jdbc.Driver
