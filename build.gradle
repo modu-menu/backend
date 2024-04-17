@@ -37,6 +37,7 @@ dependencies {
     testImplementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-api', version: '2.3.0'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    implementation group: 'com.github.maricn', name: 'logback-slack-appender', version: '1.6.0'
 }
 
 test {
