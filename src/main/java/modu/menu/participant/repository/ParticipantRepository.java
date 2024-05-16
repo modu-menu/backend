@@ -15,4 +15,11 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
             where p.user.id = :userId
             """)
     Optional<Participant> findByUserId(@Param("userId") Long userId);
+
+    @Query("""
+            select p
+            from Participant p
+            where p.user.id = :userId and p.vote.id = :voteId
+            """)
+    Optional<Participant> findByUserIdAndVoteId(@Param("userId") Long userId, @Param("voteId") Long voteId);
 }
