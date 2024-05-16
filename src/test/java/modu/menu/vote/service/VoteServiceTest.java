@@ -64,6 +64,8 @@ class VoteServiceTest extends IntegrationTestSupporter {
     private VoteItemRepository voteItemRepository;
     @Autowired
     private ChoiceRepository choiceRepository;
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @DisplayName("회원을 투표에 초대한다.")
     @Test
@@ -80,6 +82,7 @@ class VoteServiceTest extends IntegrationTestSupporter {
         voteService.invite(voteId, userId);
 
         // then
+        assertThat(participantRepository.findByUserIdAndVoteId(userId, voteId).get()).isNotNull();
     }
 
     @DisplayName("존재하지 않는 투표에 회원을 초대할 수 없다.")
