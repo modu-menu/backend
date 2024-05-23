@@ -3,12 +3,16 @@ package modu.menu.core.util;
 // ref: https://www.baeldung.com/java-find-distance-between-points#calculate-the-distance-using-vincentys-formula
 // 정확도가 가장 높은 Vincenty의 공식을 사용해서 두 지점 간 거리를 구하는 클래스
 public class DistanceCalculator {
+
+    private DistanceCalculator() {
+    }
+
     private static final double SEMI_MAJOR_AXIS_MT = 6378137;
     private static final double SEMI_MINOR_AXIS_MT = 6356752.314245;
     private static final double FLATTENING = 1 / 298.257223563;
     private static final double ERROR_TOLERANCE = 1e-12;
 
-    public static double calculateDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
+    public static double calculate(double latitude1, double longitude1, double latitude2, double longitude2) {
         double U1 = Math.atan((1 - FLATTENING) * Math.tan(Math.toRadians(latitude1)));
         double U2 = Math.atan((1 - FLATTENING) * Math.tan(Math.toRadians(latitude2)));
 
