@@ -6,7 +6,7 @@ import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
 import modu.menu.place.api.response.SearchPlaceResponse;
 import modu.menu.place.domain.Place;
-import modu.menu.place.reposiotry.PlaceCustomPagingRepository;
+import modu.menu.place.reposiotry.PlaceQueryRepository;
 import modu.menu.place.service.dto.SearchResultServiceResponse;
 import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placevibe.domain.PlaceVibe;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class PlaceService {
 
-    private final PlaceCustomPagingRepository placeCustomPagingRepository;
+    private final PlaceQueryRepository placeQueryRepository;
 
     // 음식점 후보 검색
     public SearchPlaceResponse searchPlace(
@@ -35,18 +35,9 @@ public class PlaceService {
             Integer page
     ) {
 
-        Page<Place> places;
-        if (foods == null && vibes == null) {
-            places = placeCustomPagingRepository.findAll(latitude, longitude, page);
-        } else if (foods == null) {
-            places = placeCustomPagingRepository.findByVibeTypes(latitude, longitude, page, vibes);
-        } else if (vibes == null) {
-            places = placeCustomPagingRepository.findByFoodTypes(latitude, longitude, page, foods);
-        } else {
-            places = placeCustomPagingRepository.findByFoodTypesAndVibeTypes(latitude, longitude, page, foods, vibes);
-        }
+        Page<Place> places = placeQueryRepository.findByCondition(latitude, longitude, foods, vibes, page);
 
-        if (places.isEmpty()) {
+        if (places == null || places.getContent().isEmpty()) {
             return null;
         }
 
@@ -55,7 +46,7 @@ public class PlaceService {
                 .vibes(vibes)
                 .results(places.getContent().stream()
                         .map(place -> {
-                            double distance = DistanceCalculator.calculateDistance(
+                            double distance = DistanceCalculator.calculate(
                                     latitude,
                                     longitude,
                                     place.getLatitude(),
