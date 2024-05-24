@@ -9,6 +9,7 @@ import modu.menu.voteItem.domain.VoteItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 @AllArgsConstructor
@@ -77,5 +78,18 @@ public class Place extends BaseTime {
     public void removePlaceVibe(PlaceVibe placeVibe) {
         placeVibes.remove(placeVibe);
         placeVibe.syncPlace(null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Place place = (Place) o;
+        return Objects.equals(getId(), place.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

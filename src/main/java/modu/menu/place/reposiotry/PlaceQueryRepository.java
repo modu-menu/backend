@@ -12,9 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static modu.menu.food.domain.QFood.food;
@@ -59,7 +57,7 @@ public class PlaceQueryRepository {
 
         // 중복 제거 후 검색 정책에 따라 정렬
         List<Place> sortedPlaces = Stream.concat(firstPlaces.stream(), secondPlaces.stream())
-                .collect(Collectors.toCollection(HashSet::new)).stream()
+                .distinct()
                 .filter(place -> DistanceCalculator.calculate(latitude, longitude, place.getLatitude(), place.getLongitude()) <= 1000.0)
                 .sorted((place1, place2) -> {
                     double distance1 = DistanceCalculator.calculate(latitude, longitude, place1.getLatitude(), place1.getLongitude());
