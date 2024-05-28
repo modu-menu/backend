@@ -97,7 +97,7 @@ public class VoteService {
         return new VoteResultResponse(voteItems.stream()
                 .map(voteItem -> {
                     Place place = voteItem.getPlace();
-                    double distance = DistanceCalculator.calculateDistance(
+                    double distance = DistanceCalculator.calculate(
                             place.getLatitude(),
                             place.getLongitude(),
                             voteResultRequest.getLatitude(),

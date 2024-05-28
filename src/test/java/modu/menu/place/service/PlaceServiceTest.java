@@ -1,5 +1,6 @@
 package modu.menu.place.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.IntegrationTestSupporter;
 import modu.menu.choice.domain.Choice;
 import modu.menu.food.domain.Food;
@@ -7,7 +8,6 @@ import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.place.api.response.SearchPlaceResponse;
 import modu.menu.place.domain.Place;
-import modu.menu.place.reposiotry.PlaceCustomPagingRepository;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placefood.repository.PlaceFoodRepository;
@@ -39,8 +39,6 @@ class PlaceServiceTest extends IntegrationTestSupporter {
     @Autowired
     private PlaceService placeService;
     @Autowired
-    private PlaceCustomPagingRepository placeCustomPagingRepository;
-    @Autowired
     private PlaceRepository placeRepository;
     @Autowired
     private VibeRepository vibeRepository;
@@ -50,6 +48,8 @@ class PlaceServiceTest extends IntegrationTestSupporter {
     private PlaceFoodRepository placeFoodRepository;
     @Autowired
     private FoodRepository foodRepository;
+    @Autowired
+    private ObjectMapper om;
 
     @BeforeEach
     void setUp() {
@@ -102,16 +102,33 @@ class PlaceServiceTest extends IntegrationTestSupporter {
                 .containsExactlyInAnyOrder(VibeType.QUIET.getTitle());
     }
 
-    @DisplayName("음식점 후보를 검색할 때 페이지 번호가 페이징 결과 존재하지 않을 경우 null을 반환한다.")
+    @DisplayName("음식점 후보를 검색할 때 페이지 번호에 해당하는 페이징 결과가 존재하지 않을 경우 null을 반환한다.")
     @Test
     void searchPlaceByExceededPageNumber() {
         // given
         Double latitude = 37.6737992;
         Double longitude = 127.060022;
-        Integer page = 4;
+        Integer page = 5;
 
         // when
         SearchPlaceResponse searchResult = placeService.searchPlace(latitude, longitude, null, null, page);
+
+        // then
+        assertThat(searchResult).isNull();
+    }
+
+    @DisplayName("음식점 후보를 검색할 때 조건에 해당하는 음식점이 존재하지 않을 경우 페이징 결과가 존재하지 않을 경우 null을 반환한다.")
+    @Test
+    void searchPlaceByNotExistCondition() {
+        // given
+        Double latitude = 37.6737992;
+        Double longitude = 127.060022;
+        Integer page = 1;
+        List<FoodType> foods = List.of(FoodType.LUNCH_BOX);
+        List<VibeType> vibes = List.of(VibeType.MODERN);
+
+        // when
+        SearchPlaceResponse searchResult = placeService.searchPlace(latitude, longitude, foods, vibes, page);
 
         // then
         assertThat(searchResult).isNull();
