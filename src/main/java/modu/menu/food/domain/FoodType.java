@@ -12,7 +12,7 @@ public enum FoodType {
     KOREAN_SEAFOOD("해물,생선"),
     CONGEE("죽"),
     JOKBAL("족발, 보쌈"),
-    HOT_POP("찌개,전골"),
+    HOT_POT("찌개,전골"),
     MEAT("육류,고기"),
     SUNDAE("순대"),
     STREET_FOOD("분식"),
