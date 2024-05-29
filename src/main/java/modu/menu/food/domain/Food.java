@@ -26,7 +26,8 @@ public class Food {
     @JoinColumn(name = "food_id")
     private Food parent;
 
-    @OneToMany(mappedBy = "food")
+    @Builder.Default
+    @OneToMany
     private List<Food> children = new ArrayList<>();
 
     public void addChildren(Food food) {
