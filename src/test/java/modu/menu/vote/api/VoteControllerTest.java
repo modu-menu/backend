@@ -1,6 +1,7 @@
 package modu.menu.vote.api;
 
 import modu.menu.ControllerTestSupporter;
+import modu.menu.food.domain.FoodType;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
@@ -249,7 +250,7 @@ class VoteControllerTest extends ControllerTestSupporter {
     private VoteResultServiceResponse createResult(String name) {
         return VoteResultServiceResponse.builder()
                 .name(name)
-                .food("멕시칸, 브라질")
+                .foods(List.of(FoodType.LATIN))
                 .vibes(List.of(VibeType.NOISY))
                 .address("서울 종로구 삼일대로")
                 .distance("10m")

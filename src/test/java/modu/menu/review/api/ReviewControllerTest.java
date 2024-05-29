@@ -1,6 +1,7 @@
 package modu.menu.review.api;
 
 import modu.menu.ControllerTestSupporter;
+import modu.menu.food.domain.FoodType;
 import modu.menu.review.api.request.CreateReviewRequest;
 import modu.menu.review.api.request.VibeRequest;
 import modu.menu.review.api.response.CheckReviewNecessityResponse;
@@ -59,7 +60,7 @@ class ReviewControllerTest extends ControllerTestSupporter {
                         List.of(IncompletePlaceServiceResponse.builder()
                                 .id(1L)
                                 .name("타코벨")
-                                .food("멕시칸,브라질")
+                                .foods(List.of(FoodType.LATIN))
                                 .address("address")
                                 .img("image")
                                 .build()))

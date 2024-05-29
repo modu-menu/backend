@@ -178,11 +178,11 @@ class VoteServiceTest extends IntegrationTestSupporter {
         // then
         assertThat(voteResult.getResults()).isNotNull();
         assertThat(voteResult.getResults())
-                .extracting("name", "food", "address", "distance", "img", "voteRating")
+                .extracting("name", "foods", "address", "distance", "img", "voteRating")
                 .containsExactlyInAnyOrder(
-                        tuple("타코벨", "멕시칸,브라질", "address", "2.5km", "image", "33%"),
-                        tuple("이자카야모리", "멕시칸,브라질", "address", "2.5km", "image", "33%"),
-                        tuple("서가앤쿡 노원역점", "육류,고기", "address", "2.5km", "image", "33%")
+                        tuple("타코벨", List.of(FoodType.LATIN), "address", "2.5km", "image", "33%"),
+                        tuple("이자카야모리", List.of(FoodType.LATIN), "address", "2.5km", "image", "33%"),
+                        tuple("서가앤쿡 노원역점", List.of(FoodType.MEAT), "address", "2.5km", "image", "33%")
                 );
         assertThat(
                 voteResult.getResults().stream()

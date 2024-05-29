@@ -29,16 +29,17 @@ class PlaceControllerTest extends ControllerTestSupporter {
         when(placeService.searchPlace(any(), any(), any(), any(), any()))
                 .thenReturn(
                         SearchPlaceResponse.builder()
-                                .foods(null)
-                                .vibes(null)
                                 .results(List.of(
                                         SearchResultServiceResponse.builder()
+                                                .id(1L)
                                                 .name("서가앤쿡 노원역점")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(2L)
                                                 .name("이자카야모리")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(3L)
                                                 .name("타코벨")
                                                 .build()
                                 ))
@@ -72,16 +73,17 @@ class PlaceControllerTest extends ControllerTestSupporter {
         when(placeService.searchPlace(any(), any(), any(), any(), any()))
                 .thenReturn(
                         SearchPlaceResponse.builder()
-                                .foods(null)
-                                .vibes(null)
                                 .results(List.of(
                                         SearchResultServiceResponse.builder()
+                                                .id(1L)
                                                 .name("서가앤쿡 노원역점")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(2L)
                                                 .name("이자카야모리")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(3L)
                                                 .name("타코벨")
                                                 .build()
                                 ))
@@ -114,16 +116,17 @@ class PlaceControllerTest extends ControllerTestSupporter {
         when(placeService.searchPlace(any(), any(), any(), any(), any()))
                 .thenReturn(
                         SearchPlaceResponse.builder()
-                                .foods(null)
-                                .vibes(null)
                                 .results(List.of(
                                         SearchResultServiceResponse.builder()
+                                                .id(1L)
                                                 .name("서가앤쿡 노원역점")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(2L)
                                                 .name("이자카야모리")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(3L)
                                                 .name("타코벨")
                                                 .build()
                                 ))
@@ -158,16 +161,17 @@ class PlaceControllerTest extends ControllerTestSupporter {
         when(placeService.searchPlace(any(), any(), any(), any(), any()))
                 .thenReturn(
                         SearchPlaceResponse.builder()
-                                .foods(null)
-                                .vibes(null)
                                 .results(List.of(
                                         SearchResultServiceResponse.builder()
+                                                .id(1L)
                                                 .name("서가앤쿡 노원역점")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(2L)
                                                 .name("이자카야모리")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(3L)
                                                 .name("타코벨")
                                                 .build()
                                 ))
@@ -203,16 +207,17 @@ class PlaceControllerTest extends ControllerTestSupporter {
         when(placeService.searchPlace(any(), any(), any(), any(), any()))
                 .thenReturn(
                         SearchPlaceResponse.builder()
-                                .foods(null)
-                                .vibes(null)
                                 .results(List.of(
                                         SearchResultServiceResponse.builder()
+                                                .id(1L)
                                                 .name("서가앤쿡 노원역점")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(2L)
                                                 .name("이자카야모리")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(3L)
                                                 .name("타코벨")
                                                 .build()
                                 ))
@@ -250,16 +255,17 @@ class PlaceControllerTest extends ControllerTestSupporter {
         when(placeService.searchPlace(any(), any(), any(), any(), any()))
                 .thenReturn(
                         SearchPlaceResponse.builder()
-                                .foods(null)
-                                .vibes(null)
                                 .results(List.of(
                                         SearchResultServiceResponse.builder()
+                                                .id(1L)
                                                 .name("서가앤쿡 노원역점")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(2L)
                                                 .name("이자카야모리")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(3L)
                                                 .name("타코벨")
                                                 .build()
                                 ))
@@ -297,16 +303,17 @@ class PlaceControllerTest extends ControllerTestSupporter {
         when(placeService.searchPlace(any(), any(), any(), any(), any()))
                 .thenReturn(
                         SearchPlaceResponse.builder()
-                                .foods(null)
-                                .vibes(null)
                                 .results(List.of(
                                         SearchResultServiceResponse.builder()
+                                                .id(1L)
                                                 .name("서가앤쿡 노원역점")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(2L)
                                                 .name("이자카야모리")
                                                 .build(),
                                         SearchResultServiceResponse.builder()
+                                                .id(3L)
                                                 .name("타코벨")
                                                 .build()
                                 ))

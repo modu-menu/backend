@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import modu.menu.food.domain.FoodType;
 import modu.menu.vibe.domain.VibeType;
 
 import java.util.List;
@@ -22,16 +23,15 @@ public class SearchResultServiceResponse {
     @Schema(description = "음식점 이름", example = "타코벨")
     private String name;
 
-    @Schema(description = "음식 종류", example = "멕시칸, 브라질")
-    private String food;
+    @Schema(description = "검색에 사용한 음식 조건 목록", examples = {
+            "면",
+            "양식"})
+    private List<FoodType> foods;
 
-    @Schema(description = "음식점 분위기 목록", examples = {
+    @Schema(description = "검색에 사용한 분위기 조건 목록", examples = {
             "시끌벅적해요",
             "트렌디해요",
-            "조용해요",
-            "모던해요",
-            "뷰맛집이에요",
-            "서비스가 좋아요"})
+            "조용해요"})
     private List<VibeType> vibes;
 
     @Schema(description = "음식점 도로명 주소", example = "서울 서초구 서초대로74길 11 삼성전자 강남사옥 지하1층 B108호")
