@@ -13,6 +13,7 @@ import modu.menu.core.annotation.EnumValidation;
 import modu.menu.core.response.ApiFailResponse;
 import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.food.domain.FoodType;
+import modu.menu.place.api.response.CategoryResponse;
 import modu.menu.place.api.response.SearchPlaceResponse;
 import modu.menu.place.service.PlaceService;
 import modu.menu.vibe.domain.VibeType;
@@ -31,6 +32,20 @@ import java.util.List;
 public class PlaceController {
 
     private final PlaceService placeService;
+
+    @Operation(summary = "카테고리 목록 조회", description = """
+            음식 카테고리와 분위기의 전체 목록을 조회합니다.
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회가 성공한 경우"),
+            @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
+    })
+    @GetMapping("/api/category")
+    public ResponseEntity<ApiSuccessResponse<CategoryResponse>> getCategory() {
+
+        return ResponseEntity.ok()
+                .body(new ApiSuccessResponse<>(placeService.getCategory()));
+    }
 
     @Operation(summary = "음식점 후보 검색", description = """
             투표에 포함시킬 음식점 후보를 사용자의 입력 값을 바탕으로 검색합니다. 조건을 만족하는 음식점이 없을 경우 null을 반환합니다.\n

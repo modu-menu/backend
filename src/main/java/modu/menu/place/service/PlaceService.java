@@ -3,10 +3,13 @@ package modu.menu.place.service;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.util.DistanceCalculator;
 import modu.menu.food.domain.FoodType;
+import modu.menu.place.api.response.CategoryResponse;
 import modu.menu.place.api.response.SearchPlaceResponse;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceQueryRepository;
+import modu.menu.place.service.dto.FoodTypeServiceResponse;
 import modu.menu.place.service.dto.SearchResultServiceResponse;
+import modu.menu.place.service.dto.VibeTypeServiceResponse;
 import modu.menu.vibe.domain.VibeType;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,14 @@ import java.util.List;
 public class PlaceService {
 
     private final PlaceQueryRepository placeQueryRepository;
+
+    // 카테고리 목록 조회
+    public CategoryResponse getCategory() {
+        return CategoryResponse.builder()
+                .foods(FoodTypeServiceResponse.getFoodTypeHierarchy())
+                .vibes(VibeTypeServiceResponse.toList())
+                .build();
+    }
 
     // 음식점 후보 검색
     public SearchPlaceResponse searchPlace(
