@@ -108,9 +108,9 @@ public class VoteService {
 
                     return VoteResultServiceResponse.builder()
                             .name(place.getName())
-                            .food(place.getPlaceFoods().stream()
-                                    .map(placeFood -> placeFood.getFood().getType().getDetail())
-                                    .collect(Collectors.joining()))
+                            .foods(place.getPlaceFoods().stream()
+                                    .map(placeFood -> placeFood.getFood().getType())
+                                    .toList())
                             .vibes(place.getPlaceVibes().stream()
                                     .map(placeVibe -> placeVibe.getVibe().getType())
                                     .toList())
