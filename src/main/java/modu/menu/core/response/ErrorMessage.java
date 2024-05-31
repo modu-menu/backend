@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorMessage {
 
+    ERROR_LOG_TEST_MESSAGE("Slack 에러 로그 테스트"),
     ADD_REQUEST_BODY_ERROR("RestTemplate RequestBody 생성에 실패했습니다."),
     MAPPER_READ_TREE_ERROR("ObjectMapper readTree 실행에 실패했습니다."),
     CANT_CONVERT_STRING_TO_ENUM("주어진 문자열을 적절한 Enum으로 변환할 수 없습니다."),

@@ -10,6 +10,7 @@ import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
 import modu.menu.participant.domain.Participant;
 import modu.menu.participant.domain.VoteRole;
+import modu.menu.participant.repository.ParticipantRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
@@ -63,6 +64,8 @@ class VoteServiceTest extends IntegrationTestSupporter {
     private VoteItemRepository voteItemRepository;
     @Autowired
     private ChoiceRepository choiceRepository;
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @DisplayName("회원을 투표에 초대한다.")
     @Test
@@ -79,6 +82,7 @@ class VoteServiceTest extends IntegrationTestSupporter {
         voteService.invite(voteId, userId);
 
         // then
+        assertThat(participantRepository.findByUserIdAndVoteId(userId, voteId).get()).isNotNull();
     }
 
     @DisplayName("존재하지 않는 투표에 회원을 초대할 수 없다.")
@@ -174,11 +178,11 @@ class VoteServiceTest extends IntegrationTestSupporter {
         // then
         assertThat(voteResult.getResults()).isNotNull();
         assertThat(voteResult.getResults())
-                .extracting("name", "food", "address", "distance", "img", "voteRating")
+                .extracting("name", "foods", "address", "distance", "img", "voteRating")
                 .containsExactlyInAnyOrder(
-                        tuple("타코벨", "멕시칸,브라질", "address", "2.5km", "image", "33%"),
-                        tuple("이자카야모리", "멕시칸,브라질", "address", "2.5km", "image", "33%"),
-                        tuple("서가앤쿡 노원역점", "육류,고기요리", "address", "2.5km", "image", "33%")
+                        tuple("타코벨", List.of(FoodType.LATIN), "address", "2.5km", "image", "33%"),
+                        tuple("이자카야모리", List.of(FoodType.LATIN), "address", "2.5km", "image", "33%"),
+                        tuple("서가앤쿡 노원역점", List.of(FoodType.MEAT), "address", "2.5km", "image", "33%")
                 );
         assertThat(
                 voteResult.getResults().stream()

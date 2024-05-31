@@ -210,8 +210,8 @@ class ReviewServiceTest extends IntegrationTestSupporter {
         assertThat(result.getPlaces())
                 .hasSize(3);
         assertThat(result.getPlaces().get(0))
-                .extracting("id", "name", "food", "address", "img")
-                .containsExactlyInAnyOrder(1L, "타코벨", "멕시칸,브라질", "address", "image");
+                .extracting("id", "name", "foods", "address", "img")
+                .containsExactlyInAnyOrder(1L, "타코벨", List.of(FoodType.LATIN), "address", "image");
     }
 
     @DisplayName("회원이 작성한 리뷰를 등록한다.")

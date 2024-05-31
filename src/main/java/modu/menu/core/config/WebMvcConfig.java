@@ -42,7 +42,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/health-check",
                         "/api/user",
                         "/api/user/login",
-                        "/api/place{?*}"
+                        "/api/place{?*}",
+                        "/api/slack"
                 );
     }
 }

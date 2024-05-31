@@ -11,6 +11,20 @@
     <property name="FILE_LOG_PATTERN"
               value="[%X{request_id:-internal}] [%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level ${PID:-} --- [%thread] %-40.40logger{36} : %msg%n"/>
 
+    <!-- 슬랙으로 Error 레벨 로그 전송 -->
+    <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
+        <!-- Slack 웹훅 URL -->
+        <webhookUri>https://hooks.slack.com/services/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</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <!-- 슬랙에 전송할 로그 레벨 지정 -->
+            <level>ERROR</level>
+        </filter>
+        <colorCoding>true</colorCoding>
+    </appender>
+
     <!-- console -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -50,6 +64,7 @@
         <property resource="application-dev.yml"/>
         <logger name="modu.menu" level="debug">
             <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="SLACK"/>
         </logger>
         <!-- 쿼리 파라미터 출력 -->
         <logger name="org.hibernate.type.descriptor.sql" level="trace">
@@ -64,6 +79,7 @@
         </logger>
         <logger name="modu.menu" level="info">
             <appender-ref ref="FILE"/>
+            <appender-ref ref="SLACK"/>
         </logger>
     </springProfile>
 </configuration>

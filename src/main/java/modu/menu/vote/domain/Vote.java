@@ -38,32 +38,32 @@ public class Vote extends BaseTime {
     private List<Review> reviews = new ArrayList<>();
 
     public void addParticipant(Participant participant) {
-        participants.add(participant);
         participant.syncVote(this);
+        participants.add(participant);
     }
 
     public void removeParticipant(Participant participant) {
-        participants.remove(participant);
         participant.syncVote(null);
+        participants.remove(participant);
     }
 
     public void addVoteItem(VoteItem voteItem) {
-        voteItems.add(voteItem);
         voteItem.syncVote(this);
+        voteItems.add(voteItem);
     }
 
     public void removeVoteItem(VoteItem voteItem) {
-        voteItems.remove(voteItem);
         voteItem.syncVote(null);
+        voteItems.remove(voteItem);
     }
 
     public void addReview(Review review) {
-        reviews.add(review);
         review.syncVote(this);
+        reviews.add(review);
     }
 
     public void removeReview(Review review) {
-        reviews.remove(review);
         review.syncVote(null);
+        reviews.remove(review);
     }
 }

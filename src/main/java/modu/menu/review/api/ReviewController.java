@@ -29,9 +29,10 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @Operation(summary = "리뷰가 필요한 음식점 목록 조회", description = "회원이 아직 평가하지 않은 음식점이 있다면 관련 음식점에 대한 정보를 반환합니다. 그렇지 않다면 null을 반환합니다.\n\n" +
-            "평가하지 않았지만 득표율이 동일한 경우 해당하는 음식점 목록을 반환합니다.\n\n" +
-            "isSameTurnout은 득표율이 동일한지 여부를 나타냅니다.")
+    @Operation(summary = "리뷰가 필요한 음식점 목록 조회", description = """
+            회원이 아직 평가하지 않은 음식점이 있다면 관련 음식점에 대한 정보를 반환합니다. 그렇지 않다면 null을 반환합니다.\n\n
+            평가하지 않았지만 득표율이 동일한 경우 해당하는 음식점 목록을 반환합니다.\n\n
+            isSameTurnout은 득표율이 동일한지 여부를 나타냅니다.""")
     @SecurityRequirement(name = "Authorization")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "평가하지 않은 투표가 있거나 그렇지 않은 경우, 또는 평가하지는 않았지만 투표율이 동일한 음식점 목록을 반환할 경우"),

@@ -2,29 +2,35 @@ package modu.menu.place.service;
 
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.util.DistanceCalculator;
-import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
+import modu.menu.place.api.response.CategoryResponse;
 import modu.menu.place.api.response.SearchPlaceResponse;
 import modu.menu.place.domain.Place;
-import modu.menu.place.reposiotry.PlaceCustomPagingRepository;
+import modu.menu.place.reposiotry.PlaceQueryRepository;
+import modu.menu.place.service.dto.FoodTypeServiceResponse;
 import modu.menu.place.service.dto.SearchResultServiceResponse;
-import modu.menu.placefood.domain.PlaceFood;
-import modu.menu.placevibe.domain.PlaceVibe;
-import modu.menu.vibe.domain.Vibe;
+import modu.menu.place.service.dto.VibeTypeServiceResponse;
 import modu.menu.vibe.domain.VibeType;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class PlaceService {
 
-    private final PlaceCustomPagingRepository placeCustomPagingRepository;
+    private final PlaceQueryRepository placeQueryRepository;
+
+    // 카테고리 목록 조회
+    public CategoryResponse getCategory() {
+        return CategoryResponse.builder()
+                .foods(FoodTypeServiceResponse.getFoodTypeHierarchy())
+                .vibes(VibeTypeServiceResponse.toList())
+                .build();
+    }
 
     // 음식점 후보 검색
     public SearchPlaceResponse searchPlace(
@@ -35,27 +41,16 @@ public class PlaceService {
             Integer page
     ) {
 
-        Page<Place> places;
-        if (foods == null && vibes == null) {
-            places = placeCustomPagingRepository.findAll(latitude, longitude, page);
-        } else if (foods == null) {
-            places = placeCustomPagingRepository.findByVibeTypes(latitude, longitude, page, vibes);
-        } else if (vibes == null) {
-            places = placeCustomPagingRepository.findByFoodTypes(latitude, longitude, page, foods);
-        } else {
-            places = placeCustomPagingRepository.findByFoodTypesAndVibeTypes(latitude, longitude, page, foods, vibes);
-        }
+        Page<Place> places = placeQueryRepository.findByCondition(latitude, longitude, foods, vibes, page);
 
-        if (places.isEmpty()) {
+        if (places == null || places.getContent().isEmpty()) {
             return null;
         }
 
         return SearchPlaceResponse.builder()
-                .foods(foods)
-                .vibes(vibes)
                 .results(places.getContent().stream()
                         .map(place -> {
-                            double distance = DistanceCalculator.calculateDistance(
+                            double distance = DistanceCalculator.calculate(
                                     latitude,
                                     longitude,
                                     place.getLatitude(),
@@ -65,14 +60,11 @@ public class PlaceService {
                             return SearchResultServiceResponse.builder()
                                     .id(place.getId())
                                     .name(place.getName())
-                                    .food(place.getPlaceFoods().stream()
-                                            .map(PlaceFood::getFood)
-                                            .map(Food::getType)
-                                            .map(FoodType::getDetail)
-                                            .collect(Collectors.joining()))
+                                    .foods(place.getPlaceFoods().stream()
+                                            .map(placeFood -> placeFood.getFood().getType())
+                                            .toList())
                                     .vibes(place.getPlaceVibes().stream()
-                                            .map(PlaceVibe::getVibe)
-                                            .map(Vibe::getType)
+                                            .map(placeVibe -> placeVibe.getVibe().getType())
                                             .toList())
                                     .address(place.getAddress())
                                     .distance(distance >= 1000.0 ? String.format("%.1f", distance / 1000.0) + "km" : Math.round(distance) + "m")

@@ -97,7 +97,7 @@ public class VoteService {
         return new VoteResultResponse(voteItems.stream()
                 .map(voteItem -> {
                     Place place = voteItem.getPlace();
-                    double distance = DistanceCalculator.calculateDistance(
+                    double distance = DistanceCalculator.calculate(
                             place.getLatitude(),
                             place.getLongitude(),
                             voteResultRequest.getLatitude(),
@@ -108,9 +108,9 @@ public class VoteService {
 
                     return VoteResultServiceResponse.builder()
                             .name(place.getName())
-                            .food(place.getPlaceFoods().stream()
-                                    .map(placeFood -> placeFood.getFood().getType().getDetail())
-                                    .collect(Collectors.joining()))
+                            .foods(place.getPlaceFoods().stream()
+                                    .map(placeFood -> placeFood.getFood().getType())
+                                    .toList())
                             .vibes(place.getPlaceVibes().stream()
                                     .map(placeVibe -> placeVibe.getVibe().getType())
                                     .toList())
