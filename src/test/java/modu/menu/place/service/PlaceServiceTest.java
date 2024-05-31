@@ -1,11 +1,13 @@
 package modu.menu.place.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import modu.menu.IntegrationTestSupporter;
 import modu.menu.choice.domain.Choice;
 import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
+import modu.menu.place.api.response.CategoryResponse;
 import modu.menu.place.api.response.SearchPlaceResponse;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @DisplayName("PlaceService 통합테스트")
 class PlaceServiceTest extends IntegrationTestSupporter {
@@ -79,6 +82,59 @@ class PlaceServiceTest extends IntegrationTestSupporter {
         place3.addPlaceFood(placeFood3);
         foodRepository.saveAll(List.of(food1, food2));
         placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
+    }
+
+    @DisplayName("카테고리 목록을 조회한다.")
+    @Test
+    void getCategory() throws JsonProcessingException {
+        // given
+
+
+        // when
+        CategoryResponse result = placeService.getCategory();
+
+
+        // then
+        assertThat(result).isNotNull();
+        System.out.println(om.writeValueAsString(result));
+        assertThat(result.getFoods())
+                .extracting("key", "value")
+                .containsExactlyInAnyOrder(
+                        tuple("KOREAN_FOOD", "한식"),
+                        tuple("JAPANESE_FOOD", "일식"),
+                        tuple("CHINESE_FOOD", "중식"),
+                        tuple("WESTERN_FOOD", "양식"),
+                        tuple("ASIAN_FOOD", "아시아음식"),
+                        tuple("BAR", "술집"),
+                        tuple("BUFFET", "뷔페"),
+                        tuple("DESSERT", "디저트")
+                );
+        assertThat(result.getFoods().get(0).getChildren())
+                .extracting("key", "value")
+                .containsExactlyInAnyOrder(
+                        tuple("KOREAN_SEAFOOD", "해물,생선"),
+                        tuple("CONGEE", "죽"),
+                        tuple("JOKBAL", "족발, 보쌈"),
+                        tuple("HOT_POT", "찌개,전골"),
+                        tuple("MEAT", "육류,고기"),
+                        tuple("SUNDAE", "순대"),
+                        tuple("STREET_FOOD", "분식"),
+                        tuple("NOODLE", "면"),
+                        tuple("LUNCH_BOX", "도시락"),
+                        tuple("KOREAN_CHICKEN", "닭요리"),
+                        tuple("INTESTINE", "곱창,막창"),
+                        tuple("TEPPAN_YAKI", "철판요리")
+                );
+        assertThat(result.getVibes())
+                .extracting("key", "value")
+                .containsExactlyInAnyOrder(
+                        tuple("NOISY", "시끌벅적해요"),
+                        tuple("TRENDY", "트렌디해요"),
+                        tuple("GOOD_SERVICE", "서비스가 좋아요"),
+                        tuple("QUIET", "조용해요"),
+                        tuple("MODERN", "모던해요"),
+                        tuple("NICE_VIEW", "뷰맛집이에요")
+                );
     }
 
     @DisplayName("현재 위도와 경도, 페이지 번호를 통해 가까운 거리 순으로 정렬되어 페이징된 모든 음식점 정보를 조회한다.")
