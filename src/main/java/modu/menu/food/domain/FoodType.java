@@ -6,7 +6,6 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 @AllArgsConstructor
 public enum FoodType {
@@ -60,26 +59,9 @@ public enum FoodType {
     }
 
     // 최상위 Enum 목록을 반환하는 메서드
-    public static List<FoodType> getTopLevelCategories() {
+    public static List<FoodType> getAncestor() {
         return Arrays.stream(FoodType.values())
                 .filter(foodType -> foodType.getParent() == null)
                 .toList();
-    }
-
-    public static List<FoodType> getSubCategories(FoodType parent) {
-        return getSubCategoriesStream(parent)
-                .toList();
-    }
-
-    // 재귀 호출을 통해 parent의 하위 Enum을 스트림으로 반환하는 메서드
-    public static Stream<FoodType> getSubCategoriesStream(FoodType parent) {
-        return Arrays.stream(FoodType.values())
-                .filter(foodType -> foodType.getParent() == parent)
-                .flatMap(foodType ->
-                        Stream.concat(
-                                Stream.of(foodType),
-                                getSubCategoriesStream(foodType)
-                        )
-                );
     }
 }
