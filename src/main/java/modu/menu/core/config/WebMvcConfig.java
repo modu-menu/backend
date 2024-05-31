@@ -43,7 +43,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/user",
                         "/api/user/login",
                         "/api/place{?*}",
-                        "/api/slack"
+                        "/api/slack",
+                        "/api/category"
                 );
     }
 }
