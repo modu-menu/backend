@@ -14,6 +14,7 @@ import modu.menu.core.exception.Exception401;
 import modu.menu.core.response.ApiFailResponse;
 import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.core.response.ErrorMessage;
+import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
@@ -28,6 +29,25 @@ import org.springframework.web.bind.annotation.*;
 public class VoteController {
 
     private final VoteService voteService;
+
+    @Operation(summary = "투표 생성", description = "투표를 생성합니다.")
+    @SecurityRequirement(name = "Authorization")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "투표 생성이 성공한 경우"),
+            @ApiResponse(responseCode = "400", description = "RequestBody가 형식에 맞지 않을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "401", description = "토큰 인증이 실패한 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "404", description = "투표에 포함시키려는 음식점이 존재하지 않을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
+            @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
+    })
+    @PostMapping("/api/vote")
+    public ResponseEntity<ApiSuccessResponse> saveVote(
+            @Valid @RequestBody SaveVoteRequest saveVoteRequest
+    ) {
+        voteService.saveVote(saveVoteRequest);
+
+        return ResponseEntity.ok()
+                .body(new ApiSuccessResponse<>());
+    }
 
     @Operation(summary = "투표 초대", description = "투표에 회원을 초대합니다.")
     @SecurityRequirement(name = "Authorization")

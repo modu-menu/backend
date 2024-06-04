@@ -14,6 +14,7 @@ import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.user.domain.User;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.repository.VibeRepository;
+import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
@@ -45,6 +46,29 @@ public class VoteService {
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
     private final ParticipantRepository participantRepository;
+
+    // 투표 생성
+    @Transactional
+    public void saveVote(SaveVoteRequest saveVoteRequest) {
+
+        List<Place> places = placeRepository.findAllById(saveVoteRequest.getPlaceIds());
+
+        if (places.isEmpty() || places.size() != saveVoteRequest.getPlaceIds().size()) {
+            throw new Exception404(ErrorMessage.NOT_EXIST_PLACE);
+        }
+
+        Vote vote = voteRepository.save(Vote.builder()
+                .voteStatus(VoteStatus.ACTIVE)
+                .build());
+        places.forEach(place -> {
+            VoteItem voteItem = voteItemRepository.save(VoteItem.builder()
+                    .vote(vote)
+                    .place(place)
+                    .build());
+
+            vote.addVoteItem(voteItem);
+        });
+    }
 
     // 투표 초대
     @Transactional
