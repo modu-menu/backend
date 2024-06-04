@@ -24,6 +24,7 @@ import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
+import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
@@ -66,6 +67,103 @@ class VoteServiceTest extends IntegrationTestSupporter {
     private ChoiceRepository choiceRepository;
     @Autowired
     private ParticipantRepository participantRepository;
+
+    @DisplayName("투표를 생성한다.")
+    @Test
+    void saveVote() {
+        // given
+        Place place1 = createPlace("타코벨");
+        Place place2 = createPlace("이자카야모리");
+        Place place3 = createPlace("서가앤쿡 노원역점");
+        Vibe vibe1 = createVibe(VibeType.NOISY);
+        Vibe vibe2 = createVibe(VibeType.QUIET);
+        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
+        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
+        place1.addPlaceVibe(placeVibe1);
+        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
+        place2.addPlaceVibe(placeVibe2);
+        PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
+        place3.addPlaceVibe(placeVibe3);
+        placeRepository.saveAll(List.of(place1, place2, place3));
+        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
+        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
+        Food food1 = createFood(FoodType.LATIN);
+        Food food2 = createFood(FoodType.MEAT);
+        PlaceFood placeFood1 = createPlaceFood(place1, food1);
+        place1.addPlaceFood(placeFood1);
+        PlaceFood placeFood2 = createPlaceFood(place2, food1);
+        place2.addPlaceFood(placeFood2);
+        PlaceFood placeFood3 = createPlaceFood(place3, food2);
+        place3.addPlaceFood(placeFood3);
+        foodRepository.saveAll(List.of(food1, food2));
+        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
+
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of(1L, 2L, 3L))
+                .build();
+
+        // when
+        voteService.saveVote(saveVoteRequest);
+
+
+        // then
+        assertThat(voteRepository.findAll()).isNotEmpty();
+    }
+
+    @DisplayName("투표를 생성할 때 ID 목록에 있는 음식점들이 존재하지 않으면 실패한다.")
+    @Test
+    void saveVoteWithNotExistIds() {
+        // given
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of(1L, 2L, 3L))
+                .build();
+
+        // when
+
+
+        // then
+        assertThatThrownBy(() -> voteService.saveVote(saveVoteRequest))
+                .isInstanceOf(Exception404.class)
+                .hasMessage("해당 ID와 일치하는 음식점이 존재하지 않습니다.");
+    }
+
+    @DisplayName("투표를 생성할 때 ID 목록 중 존재하지 않는 음식점의 ID가 있다면 실패한다.")
+    @Test
+    void saveVoteWithNotExistId() {
+        // given
+        Place place1 = createPlace("타코벨");
+        Place place2 = createPlace("이자카야모리");
+        Vibe vibe1 = createVibe(VibeType.NOISY);
+        Vibe vibe2 = createVibe(VibeType.QUIET);
+        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
+        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
+        place1.addPlaceVibe(placeVibe1);
+        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
+        place2.addPlaceVibe(placeVibe2);
+        placeRepository.saveAll(List.of(place1, place2));
+        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
+        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2));
+        Food food1 = createFood(FoodType.LATIN);
+        Food food2 = createFood(FoodType.MEAT);
+        PlaceFood placeFood1 = createPlaceFood(place1, food1);
+        place1.addPlaceFood(placeFood1);
+        PlaceFood placeFood2 = createPlaceFood(place2, food1);
+        place2.addPlaceFood(placeFood2);
+        foodRepository.saveAll(List.of(food1, food2));
+        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2));
+
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of(1L, 2L, 3L))
+                .build();
+
+        // when
+
+
+        // then
+        assertThatThrownBy(() -> voteService.saveVote(saveVoteRequest))
+                .isInstanceOf(Exception404.class)
+                .hasMessage("해당 ID와 일치하는 음식점이 존재하지 않습니다.");
+    }
 
     @DisplayName("회원을 투표에 초대한다.")
     @Test
