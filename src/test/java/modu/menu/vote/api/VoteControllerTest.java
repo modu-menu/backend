@@ -3,6 +3,7 @@ package modu.menu.vote.api;
 import modu.menu.ControllerTestSupporter;
 import modu.menu.food.domain.FoodType;
 import modu.menu.vibe.domain.VibeType;
+import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
@@ -22,6 +23,86 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("VoteController 단위테스트")
 class VoteControllerTest extends ControllerTestSupporter {
+
+    @DisplayName("투표를 생성하면 성공한다.")
+    @Test
+    void saveVote() throws Exception {
+        // given
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of(1L, 2L, 3L))
+                .build();
+
+        // when
+        doNothing().when(voteService).saveVote(saveVoteRequest);
+
+        // then
+        mockMvc.perform(post("/api/vote")
+                        .content(objectMapper.writeValueAsBytes(saveVoteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.reason").value("OK"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("투표를 생성할 때 ID 목록이 비어있으면 실패한다.")
+    @Test
+    void saveVoteWithEmptyIdList() throws Exception {
+        // given
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of())
+                .build();
+
+        // when
+        doNothing().when(voteService).saveVote(saveVoteRequest);
+
+        // then
+        mockMvc.perform(post("/api/vote")
+                        .content(objectMapper.writeValueAsBytes(saveVoteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개의 음식점이 포함되어야 합니다."));
+    }
+
+    @DisplayName("투표를 생성할 때 ID가 하나만 있으면 실패한다.")
+    @Test
+    void saveVoteWithOneId() throws Exception {
+        // given
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of(1L))
+                .build();
+
+        // when
+        doNothing().when(voteService).saveVote(saveVoteRequest);
+
+        // then
+        mockMvc.perform(post("/api/vote")
+                        .content(objectMapper.writeValueAsBytes(saveVoteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개의 음식점이 포함되어야 합니다."));
+    }
+
+    @DisplayName("투표를 생성할 때 ID 목록 중에 0이 포함되어 있으면 실패한다.")
+    @Test
+    void saveVoteWithZeroIdValue() throws Exception {
+        // given
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of(0L, 1L, 2L))
+                .build();
+
+        // when
+        doNothing().when(voteService).saveVote(saveVoteRequest);
+
+        // then
+        mockMvc.perform(post("/api/vote")
+                        .content(objectMapper.writeValueAsBytes(saveVoteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("ID는 양수여야 합니다."));
+    }
 
     @DisplayName("투표에 회원을 초대하면 성공한다.")
     @Test
