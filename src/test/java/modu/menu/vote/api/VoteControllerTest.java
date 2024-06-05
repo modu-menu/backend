@@ -17,6 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -184,6 +185,41 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .andExpect(jsonPath("$.status").value(401))
                 .andExpect(jsonPath("$.reason").value("Unauthorized"))
                 .andExpect(jsonPath("$.message").value("토큰과 Path Variable의 id가 일치하지 않습니다."));
+    }
+
+    @DisplayName("투표를 종료하면 성공한다.")
+    @Test
+    void finishVote() throws Exception {
+        // given
+        Long voteId = 1L;
+
+        // when
+        doNothing().when(voteService).finishVote(anyLong());
+
+        // then
+        mockMvc.perform(patch("/api/vote/{voteId}/status", voteId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.reason").value("OK"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("종료하려는 투표의 ID가 양수여야 한다.")
+    @Test
+    void finishVoteWithZeroVoteId() throws Exception {
+        // given
+        Long voteId = 0L;
+
+        // when
+        doNothing().when(voteService).finishVote(anyLong());
+
+        // then
+        mockMvc.perform(patch("/api/vote/{voteId}/status", voteId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.cause").exists())
+                .andExpect(jsonPath("$.message").value("voteId는 양수여야 합니다."));
     }
 
     @DisplayName("투표 결과를 조회하면 성공한다.")
