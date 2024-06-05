@@ -8,17 +8,17 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class Exception400 extends RuntimeException {
 
-    private String cause;
-    private String message;
+    private String key;
+    private String value;
 
-    public Exception400(String cause, String message) {
-        super(message);
-        this.cause = cause;
-        this.message = message;
+    public Exception400(String key, String value) {
+        super(value);
+        this.key = key;
+        this.value = value;
     }
 
     public ApiFailResponse body() {
-        return new ApiFailResponse(HttpStatus.BAD_REQUEST, cause, message);
+        return new ApiFailResponse(HttpStatus.BAD_REQUEST, key, value);
     }
 
     public HttpStatus status() {

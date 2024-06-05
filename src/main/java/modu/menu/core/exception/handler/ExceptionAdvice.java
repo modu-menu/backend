@@ -49,7 +49,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception400.class)
     public ResponseEntity<ApiFailResponse> badRequest(Exception400 e) {
-        log.warn("Exception: 400, " + e.getMessage());
+        log.warn("Exception: 400, " + e.getValue());
         return ResponseEntity
                 .status(e.status())
                 .body(e.body());
