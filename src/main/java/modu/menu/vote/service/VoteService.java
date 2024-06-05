@@ -1,7 +1,10 @@
 package modu.menu.vote.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import modu.menu.choice.repository.ChoiceRepository;
+import modu.menu.core.exception.Exception400;
+import modu.menu.core.exception.Exception403;
 import modu.menu.core.exception.Exception404;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.core.util.DistanceCalculator;
@@ -46,6 +49,7 @@ public class VoteService {
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
     private final ParticipantRepository participantRepository;
+    private final HttpServletRequest request;
 
     // 투표 생성
     @Transactional
@@ -96,6 +100,28 @@ public class VoteService {
             vote.addParticipant(participant);
             participantRepository.save(participant);
         }
+    }
+
+    // 투표 종료
+    @Transactional
+    public void finishVote(Long voteId) {
+
+        Vote vote = voteRepository.findById(voteId).orElseThrow(
+                () -> new Exception404(ErrorMessage.NOT_EXIST_VOTE)
+        );
+        if (vote.getVoteStatus().equals(VoteStatus.END)) {
+            throw new Exception400(String.valueOf(voteId), ErrorMessage.CANT_FINISH_ALREADY_END_VOTE.getValue());
+        }
+
+        Long userId = (Long) request.getAttribute("userId");
+        Participant participant = participantRepository.findByUserIdAndVoteId(userId, voteId).orElseThrow(
+                () -> new Exception403(ErrorMessage.NOT_ALLOWED_USER)
+        );
+        if (participant.getVoteRole().equals(VoteRole.PARTICIPANT)) {
+            throw new Exception403(ErrorMessage.CANT_FINISH_BY_PARTICIPANT);
+        }
+
+        vote.updateVoteStatus(VoteStatus.END);
     }
 
     // 투표 결과 조회
