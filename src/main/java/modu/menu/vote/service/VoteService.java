@@ -72,6 +72,11 @@ public class VoteService {
 
             vote.addVoteItem(voteItem);
         });
+        participantRepository.save(Participant.builder()
+                .vote(vote)
+                .user(userRepository.findById((Long) request.getAttribute("userId")).get())
+                .voteRole(VoteRole.ORGANIZER)
+                .build());
     }
 
     // 투표 초대
