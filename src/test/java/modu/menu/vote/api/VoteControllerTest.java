@@ -62,7 +62,7 @@ class VoteControllerTest extends ControllerTestSupporter {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.reason").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개의 음식점이 포함되어야 합니다."));
+                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개, 최대 3개의 음식점이 포함되어야 합니다."));
     }
 
     @DisplayName("투표를 생성할 때 ID가 하나만 있으면 실패한다.")
@@ -82,7 +82,27 @@ class VoteControllerTest extends ControllerTestSupporter {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.reason").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개의 음식점이 포함되어야 합니다."));
+                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개, 최대 3개의 음식점이 포함되어야 합니다."));
+    }
+
+    @DisplayName("투표를 생성할 때 ID가 3개를 초과하면 실패한다.")
+    @Test
+    void saveVoteWithExceedMax() throws Exception {
+        // given
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of(1L, 2L, 3L, 4L))
+                .build();
+
+        // when
+        doNothing().when(voteService).saveVote(saveVoteRequest);
+
+        // then
+        mockMvc.perform(post("/api/vote")
+                        .content(objectMapper.writeValueAsBytes(saveVoteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개, 최대 3개의 음식점이 포함되어야 합니다."));
     }
 
     @DisplayName("투표를 생성할 때 ID 목록 중에 0이 포함되어 있으면 실패한다.")
