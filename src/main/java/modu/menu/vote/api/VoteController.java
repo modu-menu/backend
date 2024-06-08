@@ -30,7 +30,7 @@ public class VoteController {
 
     private final VoteService voteService;
 
-    @Operation(summary = "투표 생성", description = "투표를 생성합니다.")
+    @Operation(summary = "투표 생성", description = "투표를 생성합니다. 투표를 생성한 회원이 주최자가 됩니다.")
     @SecurityRequirement(name = "Authorization")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "투표 생성이 성공한 경우"),
