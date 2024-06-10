@@ -77,6 +77,9 @@ class VoteServiceTest extends IntegrationTestSupporter {
     @Test
     void saveVote() {
         // given
+        User user1 = createUser("hong1234@naver.com");
+        User user2 = createUser("kim1234@naver.com");
+        User user3 = createUser("new1234@naver.com");
         Place place1 = createPlace("타코벨");
         Place place2 = createPlace("이자카야모리");
         Place place3 = createPlace("서가앤쿡 노원역점");
@@ -89,9 +92,11 @@ class VoteServiceTest extends IntegrationTestSupporter {
         place2.addPlaceVibe(placeVibe2);
         PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
         place3.addPlaceVibe(placeVibe3);
+        userRepository.saveAll(List.of(user1, user2, user3));
         placeRepository.saveAll(List.of(place1, place2, place3));
         vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
         placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
+
         Food food1 = createFood(FoodType.LATIN);
         Food food2 = createFood(FoodType.MEAT);
         PlaceFood placeFood1 = createPlaceFood(place1, food1);
@@ -107,12 +112,15 @@ class VoteServiceTest extends IntegrationTestSupporter {
                 .placeIds(List.of(1L, 2L, 3L))
                 .build();
 
+        request.setAttribute("userId", user1.getId());
+
         // when
         voteService.saveVote(saveVoteRequest);
 
 
         // then
         assertThat(voteRepository.findAll()).isNotEmpty();
+        assertThat(participantRepository.findByUserId(user1.getId()).get().getVoteRole()).isEqualTo(VoteRole.ORGANIZER);
     }
 
     @DisplayName("투표를 생성할 때 ID 목록에 있는 음식점들이 존재하지 않으면 실패한다.")

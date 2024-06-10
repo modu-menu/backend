@@ -15,6 +15,7 @@ import modu.menu.core.response.ApiFailResponse;
 import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.vote.api.request.SaveVoteRequest;
+import modu.menu.vote.api.request.VoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
@@ -30,7 +31,7 @@ public class VoteController {
 
     private final VoteService voteService;
 
-    @Operation(summary = "투표 생성", description = "투표를 생성합니다.")
+    @Operation(summary = "투표 생성", description = "투표를 생성합니다. 투표를 생성한 회원이 주최자가 됩니다.")
     @SecurityRequirement(name = "Authorization")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "투표 생성이 성공한 경우"),
@@ -75,7 +76,7 @@ public class VoteController {
     }
 
     // 투표 종료
-    @Operation(summary = "투표 종료", description = "투표를 종료합니다.")
+    @Operation(summary = "투표 종료", description = "투표를 종료합니다. 투표 주최자만 가능합니다.")
     @SecurityRequirement(name = "Authorization")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "투표 종료가 성공한 경우"),
@@ -90,6 +91,22 @@ public class VoteController {
             @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId
     ) {
         voteService.finishVote(voteId);
+
+        return ResponseEntity.ok()
+                .body(new ApiSuccessResponse<>());
+    }
+
+    @Operation(summary = "투표, 재투표", description = """
+            투표하거나 재투표합니다. 초대받은 사람만 투표할 수 있습니다.
+            placeId가 null이라면 기존 투표 기록을 삭제합니다.
+            """)
+    @SecurityRequirement(name = "Authorization")
+    @PostMapping("/api/vote/{voteId}")
+    public ResponseEntity<ApiSuccessResponse> vote(
+            @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
+            @Valid @RequestBody VoteRequest voteRequest
+    ) {
+        voteService.vote(voteId, voteRequest);
 
         return ResponseEntity.ok()
                 .body(new ApiSuccessResponse<>());

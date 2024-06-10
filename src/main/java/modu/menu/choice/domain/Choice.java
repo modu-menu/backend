@@ -25,4 +25,8 @@ public class Choice extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void updateVoteItem(VoteItem voteItem) {
+        this.voteItem = voteItem;
+    }
 }

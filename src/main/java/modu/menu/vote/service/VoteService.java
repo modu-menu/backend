@@ -2,6 +2,7 @@ package modu.menu.vote.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import modu.menu.choice.domain.Choice;
 import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.core.exception.Exception400;
 import modu.menu.core.exception.Exception403;
@@ -18,6 +19,7 @@ import modu.menu.user.domain.User;
 import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.SaveVoteRequest;
+import modu.menu.vote.api.request.VoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
@@ -72,6 +74,11 @@ public class VoteService {
 
             vote.addVoteItem(voteItem);
         });
+        participantRepository.save(Participant.builder()
+                .vote(vote)
+                .user(userRepository.findById((Long) request.getAttribute("userId")).get())
+                .voteRole(VoteRole.ORGANIZER)
+                .build());
     }
 
     // 투표 초대
@@ -124,6 +131,58 @@ public class VoteService {
         vote.updateVoteStatus(VoteStatus.END);
     }
 
+    // 투표, 재투표
+    @Transactional
+    public void vote(Long voteId, VoteRequest voteRequest) {
+
+        boolean isExsistsVote = voteRepository.existsById(voteId);
+        if (!isExsistsVote) {
+            throw new Exception404(ErrorMessage.NOT_EXIST_VOTE);
+        }
+
+        Long userId = (Long) request.getAttribute("userId");
+        participantRepository.findByUserIdAndVoteId(userId, voteId).orElseThrow(
+                () -> new Exception404(ErrorMessage.NOT_ALLOWED_USER)
+        );
+
+        List<VoteItem> voteItems = voteItemRepository.findByVoteId(voteId);
+        Optional<Choice> choiceOptional = choiceRepository.findByUserIdAndVoteItemIds(userId, voteItems.stream()
+                .map(VoteItem::getId)
+                .toList());
+
+        // case 1. 기존 투표 기록이 존재할 경우(재투표)
+        if (choiceOptional.isPresent()) {
+            Choice choice = choiceOptional.get();
+
+            // case 1-1. 기존 투표 기록 삭제
+            if (voteRequest.getPlaceId() == null) {
+                choiceRepository.delete(choice);
+                return;
+            }
+
+            // case 1-2. 기존 투표 기록 수정
+            VoteItem satisfiedVoteItem = findSatisfiedVoteItem(voteRequest, voteItems);
+
+            choice.updateVoteItem(satisfiedVoteItem);
+            return;
+        }
+
+        // case 2. 기존 투표 기록이 존재하지 않을 경우(투표)
+        choiceRepository.save(Choice.builder()
+                .voteItem(findSatisfiedVoteItem(voteRequest, voteItems))
+                .user(userRepository.findById(userId).get())
+                .build());
+    }
+
+    // VoteItem 목록에서 요청 DTO 내의 placeId와 일치하는 항목을 찾는 메서드
+    private VoteItem findSatisfiedVoteItem(VoteRequest voteRequest, List<VoteItem> voteItems) {
+        return voteItems.stream()
+                .filter(voteItem -> voteItem.getPlace().getId().equals(voteRequest.getPlaceId()))
+                .findFirst()
+                .orElseThrow(() -> new Exception400(String.valueOf(voteRequest.getPlaceId()), ErrorMessage.NOT_EXIST_PLACE_IN_VOTE.getValue()));
+    }
+
+    // TODO 투표 조회 API에서 해당 유저의 투표 여부를 변수로 같이 보내줘야 한다.
     // 투표 결과 조회
     public VoteResultResponse getResult(Long voteId, VoteResultRequest voteResultRequest) {
 

@@ -4,6 +4,7 @@ import modu.menu.ControllerTestSupporter;
 import modu.menu.food.domain.FoodType;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vote.api.request.SaveVoteRequest;
+import modu.menu.vote.api.request.VoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
@@ -62,7 +63,7 @@ class VoteControllerTest extends ControllerTestSupporter {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.reason").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개의 음식점이 포함되어야 합니다."));
+                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개, 최대 3개의 음식점이 포함되어야 합니다."));
     }
 
     @DisplayName("투표를 생성할 때 ID가 하나만 있으면 실패한다.")
@@ -82,7 +83,27 @@ class VoteControllerTest extends ControllerTestSupporter {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.reason").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개의 음식점이 포함되어야 합니다."));
+                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개, 최대 3개의 음식점이 포함되어야 합니다."));
+    }
+
+    @DisplayName("투표를 생성할 때 ID가 3개를 초과하면 실패한다.")
+    @Test
+    void saveVoteWithExceedMax() throws Exception {
+        // given
+        SaveVoteRequest saveVoteRequest = SaveVoteRequest.builder()
+                .placeIds(List.of(1L, 2L, 3L, 4L))
+                .build();
+
+        // when
+        doNothing().when(voteService).saveVote(saveVoteRequest);
+
+        // then
+        mockMvc.perform(post("/api/vote")
+                        .content(objectMapper.writeValueAsBytes(saveVoteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("투표 항목으로 최소 2개, 최대 3개의 음식점이 포함되어야 합니다."));
     }
 
     @DisplayName("투표를 생성할 때 ID 목록 중에 0이 포함되어 있으면 실패한다.")
@@ -220,6 +241,77 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .andExpect(jsonPath("$.reason").value("Bad Request"))
                 .andExpect(jsonPath("$.cause").exists())
                 .andExpect(jsonPath("$.message").value("voteId는 양수여야 합니다."));
+    }
+
+    @DisplayName("투표하면 성공한다.")
+    @Test
+    void vote() throws Exception {
+        // given
+        Long voteId = 1L;
+        Long placeId = 2L;
+        VoteRequest voteRequest = VoteRequest.builder()
+                .placeId(placeId)
+                .build();
+
+        // when
+        doNothing().when(voteService).vote(anyLong(), any(VoteRequest.class));
+
+        // then
+        mockMvc.perform(post("/api/vote/{voteId}", voteId)
+                        .content(objectMapper.writeValueAsString(voteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.reason").value("OK"))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("투표할 때 voteId가 0이면 실패한다.")
+    @Test
+    void voteWithZeroVoteId() throws Exception {
+        // given
+        Long voteId = 0L;
+        Long placeId = 2L;
+        VoteRequest voteRequest = VoteRequest.builder()
+                .placeId(placeId)
+                .build();
+
+        // when
+        doNothing().when(voteService).vote(anyLong(), any(VoteRequest.class));
+
+        // then
+        mockMvc.perform(post("/api/vote/{voteId}", voteId)
+                        .content(objectMapper.writeValueAsString(voteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.cause").exists())
+                .andExpect(jsonPath("$.message").value("voteId는 양수여야 합니다."));
+    }
+
+    @DisplayName("투표할 때 placeId가 0이면 실패한다.")
+    @Test
+    void voteWithZeroPlaceId() throws Exception {
+        // given
+        Long voteId = 1L;
+        Long placeId = 0L;
+        VoteRequest voteRequest = VoteRequest.builder()
+                .placeId(placeId)
+                .build();
+
+        // when
+        doNothing().when(voteService).vote(anyLong(), any(VoteRequest.class));
+
+        // then
+        mockMvc.perform(post("/api/vote/{voteId}", voteId)
+                        .content(objectMapper.writeValueAsString(voteRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.cause").exists())
+                .andExpect(jsonPath("$.message").value("placeId는 양수여야 합니다."));
     }
 
     @DisplayName("투표 결과를 조회하면 성공한다.")
