@@ -66,4 +66,8 @@ public class Vote extends BaseTime {
         review.syncVote(null);
         reviews.remove(review);
     }
+
+    public void updateVoteStatus(VoteStatus voteStatus) {
+        this.voteStatus = voteStatus;
+    }
 }

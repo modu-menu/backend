@@ -2,8 +2,6 @@ package modu.menu.core.exception;
 
 import lombok.Getter;
 import modu.menu.core.response.ApiFailResponse;
-import modu.menu.core.response.ApiSuccessResponse;
-import modu.menu.core.response.ErrorData;
 import org.springframework.http.HttpStatus;
 
 

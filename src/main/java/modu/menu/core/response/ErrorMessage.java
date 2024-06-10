@@ -30,7 +30,12 @@ public enum ErrorMessage {
 
     // Vote
     NOT_EXIST_VOTE("해당 ID와 일치하는 투표가 존재하지 않습니다."),
-    CANT_INVITE_TO_END_VOTE("종료된 투표에는 초대할 수 없습니다.");
+    CANT_INVITE_TO_END_VOTE("종료된 투표에는 초대할 수 없습니다."),
+    NOT_EXIST_PLACE("해당 ID와 일치하는 음식점이 존재하지 않습니다."),
+    NOT_EXIST_PLACE_IN_VOTE("해당 ID와 일치하는 음식점이 투표에 존재하지 않습니다."),
+    CANT_FINISH_ALREADY_END_VOTE("이미 종료된 투표입니다."),
+    NOT_ALLOWED_USER("투표에 초대된 회원이 아닙니다."),
+    CANT_FINISH_BY_PARTICIPANT("주최자만 투표를 종료할 수 있습니다.");
 
     // domainEx1
 
