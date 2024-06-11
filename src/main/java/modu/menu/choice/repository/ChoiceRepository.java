@@ -23,4 +23,13 @@ public interface ChoiceRepository extends JpaRepository<Choice, Long> {
             where c.user.id = :userId and c.voteItem.id in :voteItemIds
             """)
     Optional<Choice> findByUserIdAndVoteItemIds(@Param("userId") Long userId, @Param("voteItemIds") List<Long> voteItemIds);
+
+    @Query("""
+            select c
+            from Choice c
+            join c.voteItem vi
+            join vi.vote v
+            where v.id = :voteId
+            """)
+    List<Choice> findByVoteId(@Param("voteId") Long voteId);
 }

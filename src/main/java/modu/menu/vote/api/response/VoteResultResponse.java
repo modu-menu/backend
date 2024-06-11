@@ -8,7 +8,7 @@ import modu.menu.vote.service.dto.VoteResultServiceResponse;
 
 import java.util.List;
 
-@Schema(description = "투표 결과 조회 DTO")
+@Schema(description = "투표 결과 조회 응답 DTO")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

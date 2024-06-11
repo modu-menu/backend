@@ -120,6 +120,28 @@ class ParticipantRepositoryTest extends IntegrationTestSupporter {
         assertThat(result).isEmpty();
     }
 
+    @DisplayName("voteId를 통해 투표에 초대받은 회원 목록을 조회한다.")
+    @Test
+    void findByVoteId() {
+        // given
+        User user1 = createUser("gildong123@naver.com");
+        User user2 = createUser("seungmin123@naver.com");
+        Vote vote1 = createVote(VoteStatus.ACTIVE);
+        Participant participant = createParticipant(user1, vote1, VoteRole.PARTICIPANT);
+        userRepository.saveAll(List.of(user1, user2));
+        voteRepository.save(vote1);
+        participantRepository.save(participant);
+
+        // when
+        List<User> result = participantRepository.findUserByVoteId(vote1.getId());
+
+        // then
+        assertThat(result).isNotEmpty();
+        assertThat(result)
+                .extracting("id")
+                .containsExactlyInAnyOrder(1L);
+    }
+
     private User createUser(String email) {
         return User.builder()
                 .email(email)

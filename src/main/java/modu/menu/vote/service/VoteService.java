@@ -21,16 +21,19 @@ import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
+import modu.menu.vote.api.response.TurnoutResponse;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
+import modu.menu.vote.service.dto.IsVoteServiceResponse;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import modu.menu.voteItem.domain.VoteItem;
 import modu.menu.voteItem.repository.VoteItemRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -180,6 +183,43 @@ public class VoteService {
                 .filter(voteItem -> voteItem.getPlace().getId().equals(voteRequest.getPlaceId()))
                 .findFirst()
                 .orElseThrow(() -> new Exception400(String.valueOf(voteRequest.getPlaceId()), ErrorMessage.NOT_EXIST_PLACE_IN_VOTE.getValue()));
+    }
+
+    // 투표율 조회
+    public TurnoutResponse getTurnout(Long voteId) {
+
+        voteRepository.findById(voteId).orElseThrow(
+                () -> new Exception404(ErrorMessage.NOT_EXIST_VOTE)
+        );
+
+        List<User> participants = participantRepository.findUserByVoteId(voteId);
+        if (participants.isEmpty()) {
+            return null;
+        }
+
+        List<Choice> choices = choiceRepository.findByVoteId(voteId);
+        List<IsVoteServiceResponse> list = new ArrayList<>();
+        int count = 0; // 투표한 사람의 인원 수
+        // Stream 내부에서 final이 아닌 지역변수를 사용할 수 없으므로 아래와 같이 for-each로 대체
+        for (User participant : participants) {
+            boolean isVote = false;
+            for (Choice choice : choices) {
+                if (choice.getUser().getId().equals(participant.getId())) {
+                    count++;
+                    isVote = true;
+                    break;
+                }
+            }
+            list.add(IsVoteServiceResponse.builder()
+                    .name(participant.getName())
+                    .isVote(isVote)
+                    .build());
+        }
+
+        return new TurnoutResponse(
+                Math.round((double) count / participants.size() * 100) + "%",
+                list
+        );
     }
 
     // TODO 투표 조회 API에서 해당 유저의 투표 여부를 변수로 같이 보내줘야 한다.
