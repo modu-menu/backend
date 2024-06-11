@@ -40,7 +40,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 
-@DisplayName("VoteRepository 단위테스트")
 class VoteRepositoryTest extends IntegrationTestSupporter {
 
     @Autowired

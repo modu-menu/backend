@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@DisplayName("ReviewController 단위테스트")
 class ReviewControllerTest extends ControllerTestSupporter {
 
     @DisplayName("리뷰가 필요한 음식점 목록을 조회하면 null을 반환한다.")

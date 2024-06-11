@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("ParticipantRepository 단위테스트")
 class ParticipantRepositoryTest extends IntegrationTestSupporter {
 
     @Autowired

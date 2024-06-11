@@ -46,7 +46,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("VoteService 통합테스트")
 class VoteServiceTest extends IntegrationTestSupporter {
 
     @Autowired

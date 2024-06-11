@@ -14,7 +14,6 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("JwtProvider 테스트")
 class JwtProviderTest extends IntegrationTestSupporter {
 
     @DisplayName("액세스 토큰이 올바르게 생성된다.")

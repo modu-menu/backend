@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("VoteController 단위테스트")
 class VoteControllerTest extends ControllerTestSupporter {
 
     @DisplayName("투표를 생성하면 성공한다.")
