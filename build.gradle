@@ -73,6 +73,12 @@ jacocoTestReport {
         csv.required.set(false)
     }
 
+    // QueryDSL QDomain 제외시키기
+    def QDomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        QDomains.add(qPattern + '*')
+    }
+
     afterEvaluate {
         classDirectories.setFrom(
                 files(classDirectories.files.collect {
@@ -87,8 +93,9 @@ jacocoTestReport {
                             "**/*Filter*",
                             "**/converter/**",
                             "**/HealthCheckController.class",
-                            "**/oauth2/**"
-                    ])
+                            "**/oauth2/**",
+                            "**/interceptor/**"
+                    ] + QDomains)
                 })
         )
     }

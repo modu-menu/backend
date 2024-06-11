@@ -25,7 +25,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("PlaceRepository 단위테스트")
 class PlaceRepositoryTest extends IntegrationTestSupporter {
 
     @Autowired

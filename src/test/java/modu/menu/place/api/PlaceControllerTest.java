@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("PlaceController 단위테스트")
 class PlaceControllerTest extends ControllerTestSupporter {
 
     @DisplayName("카테고리 목록을 조회하면 성공한다.")

@@ -42,7 +42,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("ReviewService 통합테스트")
 class ReviewServiceTest extends IntegrationTestSupporter {
 
     @Autowired
