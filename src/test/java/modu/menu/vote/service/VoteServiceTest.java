@@ -29,6 +29,7 @@ import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
+import modu.menu.vote.api.response.TurnoutResponse;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
@@ -485,6 +486,146 @@ class VoteServiceTest extends IntegrationTestSupporter {
         assertThatThrownBy(() -> voteService.finishVote(voteId))
                 .isInstanceOf(Exception403.class)
                 .hasMessage(ErrorMessage.CANT_FINISH_BY_PARTICIPANT.getValue());
+    }
+
+    @DisplayName("투표율을 조회한다.")
+    @Test
+    void getTurnout() {
+        // given
+        User user1 = createUser("hong1234@naver.com");
+        User user2 = createUser("kim1234@naver.com");
+        User user3 = createUser("new1234@naver.com");
+        Place place1 = createPlace("타코벨");
+        Place place2 = createPlace("이자카야모리");
+        Place place3 = createPlace("서가앤쿡 노원역점");
+        Vibe vibe1 = createVibe(VibeType.NOISY);
+        Vibe vibe2 = createVibe(VibeType.QUIET);
+        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
+        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
+        place1.addPlaceVibe(placeVibe1);
+        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
+        place2.addPlaceVibe(placeVibe2);
+        PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
+        place3.addPlaceVibe(placeVibe3);
+        userRepository.saveAll(List.of(user1, user2, user3));
+        placeRepository.saveAll(List.of(place1, place2, place3));
+        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
+        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
+
+        Food food1 = createFood(FoodType.LATIN);
+        Food food2 = createFood(FoodType.MEAT);
+        PlaceFood placeFood1 = createPlaceFood(place1, food1);
+        place1.addPlaceFood(placeFood1);
+        PlaceFood placeFood2 = createPlaceFood(place2, food1);
+        place2.addPlaceFood(placeFood2);
+        PlaceFood placeFood3 = createPlaceFood(place3, food2);
+        place3.addPlaceFood(placeFood3);
+        foodRepository.saveAll(List.of(food1, food2));
+        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
+
+        Vote vote = createVote(VoteStatus.ACTIVE);
+        VoteItem voteItem1 = createVoteItem(vote, place1);
+        VoteItem voteItem2 = createVoteItem(vote, place2);
+        VoteItem voteItem3 = createVoteItem(vote, place3);
+        vote.addVoteItem(voteItem1);
+        vote.addVoteItem(voteItem2);
+        vote.addVoteItem(voteItem3);
+        Choice choice1 = createChoice(voteItem1, user1);
+        Choice choice3 = createChoice(voteItem3, user3);
+        Participant participant = createParticipant(user1, vote, VoteRole.ORGANIZER);
+        Participant participant2 = createParticipant(user2, vote, VoteRole.PARTICIPANT);
+        Participant participant3 = createParticipant(user3, vote, VoteRole.PARTICIPANT);
+        voteRepository.save(vote);
+        voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+        choiceRepository.saveAll(List.of(choice1, choice3));
+        participantRepository.saveAll(List.of(participant, participant2, participant3));
+
+        Long voteId = 1L;
+
+        // when
+        TurnoutResponse turnout = voteService.getTurnout(voteId);
+
+        // then
+        assertThat(turnout).isNotNull();
+        assertThat(turnout.getTurnout()).isEqualTo("67%");
+        assertThat(turnout.getParticipants())
+                .extracting("name", "isVote")
+                .containsExactlyInAnyOrder(
+                        tuple("name", true),
+                        tuple("name", false),
+                        tuple("name", true)
+                );
+    }
+
+    @DisplayName("투표율을 조회할 때 존재하지 않는 voteId로 요청하면 실패한다.")
+    @Test
+    void getTurnoutWithNotExistVoteId() {
+        // given
+        Long voteId = 1L;
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> voteService.getTurnout(voteId))
+                .isInstanceOf(Exception404.class)
+                .hasMessage(ErrorMessage.NOT_EXIST_VOTE.getValue());
+    }
+
+    @DisplayName("투표율을 조회할 때 투표에 초대받은 이가 없으면 null을 반환한다.")
+    @Test
+    void getTurnoutWithNotExistParticipant() {
+        // given
+        User user1 = createUser("hong1234@naver.com");
+        User user2 = createUser("kim1234@naver.com");
+        User user3 = createUser("new1234@naver.com");
+        Place place1 = createPlace("타코벨");
+        Place place2 = createPlace("이자카야모리");
+        Place place3 = createPlace("서가앤쿡 노원역점");
+        Vibe vibe1 = createVibe(VibeType.NOISY);
+        Vibe vibe2 = createVibe(VibeType.QUIET);
+        Vibe vibe3 = createVibe(VibeType.GOOD_SERVICE);
+        PlaceVibe placeVibe1 = createPlaceVibe(place1, vibe1);
+        place1.addPlaceVibe(placeVibe1);
+        PlaceVibe placeVibe2 = createPlaceVibe(place2, vibe2);
+        place2.addPlaceVibe(placeVibe2);
+        PlaceVibe placeVibe3 = createPlaceVibe(place3, vibe3);
+        place3.addPlaceVibe(placeVibe3);
+        userRepository.saveAll(List.of(user1, user2, user3));
+        placeRepository.saveAll(List.of(place1, place2, place3));
+        vibeRepository.saveAll(List.of(vibe1, vibe2, vibe3));
+        placeVibeRepository.saveAll(List.of(placeVibe1, placeVibe2, placeVibe3));
+
+        Food food1 = createFood(FoodType.LATIN);
+        Food food2 = createFood(FoodType.MEAT);
+        PlaceFood placeFood1 = createPlaceFood(place1, food1);
+        place1.addPlaceFood(placeFood1);
+        PlaceFood placeFood2 = createPlaceFood(place2, food1);
+        place2.addPlaceFood(placeFood2);
+        PlaceFood placeFood3 = createPlaceFood(place3, food2);
+        place3.addPlaceFood(placeFood3);
+        foodRepository.saveAll(List.of(food1, food2));
+        placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
+
+        Vote vote = createVote(VoteStatus.ACTIVE);
+        VoteItem voteItem1 = createVoteItem(vote, place1);
+        VoteItem voteItem2 = createVoteItem(vote, place2);
+        VoteItem voteItem3 = createVoteItem(vote, place3);
+        vote.addVoteItem(voteItem1);
+        vote.addVoteItem(voteItem2);
+        vote.addVoteItem(voteItem3);
+        Choice choice1 = createChoice(voteItem1, user1);
+        Choice choice3 = createChoice(voteItem3, user3);
+        voteRepository.save(vote);
+        voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+        choiceRepository.saveAll(List.of(choice1, choice3));
+
+        Long voteId = 1L;
+
+        // when
+        TurnoutResponse turnout = voteService.getTurnout(voteId);
+
+        // then
+        assertThat(turnout).isNull();
     }
 
     @DisplayName("투표 ID를 통해 투표 및 연관 데이터를 조회한다.")
