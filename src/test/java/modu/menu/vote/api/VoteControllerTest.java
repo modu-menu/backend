@@ -6,7 +6,9 @@ import modu.menu.vibe.domain.VibeType;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
+import modu.menu.vote.api.response.TurnoutResponse;
 import modu.menu.vote.api.response.VoteResultResponse;
+import modu.menu.vote.service.dto.IsVoteServiceResponse;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +20,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("VoteController 단위테스트")
 class VoteControllerTest extends ControllerTestSupporter {
 
     @DisplayName("투표를 생성하면 성공한다.")
@@ -312,6 +312,73 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .andExpect(jsonPath("$.reason").value("Bad Request"))
                 .andExpect(jsonPath("$.cause").exists())
                 .andExpect(jsonPath("$.message").value("placeId는 양수여야 합니다."));
+    }
+
+    @DisplayName("투표율을 조회하면 성공한다.")
+    @Test
+    void getTurnout() throws Exception {
+        // given
+        Long voteId = 1L;
+        TurnoutResponse turnoutResponse = new TurnoutResponse(
+                "30%",
+                List.of(IsVoteServiceResponse.builder()
+                                .name("이승민")
+                                .isVote(true)
+                                .build(),
+                        IsVoteServiceResponse.builder()
+                                .name("위영민")
+                                .isVote(false)
+                                .build(),
+                        IsVoteServiceResponse.builder()
+                                .name("채민균")
+                                .isVote(false)
+                                .build())
+        );
+
+        // when
+        when(voteService.getTurnout(anyLong()))
+                .thenReturn(turnoutResponse);
+
+        // then
+        mockMvc.perform(get("/api/vote/{voteId}/turnout", voteId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.reason").value("OK"))
+                .andExpect(jsonPath("$.data").isMap());
+    }
+
+    @DisplayName("투표율을 조회할 때 voteId가 0이면 실패한다.")
+    @Test
+    void getTurnoutWithZeroVoteId() throws Exception {
+        // given
+        Long voteId = 0L;
+        TurnoutResponse turnoutResponse = new TurnoutResponse(
+                "30%",
+                List.of(IsVoteServiceResponse.builder()
+                                .name("이승민")
+                                .isVote(true)
+                                .build(),
+                        IsVoteServiceResponse.builder()
+                                .name("위영민")
+                                .isVote(false)
+                                .build(),
+                        IsVoteServiceResponse.builder()
+                                .name("채민균")
+                                .isVote(false)
+                                .build())
+        );
+
+        // when
+        when(voteService.getTurnout(anyLong()))
+                .thenReturn(turnoutResponse);
+
+        // then
+        mockMvc.perform(get("/api/vote/{voteId}/turnout", voteId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.reason").value("Bad Request"))
+                .andExpect(jsonPath("$.cause").exists())
+                .andExpect(jsonPath("$.message").value("voteId는 양수여야 합니다."));
     }
 
     @DisplayName("투표 결과를 조회하면 성공한다.")

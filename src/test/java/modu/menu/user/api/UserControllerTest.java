@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("UserController 단위테스트")
 class UserControllerTest extends ControllerTestSupporter {
 
     @DisplayName("새로운 회원을 등록한다.")

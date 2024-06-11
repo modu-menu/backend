@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("VibeRepository 단위테스트")
 class VibeRepositoryTest extends IntegrationTestSupporter {
 
     @Autowired

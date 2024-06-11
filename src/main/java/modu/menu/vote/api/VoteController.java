@@ -17,6 +17,7 @@ import modu.menu.core.response.ErrorMessage;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
+import modu.menu.vote.api.response.TurnoutResponse;
 import modu.menu.vote.api.response.VoteResultResponse;
 import modu.menu.vote.service.VoteService;
 import org.springframework.http.ResponseEntity;
@@ -110,6 +111,20 @@ public class VoteController {
 
         return ResponseEntity.ok()
                 .body(new ApiSuccessResponse<>());
+    }
+
+    @Operation(summary = "투표율 조회", description = """
+            투표에 초대된 사람들을 기준으로 투표율과 각 사람 별 투표 여부를 조회합니다.
+            """)
+    @SecurityRequirement(name = "Authorization")
+    @GetMapping("/api/vote/{voteId}/turnout")
+    public ResponseEntity<ApiSuccessResponse<TurnoutResponse>> getTurnout(
+            @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId
+    ) {
+        TurnoutResponse response = voteService.getTurnout(voteId);
+
+        return ResponseEntity.ok()
+                .body(new ApiSuccessResponse<>(response));
     }
 
     /**

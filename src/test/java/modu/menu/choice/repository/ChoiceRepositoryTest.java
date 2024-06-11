@@ -1,20 +1,19 @@
-package modu.menu.review.repository;
+package modu.menu.choice.repository;
 
 import modu.menu.IntegrationTestSupporter;
 import modu.menu.choice.domain.Choice;
-import modu.menu.choice.repository.ChoiceRepository;
 import modu.menu.food.domain.Food;
 import modu.menu.food.domain.FoodType;
 import modu.menu.food.repository.FoodRepository;
+import modu.menu.participant.domain.Participant;
+import modu.menu.participant.domain.VoteRole;
+import modu.menu.participant.repository.ParticipantRepository;
 import modu.menu.place.domain.Place;
 import modu.menu.place.reposiotry.PlaceRepository;
 import modu.menu.placefood.domain.PlaceFood;
 import modu.menu.placefood.repository.PlaceFoodRepository;
 import modu.menu.placevibe.domain.PlaceVibe;
 import modu.menu.placevibe.repository.PlaceVibeRepository;
-import modu.menu.review.domain.HasRoom;
-import modu.menu.review.domain.Review;
-import modu.menu.review.domain.ReviewStatus;
 import modu.menu.user.domain.Gender;
 import modu.menu.user.domain.User;
 import modu.menu.user.domain.UserStatus;
@@ -37,7 +36,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ReviewRepositoryTest extends IntegrationTestSupporter {
+class ChoiceRepositoryTest extends IntegrationTestSupporter {
+
+    @Autowired
+    private ChoiceRepository choiceRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -64,14 +66,12 @@ class ReviewRepositoryTest extends IntegrationTestSupporter {
     private VoteItemRepository voteItemRepository;
 
     @Autowired
-    private ChoiceRepository choiceRepository;
+    private ParticipantRepository participantRepository;
 
-    @Autowired
-    private ReviewRepository reviewRepository;
 
-    @DisplayName("placeId 목록과 userId, VoteStatus를 통해서 사용자가 참여한 투표에 포함된 음식점을 평가한 이력을 조회한다.")
+    @DisplayName("특정 투표에 투표한 기록의 목록을 조회한다.")
     @Test
-    void countByPlaceIdsUserIdAndVoteStatus() {
+    void findByVoteId() {
         // given
         User user1 = createUser("hong1234@naver.com");
         User user2 = createUser("kim1234@naver.com");
@@ -104,43 +104,33 @@ class ReviewRepositoryTest extends IntegrationTestSupporter {
         foodRepository.saveAll(List.of(food1, food2));
         placeFoodRepository.saveAll(List.of(placeFood1, placeFood2, placeFood3));
 
-        Vote vote = createVote(VoteStatus.END);
+        Vote vote = createVote(VoteStatus.ACTIVE);
         VoteItem voteItem1 = createVoteItem(vote, place1);
         VoteItem voteItem2 = createVoteItem(vote, place2);
         VoteItem voteItem3 = createVoteItem(vote, place3);
         vote.addVoteItem(voteItem1);
         vote.addVoteItem(voteItem2);
         vote.addVoteItem(voteItem3);
-        Vote vote2 = createVote(VoteStatus.END);
-        VoteItem voteItem4 = createVoteItem(vote2, place1);
-        VoteItem voteItem5 = createVoteItem(vote2, place2);
-        VoteItem voteItem6 = createVoteItem(vote2, place3);
-        vote2.addVoteItem(voteItem4);
-        vote2.addVoteItem(voteItem5);
-        vote2.addVoteItem(voteItem6);
         Choice choice1 = createChoice(voteItem1, user1);
         Choice choice2 = createChoice(voteItem2, user2);
         Choice choice3 = createChoice(voteItem3, user3);
-        voteRepository.saveAll(List.of(vote, vote2));
-        voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3, voteItem4, voteItem5, voteItem6));
+        Participant participant = createParticipant(user1, vote, VoteRole.ORGANIZER);
+        voteRepository.save(vote);
+        voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
         choiceRepository.saveAll(List.of(choice1, choice2, choice3));
+        participantRepository.save(participant);
 
-        Review review1 = createReview(user1, vote, place1);
-        vote.addReview(review1);
-        Review review2 = createReview(user1, vote2, place2);
-        vote2.addReview(review2);
-        reviewRepository.saveAll(List.of(review1, review2));
-
-        Long userId = 1L;
         Long voteId = 1L;
-        VoteStatus status = VoteStatus.END;
 
         // when
-        int count = reviewRepository.countByUserIdAndVoteIdAndVoteStatus(userId, voteId, status);
+        List<Choice> result = choiceRepository.findByVoteId(voteId);
 
         // then
-        assertThat(count)
-                .isEqualTo(1);
+        assertThat(result)
+                .isNotEmpty()
+                .hasSize(3)
+                .extracting("id")
+                .containsExactlyInAnyOrder(1L, 2L, 3L);
     }
 
     private User createUser(String email) {
@@ -164,8 +154,8 @@ class ReviewRepositoryTest extends IntegrationTestSupporter {
                 .ph("string")
                 .businessHours("hours")
                 .menu("메뉴")
-                .latitude(125.00000)
-                .longitude(14.12133)
+                .latitude(37.676051439616)
+                .longitude(127.05563369603)
                 .imageUrl("image")
                 .voteItems(new ArrayList<>())
                 .placeVibes(new ArrayList<>())
@@ -220,16 +210,11 @@ class ReviewRepositoryTest extends IntegrationTestSupporter {
                 .build();
     }
 
-    private Review createReview(User user, Vote vote, Place place) {
-        return Review.builder()
+    private Participant createParticipant(User user, Vote vote, VoteRole voteRole) {
+        return Participant.builder()
                 .user(user)
                 .vote(vote)
-                .place(place)
-                .rating(3)
-                .participants(10)
-                .hasRoom(HasRoom.UNKNOWN)
-                .content("맛집!")
-                .status(ReviewStatus.ACTIVE)
+                .voteRole(voteRole)
                 .build();
     }
 }
