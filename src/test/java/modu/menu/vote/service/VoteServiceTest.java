@@ -30,7 +30,7 @@ import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.TurnoutResponse;
-import modu.menu.vote.api.response.VoteResultResponse;
+import modu.menu.vote.api.response.VoteResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
@@ -681,21 +681,22 @@ class VoteServiceTest extends IntegrationTestSupporter {
                 .latitude(37.655038011447)
                 .longitude(127.06694995614)
                 .build();
+        request.setAttribute("userId", user1.getId());
 
         // when
-        VoteResultResponse voteResult = voteService.getResult(voteId, voteResultRequest);
+        VoteResponse voteResult = voteService.getVote(voteId, voteResultRequest);
 
         // then
-        assertThat(voteResult.getResults()).isNotNull();
-        assertThat(voteResult.getResults())
-                .extracting("name", "foods", "address", "distance", "img", "voteRating")
+        assertThat(voteResult.getVote()).isNotNull();
+        assertThat(voteResult.getVote())
+                .extracting("name", "foods", "address", "distance", "img", "turnout", "isVote")
                 .containsExactlyInAnyOrder(
-                        tuple("타코벨", List.of(FoodType.LATIN), "address", "2.5km", "image", "33%"),
-                        tuple("이자카야모리", List.of(FoodType.LATIN), "address", "2.5km", "image", "33%"),
-                        tuple("서가앤쿡 노원역점", List.of(FoodType.MEAT), "address", "2.5km", "image", "33%")
+                        tuple("타코벨", List.of(FoodType.LATIN), "address", "2.5km", "image", "33%", true),
+                        tuple("이자카야모리", List.of(FoodType.LATIN), "address", "2.5km", "image", "33%", false),
+                        tuple("서가앤쿡 노원역점", List.of(FoodType.MEAT), "address", "2.5km", "image", "33%", false)
                 );
         assertThat(
-                voteResult.getResults().stream()
+                voteResult.getVote().stream()
                         .flatMap(v -> v.getVibes().stream())
                         .toList()
         )
@@ -718,7 +719,7 @@ class VoteServiceTest extends IntegrationTestSupporter {
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> voteService.getResult(voteId, voteResultRequest))
+        assertThatThrownBy(() -> voteService.getVote(voteId, voteResultRequest))
                 .isInstanceOf(Exception404.class)
                 .hasMessage(ErrorMessage.NOT_EXIST_VOTE.getValue());
     }
