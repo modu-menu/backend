@@ -5,7 +5,6 @@ import modu.menu.food.domain.FoodType;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
-import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.TurnoutResponse;
 import modu.menu.vote.api.response.VoteResponse;
 import modu.menu.vote.service.dto.IsVoteServiceResponse;
@@ -16,8 +15,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -386,13 +384,11 @@ class VoteControllerTest extends ControllerTestSupporter {
     void getResult() throws Exception {
         // given
         Long voteId = 1L;
-        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
-                .latitude(126.977966)
-                .longitude(37.566535)
-                .build();
+        Double latitude = 37.655038011447;
+        Double longitude = 127.06694995614;
 
         // when
-        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
+        when(voteService.getVote(anyLong(), anyDouble(), anyDouble()))
                 .thenReturn(new VoteResponse(
                         List.of(createResult("타코벨"),
                                 createResult("매드포갈릭 강남삼성타운점"),
@@ -401,68 +397,12 @@ class VoteControllerTest extends ControllerTestSupporter {
 
         // then
         mockMvc.perform(get("/api/vote/{voteId}", voteId)
-                        .content(objectMapper.writeValueAsString(voteResultRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("latitude", String.valueOf(latitude))
+                        .param("longitude", String.valueOf(longitude)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.reason").value("OK"))
                 .andExpect(jsonPath("$.data").isMap());
-    }
-
-    @DisplayName("투표 결과를 조회할 때 위도는 필수이다.")
-    @Test
-    void getResultWithNoLatitude() throws Exception {
-        // given
-        Long voteId = 1L;
-        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
-                .longitude(37.566535)
-                .build();
-
-        // when
-        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResponse(
-                        List.of(createResult("타코벨"),
-                                createResult("매드포갈릭 강남삼성타운점"),
-                                createResult("창고 43 강남점")))
-                );
-
-        // then
-        mockMvc.perform(get("/api/vote/{voteId}", voteId)
-                        .content(objectMapper.writeValueAsString(voteResultRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.reason").value("Bad Request"))
-                .andExpect(jsonPath("$.cause").exists())
-                .andExpect(jsonPath("$.message").value("위도는 필수입니다."));
-    }
-
-    @DisplayName("투표 결과를 조회할 때 경도는 필수이다.")
-    @Test
-    void getResultWithNoLongitude() throws Exception {
-        // given
-        Long voteId = 1L;
-        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
-                .latitude(126.977966)
-                .build();
-
-        // when
-        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResponse(
-                        List.of(createResult("타코벨"),
-                                createResult("매드포갈릭 강남삼성타운점"),
-                                createResult("창고 43 강남점")))
-                );
-
-        // then
-        mockMvc.perform(get("/api/vote/{voteId}", voteId)
-                        .content(objectMapper.writeValueAsString(voteResultRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.reason").value("Bad Request"))
-                .andExpect(jsonPath("$.cause").exists())
-                .andExpect(jsonPath("$.message").value("경도는 필수입니다."));
     }
 
     @DisplayName("투표 결과를 조회할 때 위도는 양수이다.")
@@ -470,13 +410,11 @@ class VoteControllerTest extends ControllerTestSupporter {
     void getResultWithZeroLatitude() throws Exception {
         // given
         Long voteId = 1L;
-        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
-                .latitude(0.0)
-                .longitude(37.566535)
-                .build();
+        Double latitude = -1.1;
+        Double longitude = 127.06694995614;
 
         // when
-        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
+        when(voteService.getVote(anyLong(), anyDouble(), anyDouble()))
                 .thenReturn(new VoteResponse(
                         List.of(createResult("타코벨"),
                                 createResult("매드포갈릭 강남삼성타운점"),
@@ -485,13 +423,13 @@ class VoteControllerTest extends ControllerTestSupporter {
 
         // then
         mockMvc.perform(get("/api/vote/{voteId}", voteId)
-                        .content(objectMapper.writeValueAsString(voteResultRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("latitude", String.valueOf(latitude))
+                        .param("longitude", String.valueOf(longitude)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.reason").value("Bad Request"))
                 .andExpect(jsonPath("$.cause").exists())
-                .andExpect(jsonPath("$.message").value("위도는 양수여야 합니다."));
+                .andExpect(jsonPath("$.message").value("위도는 0 또는 양수여야 합니다."));
     }
 
     @DisplayName("투표 결과를 조회할 때 경도는 양수이다.")
@@ -499,13 +437,11 @@ class VoteControllerTest extends ControllerTestSupporter {
     void getResultWithZeroLongitude() throws Exception {
         // given
         Long voteId = 1L;
-        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
-                .latitude(126.977966)
-                .longitude(-1.1)
-                .build();
+        Double latitude = 37.655038011447;
+        Double longitude = -1.1;
 
         // when
-        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
+        when(voteService.getVote(anyLong(), anyDouble(), anyDouble()))
                 .thenReturn(new VoteResponse(
                         List.of(createResult("타코벨"),
                                 createResult("매드포갈릭 강남삼성타운점"),
@@ -514,13 +450,13 @@ class VoteControllerTest extends ControllerTestSupporter {
 
         // then
         mockMvc.perform(get("/api/vote/{voteId}", voteId)
-                        .content(objectMapper.writeValueAsString(voteResultRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("latitude", String.valueOf(latitude))
+                        .param("longitude", String.valueOf(longitude)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.reason").value("Bad Request"))
                 .andExpect(jsonPath("$.cause").exists())
-                .andExpect(jsonPath("$.message").value("경도는 양수여야 합니다."));
+                .andExpect(jsonPath("$.message").value("경도는 0 또는 양수여야 합니다."));
     }
 
     private VoteResultServiceResponse createResult(String name) {

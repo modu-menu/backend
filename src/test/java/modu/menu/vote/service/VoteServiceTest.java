@@ -28,7 +28,6 @@ import modu.menu.vibe.domain.Vibe;
 import modu.menu.vibe.domain.VibeType;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.SaveVoteRequest;
-import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.TurnoutResponse;
 import modu.menu.vote.api.response.VoteResponse;
 import modu.menu.vote.domain.Vote;
@@ -677,14 +676,12 @@ class VoteServiceTest extends IntegrationTestSupporter {
         choiceRepository.saveAll(List.of(choice1, choice2, choice3));
 
         Long voteId = 1L;
-        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
-                .latitude(37.655038011447)
-                .longitude(127.06694995614)
-                .build();
+        Double latitude = 37.655038011447;
+        Double longitude = 127.06694995614;
         request.setAttribute("userId", user1.getId());
 
         // when
-        VoteResponse voteResult = voteService.getVote(voteId, voteResultRequest);
+        VoteResponse voteResult = voteService.getVote(voteId, latitude, longitude);
 
         // then
         assertThat(voteResult.getVote()).isNotNull();
@@ -713,13 +710,11 @@ class VoteServiceTest extends IntegrationTestSupporter {
     void getVoteResultWithNotExistVoteId() {
         // given
         Long voteId = 2L;
-        VoteResultRequest voteResultRequest = VoteResultRequest.builder()
-                .latitude(37.655038011447)
-                .longitude(127.06694995614)
-                .build();
+        Double latitude = 37.655038011447;
+        Double longitude = 127.06694995614;
 
         // when & then
-        assertThatThrownBy(() -> voteService.getVote(voteId, voteResultRequest))
+        assertThatThrownBy(() -> voteService.getVote(voteId, latitude, longitude))
                 .isInstanceOf(Exception404.class)
                 .hasMessage(ErrorMessage.NOT_EXIST_VOTE.getValue());
     }
