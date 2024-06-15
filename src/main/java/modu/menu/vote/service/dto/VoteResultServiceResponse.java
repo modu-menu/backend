@@ -35,6 +35,9 @@ public class VoteResultServiceResponse {
     @Schema(description = "음식점 관련 이미지 주소")
     private String img;
 
-    @Schema(description = "해당 음식점 투표율", example = "70%")
-    private String voteRating;
+    @Schema(description = "해당 음식점 득표율(투표가 종료된 경우에만 표시, 그 외엔 null)", examples = {"70%", "null"})
+    private String turnout;
+
+    @Schema(description = "조회를 요청한 회원이 해당 장소에 투표했는지 여부", examples = "true")
+    private Boolean isVote;
 }

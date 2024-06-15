@@ -7,7 +7,7 @@ import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.TurnoutResponse;
-import modu.menu.vote.api.response.VoteResultResponse;
+import modu.menu.vote.api.response.VoteResponse;
 import modu.menu.vote.service.dto.IsVoteServiceResponse;
 import modu.menu.vote.service.dto.VoteResultServiceResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -392,15 +392,15 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .build();
 
         // when
-        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultResponse(
+        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
+                .thenReturn(new VoteResponse(
                         List.of(createResult("타코벨"),
                                 createResult("매드포갈릭 강남삼성타운점"),
                                 createResult("창고 43 강남점")))
                 );
 
         // then
-        mockMvc.perform(post("/api/vote/{voteId}/result", voteId)
+        mockMvc.perform(get("/api/vote/{voteId}", voteId)
                         .content(objectMapper.writeValueAsString(voteResultRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -419,15 +419,15 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .build();
 
         // when
-        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultResponse(
+        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
+                .thenReturn(new VoteResponse(
                         List.of(createResult("타코벨"),
                                 createResult("매드포갈릭 강남삼성타운점"),
                                 createResult("창고 43 강남점")))
                 );
 
         // then
-        mockMvc.perform(post("/api/vote/{voteId}/result", voteId)
+        mockMvc.perform(get("/api/vote/{voteId}", voteId)
                         .content(objectMapper.writeValueAsString(voteResultRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -447,15 +447,15 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .build();
 
         // when
-        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultResponse(
+        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
+                .thenReturn(new VoteResponse(
                         List.of(createResult("타코벨"),
                                 createResult("매드포갈릭 강남삼성타운점"),
                                 createResult("창고 43 강남점")))
                 );
 
         // then
-        mockMvc.perform(post("/api/vote/{voteId}/result", voteId)
+        mockMvc.perform(get("/api/vote/{voteId}", voteId)
                         .content(objectMapper.writeValueAsString(voteResultRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -476,15 +476,15 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .build();
 
         // when
-        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultResponse(
+        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
+                .thenReturn(new VoteResponse(
                         List.of(createResult("타코벨"),
                                 createResult("매드포갈릭 강남삼성타운점"),
                                 createResult("창고 43 강남점")))
                 );
 
         // then
-        mockMvc.perform(post("/api/vote/{voteId}/result", voteId)
+        mockMvc.perform(get("/api/vote/{voteId}", voteId)
                         .content(objectMapper.writeValueAsString(voteResultRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -505,15 +505,15 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .build();
 
         // when
-        when(voteService.getResult(anyLong(), any(VoteResultRequest.class)))
-                .thenReturn(new VoteResultResponse(
+        when(voteService.getVote(anyLong(), any(VoteResultRequest.class)))
+                .thenReturn(new VoteResponse(
                         List.of(createResult("타코벨"),
                                 createResult("매드포갈릭 강남삼성타운점"),
                                 createResult("창고 43 강남점")))
                 );
 
         // then
-        mockMvc.perform(post("/api/vote/{voteId}/result", voteId)
+        mockMvc.perform(get("/api/vote/{voteId}", voteId)
                         .content(objectMapper.writeValueAsString(voteResultRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -531,7 +531,7 @@ class VoteControllerTest extends ControllerTestSupporter {
                 .address("서울 종로구 삼일대로")
                 .distance("10m")
                 .img("이미지 주소")
-                .voteRating("70%")
+                .turnout("70%")
                 .build();
     }
 }

@@ -22,7 +22,7 @@ import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
 import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.TurnoutResponse;
-import modu.menu.vote.api.response.VoteResultResponse;
+import modu.menu.vote.api.response.VoteResponse;
 import modu.menu.vote.domain.Vote;
 import modu.menu.vote.domain.VoteStatus;
 import modu.menu.vote.repository.VoteRepository;
@@ -222,9 +222,8 @@ public class VoteService {
         );
     }
 
-    // TODO 투표 조회 API에서 해당 유저의 투표 여부를 변수로 같이 보내줘야 한다.
-    // 투표 결과 조회
-    public VoteResultResponse getResult(Long voteId, VoteResultRequest voteResultRequest) {
+    // 투표 현황, 결과 조회
+    public VoteResponse getVote(Long voteId, VoteResultRequest voteResultRequest) {
 
         // 투표 존재 여부를 확인한다. fetch join을 이용해 선택지도 함께 가져온다.
         Vote vote = voteRepository.findVoteResultById(voteId).orElseThrow(
@@ -243,7 +242,10 @@ public class VoteService {
                 .mapToInt(v -> voteCountMap.getOrDefault(v.getId(), 0))
                 .sum();
 
-        return new VoteResultResponse(voteItems.stream()
+        List<Choice> choices = choiceRepository.findByVoteId(voteId);
+        Long userId = (Long) request.getAttribute("userId");
+
+        return new VoteResponse(voteItems.stream()
                 .map(voteItem -> {
                     Place place = voteItem.getPlace();
                     double distance = DistanceCalculator.calculate(
@@ -266,15 +268,19 @@ public class VoteService {
                             .address(place.getAddress())
                             .distance(distance >= 1000.0 ? String.format("%.1f", distance / 1000.0) + "km" : Math.round(distance) + "m")
                             .img(place.getImageUrl())
-                            .voteRating(Math.round(voteCount * 100.0 / voterCount) + "%")
+                            .turnout(vote.getVoteStatus() == VoteStatus.END ? Math.round(voteCount * 100.0 / voterCount) + "%" : null) // 종료된 투표일 경우에만 수치를 표시한다.
+                            .isVote(
+                                    choices.stream()
+                                            .anyMatch(choice -> choice.getVoteItem().getId().equals(voteItem.getId()) && choice.getUser().getId().equals(userId))
+                            )
                             .build();
                 })
                 .sorted((voteResultServiceResponse1, voteResultServiceResponse2) -> {
-                    if (parseInt(voteResultServiceResponse2.getVoteRating().replace("%", "")) == parseInt(voteResultServiceResponse1.getVoteRating().replace("%", ""))) {
+                    if (parseInt(voteResultServiceResponse2.getTurnout().replace("%", "")) == parseInt(voteResultServiceResponse1.getTurnout().replace("%", ""))) {
                         return voteResultServiceResponse1.getName().compareTo(voteResultServiceResponse2.getName());
                     }
-                    return parseInt(voteResultServiceResponse2.getVoteRating().replace("%", ""))
-                            - parseInt(voteResultServiceResponse1.getVoteRating().replace("%", ""));
+                    return parseInt(voteResultServiceResponse2.getTurnout().replace("%", ""))
+                            - parseInt(voteResultServiceResponse1.getTurnout().replace("%", ""));
                 })
                 .toList()
         );
