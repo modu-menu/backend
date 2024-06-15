@@ -20,7 +20,6 @@ import modu.menu.user.repository.UserRepository;
 import modu.menu.vibe.repository.VibeRepository;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
-import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.TurnoutResponse;
 import modu.menu.vote.api.response.VoteResponse;
 import modu.menu.vote.domain.Vote;
@@ -223,7 +222,7 @@ public class VoteService {
     }
 
     // 투표 현황, 결과 조회
-    public VoteResponse getVote(Long voteId, VoteResultRequest voteResultRequest) {
+    public VoteResponse getVote(Long voteId, Double latitude, Double longitude) {
 
         // 투표 존재 여부를 확인한다. fetch join을 이용해 선택지도 함께 가져온다.
         Vote vote = voteRepository.findVoteResultById(voteId).orElseThrow(
@@ -251,8 +250,8 @@ public class VoteService {
                     double distance = DistanceCalculator.calculate(
                             place.getLatitude(),
                             place.getLongitude(),
-                            voteResultRequest.getLatitude(),
-                            voteResultRequest.getLongitude()
+                            latitude,
+                            longitude
                     );
 
                     int voteCount = voteCountMap.getOrDefault(voteItem.getId(), 0);

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.exception.Exception401;
 import modu.menu.core.response.ApiFailResponse;
@@ -16,7 +17,6 @@ import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
-import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.TurnoutResponse;
 import modu.menu.vote.api.response.VoteResponse;
 import modu.menu.vote.service.VoteService;
@@ -138,10 +138,11 @@ public class VoteController {
     @GetMapping("/api/vote/{voteId}")
     public ResponseEntity<ApiSuccessResponse<VoteResponse>> getVote(
             @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
-            @Valid @RequestBody VoteResultRequest voteResultRequest
+            @PositiveOrZero(message = "위도는 0 또는 양수여야 합니다.") @RequestParam(defaultValue = "37.505098") Double latitude,
+            @PositiveOrZero(message = "경도는 0 또는 양수여야 합니다.") @RequestParam(defaultValue = "127.032941") Double longitude
     ) {
 
-        VoteResponse response = voteService.getVote(voteId, voteResultRequest);
+        VoteResponse response = voteService.getVote(voteId, latitude, longitude);
 
         return ResponseEntity.ok()
                 .body(new ApiSuccessResponse<>(response));
