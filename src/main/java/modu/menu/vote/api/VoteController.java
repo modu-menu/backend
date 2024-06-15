@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import modu.menu.core.exception.Exception401;
 import modu.menu.core.response.ApiFailResponse;
@@ -16,9 +17,8 @@ import modu.menu.core.response.ApiSuccessResponse;
 import modu.menu.core.response.ErrorMessage;
 import modu.menu.vote.api.request.SaveVoteRequest;
 import modu.menu.vote.api.request.VoteRequest;
-import modu.menu.vote.api.request.VoteResultRequest;
 import modu.menu.vote.api.response.TurnoutResponse;
-import modu.menu.vote.api.response.VoteResultResponse;
+import modu.menu.vote.api.response.VoteResponse;
 import modu.menu.vote.service.VoteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -76,7 +76,6 @@ public class VoteController {
                 .body(new ApiSuccessResponse<>());
     }
 
-    // 투표 종료
     @Operation(summary = "투표 종료", description = "투표를 종료합니다. 투표 주최자만 가능합니다.")
     @SecurityRequirement(name = "Authorization")
     @ApiResponses(value = {
@@ -127,11 +126,7 @@ public class VoteController {
                 .body(new ApiSuccessResponse<>(response));
     }
 
-    /**
-     * 회원의 위도와 경도를 외부에 노출해선 안 된다고 판단하여
-     * HTTPS로 통신하는 점을 이용해 RequestBody에 위치 데이터를 담아서 요청하도록 설계
-     */
-    @Operation(summary = "투표 결과 조회", description = "투표 결과를 조회합니다. 회원이라면 모두 조회 가능합니다.")
+    @Operation(summary = "투표 현황, 결과 조회", description = "투표 현황 또는 결과를 조회합니다.")
     @SecurityRequirement(name = "Authorization")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회가 성공한 경우"),
@@ -140,13 +135,14 @@ public class VoteController {
             @ApiResponse(responseCode = "404", description = "조회하려는 투표 자체가 존재하지 않는 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class))),
             @ApiResponse(responseCode = "500", description = "그 외 서버에서 처리하지 못한 에러가 발생했을 경우", content = @Content(schema = @Schema(implementation = ApiFailResponse.class)))
     })
-    @PostMapping("/api/vote/{voteId}/result")
-    public ResponseEntity<ApiSuccessResponse<VoteResultResponse>> getResult(
+    @GetMapping("/api/vote/{voteId}")
+    public ResponseEntity<ApiSuccessResponse<VoteResponse>> getVote(
             @Positive(message = "voteId는 양수여야 합니다.") @PathVariable("voteId") Long voteId,
-            @Valid @RequestBody VoteResultRequest voteResultRequest
+            @PositiveOrZero(message = "위도는 0 또는 양수여야 합니다.") @RequestParam(defaultValue = "37.505098") Double latitude,
+            @PositiveOrZero(message = "경도는 0 또는 양수여야 합니다.") @RequestParam(defaultValue = "127.032941") Double longitude
     ) {
 
-        VoteResultResponse response = voteService.getResult(voteId, voteResultRequest);
+        VoteResponse response = voteService.getVote(voteId, latitude, longitude);
 
         return ResponseEntity.ok()
                 .body(new ApiSuccessResponse<>(response));
